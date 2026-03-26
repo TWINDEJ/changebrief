@@ -1,38 +1,99 @@
 ---
 ---
 
-<section class="py-20 lg:py-28 border-t border-slate-800/50">
+<section class="relative py-24 lg:py-32">
+  <div class="pointer-events-none absolute inset-0">
+    <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-slate-700/50 to-transparent"></div>
+  </div>
+
   <div class="mx-auto max-w-6xl px-6">
-    <div class="text-center">
-      <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">Användningsområden</h2>
-      <p class="mx-auto mt-4 max-w-2xl text-lg text-slate-400">Tre vanliga scenarion. Samma lösning.</p>
+    <div class="text-center animate-fade-in-up">
+      <h2 class="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">Use cases</h2>
+      <p class="mx-auto mt-4 max-w-2xl text-lg text-slate-400">One tool. Dozens of high-value applications.</p>
     </div>
 
-    <div class="mt-16 grid gap-8 md:grid-cols-3">
-      <div class="group rounded-xl border border-slate-800 bg-gradient-to-b from-slate-900/80 to-slate-950 p-8 transition hover:border-blue-500/30">
-        <div class="mb-6 text-4xl">🎯</div>
-        <h3 class="text-xl font-bold">Konkurrentbevakning</h3>
-        <p class="mt-3 text-slate-400">Vet direkt när en konkurrent ändrar priser, features eller positionering. Reagera samma dag istället för nästa kvartal.</p>
-        <div class="mt-6 rounded-lg bg-slate-900 p-4 text-sm text-slate-300 italic">
-          "Stripe höjde sitt pris för Invoicing från 0.4% till 0.5% per faktura och la till en ny Enterprise-tier."
+    <div class="mt-16 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <!-- 1. Competitor pricing -->
+      <div class="animate-fade-in-up delay-100 group glass-card rounded-2xl p-8 cursor-default">
+        <div class="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-500/10 text-indigo-400">
+          <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <h3 class="text-xl font-bold">Competitor pricing</h3>
+        <p class="mt-3 text-slate-400 text-[15px] leading-relaxed">Know within hours when a competitor changes pricing, removes a free tier, or adds a new plan. React the same day instead of next quarter.</p>
+        <div class="mt-6 rounded-xl bg-white/[0.03] p-4 text-sm text-slate-400 italic" style="font-family: 'JetBrains Mono', monospace; font-size: 13px;">
+          "Stripe raised Invoicing from 0.4% to 0.5% per invoice and added a new Enterprise tier."
         </div>
       </div>
 
-      <div class="group rounded-xl border border-slate-800 bg-gradient-to-b from-slate-900/80 to-slate-950 p-8 transition hover:border-blue-500/30">
-        <div class="mb-6 text-4xl">📋</div>
-        <h3 class="text-xl font-bold">Leverantörsvillkor</h3>
-        <p class="mt-3 text-slate-400">Få besked om avtalsändringar, nya policyer eller prisförändringar hos era leverantörer — innan det påverkar er.</p>
-        <div class="mt-6 rounded-lg bg-slate-900 p-4 text-sm text-slate-300 italic">
-          "AWS uppdaterade sin SLA för S3 — tillgänglighetsgarantin sänktes från 99.99% till 99.9% i eu-north-1."
+      <!-- 2. Regulatory & compliance -->
+      <div class="animate-fade-in-up delay-200 group glass-card rounded-2xl p-8 cursor-default">
+        <div class="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-red-500/10 text-red-400">
+          <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
+          </svg>
+        </div>
+        <h3 class="text-xl font-bold">Regulatory changes</h3>
+        <p class="mt-3 text-slate-400 text-[15px] leading-relaxed">Monitor government agencies and regulators for policy updates, new rules, or changed requirements that affect your industry.</p>
+        <div class="mt-6 rounded-xl bg-white/[0.03] p-4 text-sm text-slate-400 italic" style="font-family: 'JetBrains Mono', monospace; font-size: 13px;">
+          "FDA updated medical device guidance — new cybersecurity requirements effective Q3 2026."
         </div>
       </div>
 
-      <div class="group rounded-xl border border-slate-800 bg-gradient-to-b from-slate-900/80 to-slate-950 p-8 transition hover:border-blue-500/30">
-        <div class="mb-6 text-4xl">🟢</div>
-        <h3 class="text-xl font-bold">Statusesidor</h3>
-        <p class="mt-3 text-slate-400">Bevaka driftstatus för era kritiska tjänster. Vet om det är avbrott innan era kunder märker det.</p>
-        <div class="mt-6 rounded-lg bg-slate-900 p-4 text-sm text-slate-300 italic">
-          "GitHub Actions status ändrades från 'All Systems Operational' till 'Degraded Performance'."
+      <!-- 3. SaaS terms of service -->
+      <div class="animate-fade-in-up delay-300 group glass-card rounded-2xl p-8 cursor-default">
+        <div class="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-amber-500/10 text-amber-400">
+          <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+        </div>
+        <h3 class="text-xl font-bold">SaaS terms & contracts</h3>
+        <p class="mt-3 text-slate-400 text-[15px] leading-relaxed">Catch silent changes to terms of service, privacy policies, or SLAs from vendors you depend on — before your renewal date.</p>
+        <div class="mt-6 rounded-xl bg-white/[0.03] p-4 text-sm text-slate-400 italic" style="font-family: 'JetBrains Mono', monospace; font-size: 13px;">
+          "Notion changed data processing terms — removed EU-only storage guarantee from Business plan."
+        </div>
+      </div>
+
+      <!-- 4. Hiring & strategy intel -->
+      <div class="animate-fade-in-up delay-100 group glass-card rounded-2xl p-8 cursor-default">
+        <div class="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-purple-500/10 text-purple-400">
+          <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+        </div>
+        <h3 class="text-xl font-bold">Hiring & strategy intel</h3>
+        <p class="mt-3 text-slate-400 text-[15px] leading-relaxed">Watch competitor career pages. When they start hiring ML engineers or enterprise sales reps, you know where they're heading next.</p>
+        <div class="mt-6 rounded-xl bg-white/[0.03] p-4 text-sm text-slate-400 italic" style="font-family: 'JetBrains Mono', monospace; font-size: 13px;">
+          "Figma added 4 new AI/ML roles and removed 'Free for education' from their careers page."
+        </div>
+      </div>
+
+      <!-- 5. E-commerce & supplier pricing -->
+      <div class="animate-fade-in-up delay-200 group glass-card rounded-2xl p-8 cursor-default">
+        <div class="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-400">
+          <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+          </svg>
+        </div>
+        <h3 class="text-xl font-bold">Supplier & MAP pricing</h3>
+        <p class="mt-3 text-slate-400 text-[15px] leading-relaxed">Track supplier prices, wholesale catalogs, or MAP compliance across resellers. Catch price drops before your competitors do.</p>
+        <div class="mt-6 rounded-xl bg-white/[0.03] p-4 text-sm text-slate-400 italic" style="font-family: 'JetBrains Mono', monospace; font-size: 13px;">
+          "Amazon dropped the Sony WH-1000XM5 from $349 to $279 — lowest price in 6 months."
+        </div>
+      </div>
+
+      <!-- 6. Your own site -->
+      <div class="animate-fade-in-up delay-300 group glass-card rounded-2xl p-8 cursor-default">
+        <div class="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-cyan-500/10 text-cyan-400">
+          <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+          </svg>
+        </div>
+        <h3 class="text-xl font-bold">Your own site integrity</h3>
+        <p class="mt-3 text-slate-400 text-[15px] leading-relaxed">Detect accidental deploys, defacement, SEO spam injection, or broken layouts on your own pages — before customers see them.</p>
+        <div class="mt-6 rounded-xl bg-white/[0.03] p-4 text-sm text-slate-400 italic" style="font-family: 'JetBrains Mono', monospace; font-size: 13px;">
+          "Your checkout page is missing the 'Buy' button — layout broken after latest deploy."
         </div>
       </div>
     </div>

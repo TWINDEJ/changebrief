@@ -1,41 +1,45 @@
 ---
 ---
 
-<section class="py-20 lg:py-28 border-t border-slate-800/50">
+<section class="relative py-24 lg:py-32">
+  <div class="pointer-events-none absolute inset-0">
+    <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-slate-700/50 to-transparent"></div>
+  </div>
+
   <div class="mx-auto max-w-3xl px-6">
-    <h2 class="text-center text-3xl font-bold tracking-tight sm:text-4xl">Vanliga frågor</h2>
+    <h2 class="animate-fade-in-up text-center text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">Frequently asked questions</h2>
 
-    <div class="mt-12 space-y-6">
-      <details class="group rounded-xl border border-slate-800 bg-slate-900/30 p-6">
-        <summary class="flex cursor-pointer items-center justify-between font-semibold">
-          Hur skiljer sig changebrief från Visualping?
-          <svg class="h-5 w-5 shrink-0 text-slate-500 transition group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+    <div class="mt-12 space-y-4">
+      <details class="group animate-fade-in-up delay-100 glass-card rounded-2xl p-6 cursor-pointer">
+        <summary class="flex items-center justify-between font-semibold text-white/90 [&::-webkit-details-marker]:hidden">
+          How is changebrief different from Visualping?
+          <svg class="h-5 w-5 shrink-0 text-slate-500 transition-transform duration-300 group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
         </summary>
-        <p class="mt-4 text-slate-400">Visualping visar en bild med röda pixlar där något ändrats. Du måste själv tolka vad det betyder. changebrief skickar bildparet till GPT-4o Vision och returnerar en mening som beskriver exakt vad som ändrades — "Priset höjdes från $29 till $39/mån" istället för en röd fläck.</p>
+        <p class="mt-4 text-sm text-slate-400 leading-relaxed">Visualping shows you an image with red pixels where something changed. You have to figure out what it means yourself. changebrief sends the screenshot pair to AI vision and returns a sentence describing exactly what changed — "Price increased from $29 to $39/mo" instead of a red blob.</p>
       </details>
 
-      <details class="group rounded-xl border border-slate-800 bg-slate-900/30 p-6">
-        <summary class="flex cursor-pointer items-center justify-between font-semibold">
-          Vilken AI-modell används?
-          <svg class="h-5 w-5 shrink-0 text-slate-500 transition group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+      <details class="group animate-fade-in-up delay-200 glass-card rounded-2xl p-6 cursor-pointer">
+        <summary class="flex items-center justify-between font-semibold text-white/90 [&::-webkit-details-marker]:hidden">
+          How accurate are the summaries?
+          <svg class="h-5 w-5 shrink-0 text-slate-500 transition-transform duration-300 group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
         </summary>
-        <p class="mt-4 text-slate-400">GPT-4o med Vision från OpenAI. Modellen förstår vad som visas på en webbsida — priser, knappar, text, layouter — och kan beskriva skillnaden mellan två versioner av samma sida.</p>
+        <p class="mt-4 text-sm text-slate-400 leading-relaxed">We use state-of-the-art vision AI that understands what's displayed on a web page — prices, buttons, text, layouts. It compares two versions of the same page and describes exactly what changed in plain language. The importance score (1-10) helps you filter noise from signal.</p>
       </details>
 
-      <details class="group rounded-xl border border-slate-800 bg-slate-900/30 p-6">
-        <summary class="flex cursor-pointer items-center justify-between font-semibold">
-          Kan jag bevaka sidor bakom login?
-          <svg class="h-5 w-5 shrink-0 text-slate-500 transition group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+      <details class="group animate-fade-in-up delay-300 glass-card rounded-2xl p-6 cursor-pointer">
+        <summary class="flex items-center justify-between font-semibold text-white/90 [&::-webkit-details-marker]:hidden">
+          Can I monitor pages behind a login?
+          <svg class="h-5 w-5 shrink-0 text-slate-500 transition-transform duration-300 group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
         </summary>
-        <p class="mt-4 text-slate-400">Ja! Du kan konfigurera cookies och HTTP-headers per URL. Det gör det möjligt att bevaka sidor som kräver autentisering, t.ex. interna dashboards eller kund-portaler.</p>
+        <p class="mt-4 text-sm text-slate-400 leading-relaxed">Yes! You can configure cookies and HTTP headers per URL. This makes it possible to monitor pages that require authentication, such as internal dashboards or customer portals.</p>
       </details>
 
-      <details class="group rounded-xl border border-slate-800 bg-slate-900/30 p-6">
-        <summary class="flex cursor-pointer items-center justify-between font-semibold">
-          Var hostar ni data?
-          <svg class="h-5 w-5 shrink-0 text-slate-500 transition group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+      <details class="group animate-fade-in-up delay-400 glass-card rounded-2xl p-6 cursor-pointer">
+        <summary class="flex items-center justify-between font-semibold text-white/90 [&::-webkit-details-marker]:hidden">
+          Where is data hosted?
+          <svg class="h-5 w-5 shrink-0 text-slate-500 transition-transform duration-300 group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
         </summary>
-        <p class="mt-4 text-slate-400">All data lagras inom EU (Azure Sweden Central). Screenshots krypteras at rest. Vi delar aldrig data med tredje part utöver vad som krävs för AI-analysen.</p>
+        <p class="mt-4 text-sm text-slate-400 leading-relaxed">All data is stored within the EU. Screenshots are encrypted at rest. We never share data with third parties beyond what's required for the AI analysis.</p>
       </details>
     </div>
   </div>
