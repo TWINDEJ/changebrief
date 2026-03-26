@@ -1,0 +1,59 @@
+import { auth } from '@/lib/auth';
+import { getUserByEmail, getWatchedUrls, addWatchedUrl, removeWatchedUrl, countWatchedUrls, getUrlLimit } from '@/lib/db';
+import { NextRequest, NextResponse } from 'next/server';
+
+export async function GET() {
+  const session = await auth();
+  if (!session?.user?.email) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  const user = getUserByEmail(session.user.email);
+  if (!user) return NextResponse.json({ error: 'User not found' }, { status: 404 });
+
+  const urls = getWatchedUrls(user.id);
+  return NextResponse.json(urls);
+}
+
+export async function POST(req: NextRequest) {
+  const session = await auth();
+  if (!session?.user?.email) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  const user = getUserByEmail(session.user.email);
+  if (!user) return NextResponse.json({ error: 'User not found' }, { status: 404 });
+
+  const count = countWatchedUrls(user.id);
+  const limit = getUrlLimit(user.plan);
+  if (count >= limit) {
+    return NextResponse.json({ error: `Plan limit reached (${limit} URLs)` }, { status: 403 });
+  }
+
+  const body = await req.json();
+  const { url, name, threshold, selector, mobile, minImportance } = body;
+
+  if (!url || !name) {
+    return NextResponse.json({ error: 'url and name required' }, { status: 400 });
+  }
+
+  try {
+    addWatchedUrl(user.id, url, name, { threshold, selector, mobile, minImportance });
+    return NextResponse.json({ ok: true }, { status: 201 });
+  } catch (e: any) {
+    if (e.message?.includes('UNIQUE')) {
+      return NextResponse.json({ error: 'URL already watched' }, { status: 409 });
+    }
+    throw e;
+  }
+}
+
+export async function DELETE(req: NextRequest) {
+  const session = await auth();
+  if (!session?.user?.email) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  const user = getUserByEmail(session.user.email);
+  if (!user) return NextResponse.json({ error: 'User not found' }, { status: 404 });
+
+  const id = req.nextUrl.searchParams.get('id');
+  if (!id) return NextResponse.json({ error: 'id required' }, { status: 400 });
+
+  removeWatchedUrl(user.id, parseInt(id));
+  return NextResponse.json({ ok: true });
+}
