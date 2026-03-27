@@ -1,93 +1,57 @@
 # HANDOFF — changebrief
 
-## Datum: 2026-03-26
+## Session 2026-03-27 (eftermiddag)
 
-## Arkitektur
-```
-changebrief.io          → Landing page (Astro + Tailwind, Cloudflare Pages)
-app.changebrief.io      → Webbapp (Next.js, Vercel)
-Turso (AWS Ireland)     → Databas (@libsql/client)
-GitHub Actions (var 6h) → Core engine: screenshots + GPT-4o Vision-analys
-Polar + Stripe          → Betalning (godkänd, live)
-```
+### Vad som gjordes
 
-## Allt som fungerar
-- Landing page med 8 sektioner, checkout-knappar, CTA → app
-- Webbapp med Google + GitHub login
-- Dashboard: lägg till/ta bort URLs, visa ändringshistorik, plangränser (Free 3, Pro 25, Team 100)
-- API routes: GET/POST/DELETE /api/urls
-- Turso-databas i produktion (ersätter SQLite)
-- GitHub Actions cron kör core engine var 6:e timme (testat, fungerar)
-- Core engine: Playwright screenshots → pixelmatch diff → GPT-4o Vision-analys → resultat till Turso
-- CLI: add, remove, list, history, report, export, check, integrate
-- 6 integrationer: Slack, Teams, Discord, PagerDuty, Jira, webhooks
-- Polar: Pro $19/mån, Team $49/mån — Stripe kopplad, ID-verifierad, godkänd
-- DNS: changebrief.io → Cloudflare, app.changebrief.io → Vercel
+**RegTech-expansion (Fas 1-3) — komplett:**
+- DB-schema: 4 nya kolumner (category, jurisdiction, document_type, compliance_action)
+- 58 watchlists i 12 sektorer — 26 svenska/EU-myndigheter
+- AI-prompt: GPT-4o klassificerar regulatoriska ändringar med jurisdiktion, dokumenttyp, åtgärdsnivå
+- Compliance Feed i dashboarden med action-badges och filter
+- Compliance Trend — stacked bar chart per myndighet
+- Audit trail CSV-export (/api/export/compliance)
+- RSS-feed (/api/feed med jurisdiction/action-filter)
+- Compliance-sektion i weekly digest
+- Slack/Teams/Email med compliance-badges
+- Dedikerad landing page: /compliance (EN) + /sv/compliance (SV)
 
-## Exponerade secrets (regenerera!)
-- GitHub OAuth client secret — exponerad i chatten
-- Google OAuth client secret — exponerad i chatten
-- AUTH_SECRET — redan regenererad ✅
-- Turso auth token — exponerad i chatten
+**Teknisk skuld — löst:**
+- Polar webhook-signaturverifiering aktiverad
+- Weekly digest E2E-testad (2 mejl skickade framgångsrikt)
+- OpenAI kostnadsloggning per engine-körning (tokens + USD)
+- tsconfig.json fixad för GitHub Actions (types: ["node"])
 
-**Åtgärd:** Regenerera i respektive dashboard, uppdatera i Vercel env vars, redeploya.
+**Dashboard UX:**
+- Activity Feed: "Ändringar"-filter som default (döljer no-change-rader)
+- Settings: kugghjulsikon i Activity-header istället för separat sektion
+- Expanderbara monitored page-kort (klicka → detaljer)
+- Discover: 12 items default, stabil grid-höjd, add-animation
+- Feedback-knapp i header (pulsande amber, mailto kristian@changebrief.io)
+- CSS-animationer (fade-in, fade-in-scale)
 
-## Filstruktur
-```
-pagewatch/
-├── landing/           # Astro + Tailwind (Cloudflare Pages)
-├── app/               # Next.js webbapp (Vercel)
-│   ├── src/lib/db.ts      # Turso-databas (async, libsql)
-│   ├── src/lib/auth.ts    # Auth.js (Google + GitHub)
-│   ├── src/app/dashboard/ # Dashboard-sida
-│   └── src/app/api/urls/  # API routes
-├── engine/            # Core engine för GitHub Actions
-│   └── check-all.ts       # Läser URLs från Turso, kör checks, skriver resultat
-├── shared/            # Delad logik (screenshot, diff, vision, notify)
-├── .github/workflows/ # GitHub Actions cron (var 6h)
-├── cli.ts             # CLI-verktyg
-├── data/urls.json     # CLI-konfiguration (separat från webbappen)
-└── .env               # OpenAI API-nyckel (gitignored)
-```
+**E-post:**
+- kristian@changebrief.io konfigurerad via Namecheap Email Forwarding → thewigander@gmail.com
+- Reply-To på alla utgående mejl (notiser + digest)
 
-## Konton & tjänster
-| Tjänst | Konto | Dashboard |
-|---|---|---|
-| Cloudflare | thewigander@gmail.com | dash.cloudflare.com |
-| Vercel | thewigander-4157 | vercel.com/dashboard |
-| Polar | changebrief (Individual) | dashboard.polar.sh/changebrief |
-| Turso | thewigander-wq | console.turso.tech |
-| Google Cloud | vernal-seeker-369609 | console.cloud.google.com |
-| GitHub | TWINDEJ/pagewatch | github.com/TWINDEJ/pagewatch |
-| Namecheap | changebrief.io | namecheap.com |
+### Var vi är
 
-## Dev-kommandon
-```bash
-# Landing page: bygg + deploya
-cd landing && npm run build && npx wrangler pages deploy dist --project-name pagewatch
+RegTech MVP komplett. Alla features deployade. Väntar på att myndigheter uppdaterar sidor så compliance-klassificering triggas i produktion. Baselines tagna för Trafikverket + Finansinspektionen.
 
-# Webbapp: kör lokalt
-cd app && npm run dev
+### Nästa steg
 
-# Webbapp: deploya till produktion
-cd app && npx vercel --prod --yes
+1. **Hitta 2-3 compliance-testare** — Kristian kontaktar via LinkedIn/mejl (personligt, ej Twindej)
+2. **RAG-integration** — Koppla lokal-rag:s 1900 indexerade föreskrifter. Fas 1: exportera metadata-JSON
+3. **Acknowledged/Reviewed-workflow** — Markera ändringar som granskade (audit trail)
+4. **Teamfunktion** — Delade bevakningslistor, motiverar Team-planen
+5. **SEO** — Optimera /compliance för sökmotorer
 
-# Core engine: kör manuellt (lokalt)
-npx ts-node engine/check-all.ts
+### Kvarstående tekniskt
+- [ ] Verifiera compliance-klassificering med riktiga regulatoriska ändringar
+- [ ] Verifiera GPT-4o-mini pre-filter i produktion
+- [ ] Kolla OpenAI-kostnad efter ett par dagars körningar (loggas nu per körning)
 
-# Core engine: trigga GitHub Actions
-gh workflow run check-urls.yml
-
-# CLI (lokal testning)
-npm run cli -- list
-npm run check
-```
-
-## Att finslipa nästa session
-- Regenerera exponerade secrets
-- Testa hela flödet end-to-end som ny användare (incognito)
-- Landing page: byt till engelska för internationell publik
-- Design: polera dashboard (loading states, error handling, toasts)
-- Onboarding: guide första gången en användare loggar in
-- E-postnotiser vid ändringar (Resend, gratis 3000/mån)
-- Polar webhook → uppdatera user.plan vid köp/avslut
+### Deploy-process
+- **App (Vercel):** `cd app && npx vercel --prod --yes` (auto-deploy fungerar INTE pålitligt via git push)
+- **Landing (Cloudflare):** `cd landing && npm run build && npx wrangler pages deploy dist --project-name pagewatch`
+- **Engine (GitHub Actions):** Triggas automatiskt var 6h, eller `gh workflow run check-urls.yml`
