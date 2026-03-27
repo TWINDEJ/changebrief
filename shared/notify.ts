@@ -14,6 +14,62 @@ function buildChangeEvent(url: string, name: string, analysis: ChangeAnalysis, d
   return { url, name, analysis, diffPercent, timestamp: new Date().toISOString() };
 }
 
+// ─── Email via Resend ───
+
+export async function sendEmailNotification(
+  to: string,
+  name: string,
+  url: string,
+  analysis: ChangeAnalysis
+): Promise<void> {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    console.log(`  → [EMAIL] Skipped (no RESEND_API_KEY): ${to}`);
+    return;
+  }
+
+  const emoji = analysis.importance >= 7 ? '🔴' : analysis.importance >= 4 ? '🟡' : '🟢';
+  const elements = analysis.changedElements.length > 0
+    ? analysis.changedElements.map(el => `<li>${el}</li>`).join('')
+    : '<li>N/A</li>';
+
+  const html = `
+    <div style="font-family: -apple-system, sans-serif; max-width: 600px; margin: 0 auto;">
+      <h2 style="color: #3b82f6;">${emoji} Change detected: ${name}</h2>
+      <p style="font-size: 16px; color: #1e293b;">${analysis.summary}</p>
+      <table style="margin: 16px 0; font-size: 14px; color: #475569;">
+        <tr><td style="padding-right: 16px;"><strong>Importance:</strong></td><td>${analysis.importance}/10</td></tr>
+        <tr><td style="padding-right: 16px;"><strong>URL:</strong></td><td><a href="${url}">${url}</a></td></tr>
+      </table>
+      <p style="font-size: 14px; color: #475569;"><strong>Changed elements:</strong></p>
+      <ul style="font-size: 14px; color: #475569;">${elements}</ul>
+      <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 24px 0;" />
+      <p style="font-size: 12px; color: #94a3b8;">Sent by <a href="https://changebrief.io" style="color: #3b82f6;">changebrief</a></p>
+    </div>
+  `;
+
+  const response = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      from: 'changebrief <notifications@changebrief.io>',
+      to: [to],
+      subject: `${emoji} ${name}: ${analysis.summary}`,
+      html,
+    }),
+  });
+
+  if (!response.ok) {
+    const err = await response.text();
+    console.error(`  → Email failed: ${response.status} ${err}`);
+  } else {
+    console.log(`  → Email sent to ${to}`);
+  }
+}
+
 // ─── Slack ───
 
 interface SlackBlock {
@@ -35,7 +91,7 @@ export async function sendSlackNotification(
   const blocks: SlackBlock[] = [
     {
       type: 'header',
-      text: { type: 'plain_text', text: `${emoji} Ändring på ${name}`, emoji: true }
+      text: { type: 'plain_text', text: `${emoji} Change on ${name}`, emoji: true }
     },
     {
       type: 'section',
@@ -46,8 +102,8 @@ export async function sendSlackNotification(
       fields: [
         { type: 'mrkdwn', text: `*Importance:* ${analysis.importance}/10` },
         { type: 'mrkdwn', text: `*Pixel diff:* ${diffPercent.toFixed(2)}%` },
-        { type: 'mrkdwn', text: `*Ändrade element:* ${analysis.changedElements.join(', ') || 'N/A'}` },
-        { type: 'mrkdwn', text: `*URL:* <${url}|Öppna sidan>` }
+        { type: 'mrkdwn', text: `*Changed elements:* ${analysis.changedElements.join(', ') || 'N/A'}` },
+        { type: 'mrkdwn', text: `*URL:* <${url}|Open page>` }
       ]
     }
   ];
@@ -59,9 +115,9 @@ export async function sendSlackNotification(
   });
 
   if (!response.ok) {
-    console.error(`Slack-notis misslyckades: ${response.status} ${response.statusText}`);
+    console.error(`Slack notification failed: ${response.status} ${response.statusText}`);
   } else {
-    console.log('  → Slack-notis skickad!');
+    console.log('  → Slack notification sent!');
   }
 }
 
@@ -74,9 +130,6 @@ export async function sendTeamsNotification(
   analysis: ChangeAnalysis,
   diffPercent: number
 ): Promise<void> {
-  const color = analysis.importance >= 7 ? 'FF0000' : analysis.importance >= 4 ? 'FFA500' : '00FF00';
-
-  // Adaptive Card för Teams Workflows (ny webhook-typ)
   const card = {
     type: 'message',
     attachments: [{
@@ -86,61 +139,25 @@ export async function sendTeamsNotification(
         type: 'AdaptiveCard',
         version: '1.4',
         body: [
-          {
-            type: 'TextBlock',
-            text: `Ändring på ${name}`,
-            weight: 'Bolder',
-            size: 'Large',
-            color: analysis.importance >= 7 ? 'Attention' : 'Default'
-          },
-          {
-            type: 'TextBlock',
-            text: analysis.summary,
-            wrap: true
-          },
+          { type: 'TextBlock', text: `Change on ${name}`, weight: 'Bolder', size: 'Large', color: analysis.importance >= 7 ? 'Attention' : 'Default' },
+          { type: 'TextBlock', text: analysis.summary, wrap: true },
           {
             type: 'ColumnSet',
             columns: [
-              {
-                type: 'Column',
-                width: 'auto',
-                items: [{ type: 'TextBlock', text: `**Importance:** ${analysis.importance}/10`, wrap: true }]
-              },
-              {
-                type: 'Column',
-                width: 'auto',
-                items: [{ type: 'TextBlock', text: `**Pixel diff:** ${diffPercent.toFixed(2)}%`, wrap: true }]
-              }
+              { type: 'Column', width: 'auto', items: [{ type: 'TextBlock', text: `**Importance:** ${analysis.importance}/10`, wrap: true }] },
+              { type: 'Column', width: 'auto', items: [{ type: 'TextBlock', text: `**Pixel diff:** ${diffPercent.toFixed(2)}%`, wrap: true }] }
             ]
           },
-          {
-            type: 'TextBlock',
-            text: `**Ändrade element:** ${analysis.changedElements.join(', ') || 'N/A'}`,
-            wrap: true
-          }
+          { type: 'TextBlock', text: `**Changed elements:** ${analysis.changedElements.join(', ') || 'N/A'}`, wrap: true }
         ],
-        actions: [
-          {
-            type: 'Action.OpenUrl',
-            title: 'Öppna sidan',
-            url: url
-          }
-        ]
+        actions: [{ type: 'Action.OpenUrl', title: 'Open page', url }]
       }
     }]
   };
 
-  const response = await fetch(webhookUrl, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(card)
-  });
-
-  if (!response.ok) {
-    console.error(`Teams-notis misslyckades: ${response.status} ${response.statusText}`);
-  } else {
-    console.log('  → Teams-notis skickad!');
-  }
+  const response = await fetch(webhookUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(card) });
+  if (!response.ok) console.error(`Teams notification failed: ${response.status}`);
+  else console.log('  → Teams notification sent!');
 }
 
 // ─── Discord ───
@@ -156,30 +173,22 @@ export async function sendDiscordNotification(
 
   const embed = {
     embeds: [{
-      title: `Ändring på ${name}`,
+      title: `Change on ${name}`,
       description: analysis.summary,
       color,
       fields: [
         { name: 'Importance', value: `${analysis.importance}/10`, inline: true },
         { name: 'Pixel diff', value: `${diffPercent.toFixed(2)}%`, inline: true },
-        { name: 'Ändrade element', value: analysis.changedElements.join(', ') || 'N/A' },
+        { name: 'Changed elements', value: analysis.changedElements.join(', ') || 'N/A' },
         { name: 'URL', value: url }
       ],
       timestamp: new Date().toISOString()
     }]
   };
 
-  const response = await fetch(webhookUrl, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(embed)
-  });
-
-  if (!response.ok) {
-    console.error(`Discord-notis misslyckades: ${response.status} ${response.statusText}`);
-  } else {
-    console.log('  → Discord-notis skickad!');
-  }
+  const response = await fetch(webhookUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(embed) });
+  if (!response.ok) console.error(`Discord notification failed: ${response.status}`);
+  else console.log('  → Discord notification sent!');
 }
 
 // ─── PagerDuty ───
@@ -191,10 +200,7 @@ export async function sendPagerDutyAlert(
   analysis: ChangeAnalysis,
   diffPercent: number
 ): Promise<void> {
-  const severity = analysis.importance >= 8 ? 'critical'
-    : analysis.importance >= 6 ? 'error'
-    : analysis.importance >= 4 ? 'warning'
-    : 'info';
+  const severity = analysis.importance >= 8 ? 'critical' : analysis.importance >= 6 ? 'error' : analysis.importance >= 4 ? 'warning' : 'info';
 
   const payload = {
     routing_key: routingKey,
@@ -204,124 +210,48 @@ export async function sendPagerDutyAlert(
       severity,
       source: 'changebrief',
       component: name,
-      custom_details: {
-        url,
-        importance: analysis.importance,
-        diffPercent: diffPercent.toFixed(2),
-        changedElements: analysis.changedElements,
-        summary: analysis.summary
-      }
+      custom_details: { url, importance: analysis.importance, diffPercent: diffPercent.toFixed(2), changedElements: analysis.changedElements, summary: analysis.summary }
     },
-    links: [{ href: url, text: 'Öppna sidan' }]
+    links: [{ href: url, text: 'Open page' }]
   };
 
-  const response = await fetch('https://events.pagerduty.com/v2/enqueue', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
-  });
-
-  if (!response.ok) {
-    console.error(`PagerDuty-alert misslyckades: ${response.status} ${response.statusText}`);
-  } else {
-    console.log('  → PagerDuty-alert skickad!');
-  }
+  const response = await fetch('https://events.pagerduty.com/v2/enqueue', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+  if (!response.ok) console.error(`PagerDuty alert failed: ${response.status}`);
+  else console.log('  → PagerDuty alert sent!');
 }
 
-// ─── Jira (skapa ärende) ───
+// ─── Jira ───
 
 export async function createJiraIssue(
-  baseUrl: string,   // t.ex. https://company.atlassian.net
-  email: string,
-  apiToken: string,
-  projectKey: string,
-  url: string,
-  name: string,
-  analysis: ChangeAnalysis,
-  diffPercent: number
+  baseUrl: string, email: string, apiToken: string, projectKey: string,
+  url: string, name: string, analysis: ChangeAnalysis, diffPercent: number
 ): Promise<void> {
   const auth = Buffer.from(`${email}:${apiToken}`).toString('base64');
-
   const issue = {
     fields: {
       project: { key: projectKey },
       issuetype: { name: 'Task' },
-      summary: `[changebrief] Ändring på ${name} (${analysis.importance}/10)`,
-      description: {
-        type: 'doc',
-        version: 1,
-        content: [
-          {
-            type: 'paragraph',
-            content: [{ type: 'text', text: analysis.summary }]
-          },
-          {
-            type: 'paragraph',
-            content: [
-              { type: 'text', text: 'URL: ' },
-              { type: 'text', text: url, marks: [{ type: 'link', attrs: { href: url } }] }
-            ]
-          },
-          {
-            type: 'paragraph',
-            content: [{ type: 'text', text: `Importance: ${analysis.importance}/10 | Pixel diff: ${diffPercent.toFixed(2)}% | Element: ${analysis.changedElements.join(', ')}` }]
-          }
-        ]
-      },
+      summary: `[changebrief] Change on ${name} (${analysis.importance}/10)`,
+      description: { type: 'doc', version: 1, content: [
+        { type: 'paragraph', content: [{ type: 'text', text: analysis.summary }] },
+        { type: 'paragraph', content: [{ type: 'text', text: 'URL: ' }, { type: 'text', text: url, marks: [{ type: 'link', attrs: { href: url } }] }] },
+      ]},
       labels: ['changebrief', `importance-${analysis.importance}`]
     }
   };
 
-  const response = await fetch(`${baseUrl}/rest/api/3/issue`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Basic ${auth}`
-    },
-    body: JSON.stringify(issue)
-  });
-
-  if (!response.ok) {
-    const body = await response.text();
-    console.error(`Jira-ärende misslyckades: ${response.status} ${body}`);
-  } else {
-    const data = await response.json() as { key: string };
-    console.log(`  → Jira-ärende skapat: ${data.key}`);
-  }
+  const response = await fetch(`${baseUrl}/rest/api/3/issue`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Basic ${auth}` }, body: JSON.stringify(issue) });
+  if (!response.ok) console.error(`Jira issue failed: ${response.status}`);
+  else { const data = await response.json() as { key: string }; console.log(`  → Jira issue created: ${data.key}`); }
 }
 
-// ─── Generic Webhook (Zapier, Make, n8n, egna system) ───
+// ─── Generic Webhook ───
 
 export async function sendGenericWebhook(
-  webhookUrl: string,
-  url: string,
-  name: string,
-  analysis: ChangeAnalysis,
-  diffPercent: number
+  webhookUrl: string, url: string, name: string, analysis: ChangeAnalysis, diffPercent: number
 ): Promise<void> {
   const event = buildChangeEvent(url, name, analysis, diffPercent);
-
-  const response = await fetch(webhookUrl, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(event)
-  });
-
-  if (!response.ok) {
-    console.error(`Webhook misslyckades: ${response.status} ${response.statusText}`);
-  } else {
-    console.log('  → Webhook skickad!');
-  }
-}
-
-// ─── Email (placeholder) ───
-
-export async function sendEmailNotification(
-  to: string,
-  name: string,
-  url: string,
-  analysis: ChangeAnalysis
-): Promise<void> {
-  // Placeholder — koppla till Resend, SendGrid, etc.
-  console.log(`  → [EMAIL] Till: ${to} | ${name}: ${analysis.summary}`);
+  const response = await fetch(webhookUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(event) });
+  if (!response.ok) console.error(`Webhook failed: ${response.status}`);
+  else console.log('  → Webhook sent!');
 }

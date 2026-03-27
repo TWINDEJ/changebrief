@@ -1,14 +1,16 @@
 'use client';
 
 import { signOut } from 'next-auth/react';
+import { useLocale } from '../locale-provider';
 
 export function SignOutButton() {
+  const { t } = useLocale();
   return (
     <button
       onClick={() => signOut({ callbackUrl: '/' })}
-      className="text-sm text-slate-500 transition hover:text-white"
+      className="cursor-pointer text-sm text-slate-500 transition hover:text-white"
     >
-      Logga ut
+      {t('header.signout')}
     </button>
   );
 }

@@ -1,129 +1,136 @@
 ---
 ---
 
-<section id="pricing" class="py-20 lg:py-28 border-t border-slate-800/50">
-  <div class="mx-auto max-w-6xl px-6">
-    <div class="text-center">
-      <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">Enkel prissättning</h2>
-      <p class="mx-auto mt-4 max-w-2xl text-lg text-slate-400">Börja gratis. Uppgradera när du behöver mer.</p>
+<section id="pricing" class="relative py-24 lg:py-32">
+  <div class="pointer-events-none absolute inset-0">
+    <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-slate-700/50 to-transparent"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 h-[400px] w-[600px] rounded-full bg-indigo-600/5 blur-[100px]"></div>
+  </div>
+
+  <div class="relative mx-auto max-w-6xl px-6">
+    <div class="text-center animate-fade-in-up">
+      <h2 class="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">Simple pricing</h2>
+      <p class="mx-auto mt-4 max-w-2xl text-lg text-slate-400">Start free. Upgrade when you need more.</p>
     </div>
 
-    <div class="mt-16 grid gap-8 lg:grid-cols-3">
+    <div class="mt-16 grid gap-6 lg:grid-cols-3">
       <!-- Free -->
-      <div class="rounded-2xl border border-slate-800 bg-slate-900/50 p-8">
+      <div class="animate-fade-in-up delay-100 glass-card rounded-2xl p-8">
         <h3 class="text-lg font-semibold text-slate-300">Free</h3>
         <div class="mt-4 flex items-baseline gap-1">
-          <span class="text-4xl font-bold">$0</span>
-          <span class="text-slate-500">/mån</span>
+          <span class="text-4xl font-bold text-white">$0</span>
+          <span class="text-slate-500">/mo</span>
         </div>
-        <p class="mt-4 text-sm text-slate-400">Testa utan kostnad.</p>
-        <ul class="mt-8 space-y-3 text-sm text-slate-300">
+        <p class="mt-4 text-sm text-slate-500">Try it at no cost.</p>
+        <ul class="mt-8 space-y-3 text-sm text-slate-400">
           <li class="flex items-center gap-3">
-            <svg class="h-5 w-5 shrink-0 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
-            3 bevakade sidor
+            <svg class="h-4 w-4 shrink-0 text-blue-400/60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+            3 monitored pages
           </li>
           <li class="flex items-center gap-3">
-            <svg class="h-5 w-5 shrink-0 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
-            100 checks/mån
+            <svg class="h-4 w-4 shrink-0 text-blue-400/60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+            100 checks/mo
           </li>
           <li class="flex items-center gap-3">
-            <svg class="h-5 w-5 shrink-0 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
-            AI-sammanfattning
+            <svg class="h-4 w-4 shrink-0 text-blue-400/60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+            AI summaries
           </li>
           <li class="flex items-center gap-3">
-            <svg class="h-5 w-5 shrink-0 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
-            E-postnotiser
+            <svg class="h-4 w-4 shrink-0 text-blue-400/60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+            Email notifications
           </li>
           <li class="flex items-center gap-3">
-            <svg class="h-5 w-5 shrink-0 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
-            7 dagars historik
+            <svg class="h-4 w-4 shrink-0 text-blue-400/60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+            7 days of history
           </li>
         </ul>
-        <a href="https://app.changebrief.io" class="mt-8 block rounded-lg border border-slate-700 py-3 text-center font-semibold text-slate-300 transition hover:border-slate-500 hover:text-white">
-          Kom igång gratis
+        <a href="https://app.changebrief.io" class="mt-8 block rounded-xl glass py-3 text-center text-sm font-semibold text-slate-300 transition-all duration-200 hover:bg-white/10 hover:text-white cursor-pointer">
+          Get started free
         </a>
       </div>
 
-      <!-- Pro (highlighted) -->
-      <div class="relative rounded-2xl border-2 border-blue-500 bg-slate-900/80 p-8 shadow-lg shadow-blue-500/10">
-        <div class="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full bg-blue-600 px-4 py-1 text-sm font-semibold">
-          Populärast
+      <!-- Pro -->
+      <div class="animate-fade-in-up delay-200 relative rounded-2xl bg-gradient-to-b from-blue-500/[0.08] to-indigo-500/[0.04] p-px">
+        <div class="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-1 text-xs font-semibold text-white shadow-lg shadow-blue-500/20">
+          Most popular
         </div>
-        <h3 class="text-lg font-semibold text-white">Pro</h3>
-        <div class="mt-4 flex items-baseline gap-1">
-          <span class="text-4xl font-bold">$19</span>
-          <span class="text-slate-500">/mån</span>
+        <div class="rounded-2xl bg-[#0a0e1a] p-8">
+          <h3 class="text-lg font-semibold text-white">Pro</h3>
+          <div class="mt-4 flex items-baseline gap-1">
+            <span class="text-4xl font-bold text-white">$19</span>
+            <span class="text-slate-500">/mo</span>
+          </div>
+          <p class="mt-1 text-xs text-slate-500">or $190/year (save 17%)</p>
+          <p class="mt-4 text-sm text-slate-400">25 pages, Slack notifications, 90 days of history.</p>
+          <ul class="mt-8 space-y-3 text-sm text-slate-300">
+            <li class="flex items-center gap-3">
+              <svg class="h-4 w-4 shrink-0 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+              25 monitored pages
+            </li>
+            <li class="flex items-center gap-3">
+              <svg class="h-4 w-4 shrink-0 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+              2,000 checks/mo
+            </li>
+            <li class="flex items-center gap-3">
+              <svg class="h-4 w-4 shrink-0 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+              AI + importance score
+            </li>
+            <li class="flex items-center gap-3">
+              <svg class="h-4 w-4 shrink-0 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+              Slack + email notifications
+            </li>
+            <li class="flex items-center gap-3">
+              <svg class="h-4 w-4 shrink-0 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+              90 days of history
+            </li>
+            <li class="flex items-center gap-3">
+              <svg class="h-4 w-4 shrink-0 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+              Schedule every 15 minutes
+            </li>
+          </ul>
+          <a href="https://buy.polar.sh/polar_cl_JDnQNmWBFMsJp56ntC0GPsweHhIizDVhwWGIk4CAFVF" class="btn-glow mt-8 block rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 py-3 text-center text-sm font-semibold text-white shadow-lg shadow-blue-500/20 transition-all duration-200 hover:shadow-xl hover:shadow-blue-500/30 cursor-pointer">
+            Start Pro
+          </a>
         </div>
-        <p class="mt-1 text-xs text-slate-500">eller $190/år (spara 17%)</p>
-        <p class="mt-4 text-sm text-slate-400">25 sidor, Slack-notiser, 90 dagars historik.</p>
-        <ul class="mt-8 space-y-3 text-sm text-slate-300">
-          <li class="flex items-center gap-3">
-            <svg class="h-5 w-5 shrink-0 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
-            25 bevakade sidor
-          </li>
-          <li class="flex items-center gap-3">
-            <svg class="h-5 w-5 shrink-0 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
-            2 000 checks/mån
-          </li>
-          <li class="flex items-center gap-3">
-            <svg class="h-5 w-5 shrink-0 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
-            AI + importance score
-          </li>
-          <li class="flex items-center gap-3">
-            <svg class="h-5 w-5 shrink-0 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
-            Slack + e-postnotiser
-          </li>
-          <li class="flex items-center gap-3">
-            <svg class="h-5 w-5 shrink-0 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
-            90 dagars historik
-          </li>
-          <li class="flex items-center gap-3">
-            <svg class="h-5 w-5 shrink-0 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
-            Schemalägg var 15:e minut
-          </li>
-        </ul>
-        <a href="https://buy.polar.sh/polar_cl_JDnQNmWBFMsJp56ntC0GPsweHhIizDVhwWGIk4CAFVF" class="mt-8 block rounded-lg bg-blue-600 py-3 text-center font-semibold text-white shadow-lg shadow-blue-500/25 transition hover:bg-blue-500">
-          Starta Pro
-        </a>
       </div>
 
       <!-- Team -->
-      <div class="rounded-2xl border border-slate-800 bg-slate-900/50 p-8">
+      <div class="animate-fade-in-up delay-300 glass-card rounded-2xl p-8">
         <h3 class="text-lg font-semibold text-slate-300">Team</h3>
         <div class="mt-4 flex items-baseline gap-1">
-          <span class="text-4xl font-bold">$49</span>
-          <span class="text-slate-500">/mån</span>
+          <span class="text-4xl font-bold text-white">$49</span>
+          <span class="text-slate-500">/mo</span>
         </div>
-        <p class="mt-1 text-xs text-slate-500">eller $490/år (spara 17%)</p>
-        <p class="mt-4 text-sm text-slate-400">100 sidor, alla integrationer, API-åtkomst.</p>
-        <ul class="mt-8 space-y-3 text-sm text-slate-300">
+        <p class="mt-1 text-xs text-slate-500">or $490/year (save 17%)</p>
+        <p class="mt-4 text-sm text-slate-500">100 pages, all integrations, API access.</p>
+        <ul class="mt-8 space-y-3 text-sm text-slate-400">
           <li class="flex items-center gap-3">
-            <svg class="h-5 w-5 shrink-0 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
-            100 bevakade sidor
+            <svg class="h-4 w-4 shrink-0 text-blue-400/60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+            100 monitored pages
           </li>
           <li class="flex items-center gap-3">
-            <svg class="h-5 w-5 shrink-0 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
-            10 000 checks/mån
+            <svg class="h-4 w-4 shrink-0 text-blue-400/60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+            10,000 checks/mo
           </li>
           <li class="flex items-center gap-3">
-            <svg class="h-5 w-5 shrink-0 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
-            Allt i Pro
+            <svg class="h-4 w-4 shrink-0 text-blue-400/60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+            Everything in Pro
           </li>
           <li class="flex items-center gap-3">
-            <svg class="h-5 w-5 shrink-0 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+            <svg class="h-4 w-4 shrink-0 text-blue-400/60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
             Teams, PagerDuty, Jira
           </li>
           <li class="flex items-center gap-3">
-            <svg class="h-5 w-5 shrink-0 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+            <svg class="h-4 w-4 shrink-0 text-blue-400/60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
             REST API & webhooks
           </li>
           <li class="flex items-center gap-3">
-            <svg class="h-5 w-5 shrink-0 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
-            1 år historik, 5 användare
+            <svg class="h-4 w-4 shrink-0 text-blue-400/60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+            1 year history, 5 users
           </li>
         </ul>
-        <a href="https://buy.polar.sh/polar_cl_HmjMU2dLQz7qe5fAcTjK2SsssRYDPboqXQJXd4QgARz" class="mt-8 block rounded-lg border border-slate-700 py-3 text-center font-semibold text-slate-300 transition hover:border-slate-500 hover:text-white">
-          Starta Team
+        <a href="https://buy.polar.sh/polar_cl_HmjMU2dLQz7qe5fAcTjK2SsssRYDPboqXQJXd4QgARz" class="mt-8 block rounded-xl glass py-3 text-center text-sm font-semibold text-slate-300 transition-all duration-200 hover:bg-white/10 hover:text-white cursor-pointer">
+          Start Team
         </a>
       </div>
     </div>

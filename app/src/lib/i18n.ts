@@ -5,6 +5,7 @@ const translations = {
   'header.plan.free': { en: 'Free', sv: 'Gratis' },
   'header.plan.pro': { en: 'Pro', sv: 'Pro' },
   'header.plan.team': { en: 'Team', sv: 'Team' },
+  'header.upgrade': { en: 'Upgrade', sv: 'Uppgradera' },
   'header.signout': { en: 'Sign out', sv: 'Logga ut' },
 
   // ─── Dashboard sections ───

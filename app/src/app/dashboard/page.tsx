@@ -66,6 +66,18 @@ export default async function DashboardPage() {
             <span className="rounded-full bg-gradient-to-r from-blue-500/15 to-indigo-500/15 px-2.5 sm:px-3 py-1 text-xs font-medium text-blue-300">
               {planLabel}
             </span>
+            {user.plan !== 'team' && (
+              <a
+                href={user.plan === 'pro'
+                  ? 'https://buy.polar.sh/polar_cl_HmjMU2dLQz7qe5fAcTjK2SsssRYDPboqXQJXd4QgARz'
+                  : 'https://buy.polar.sh/polar_cl_JDnQNmWBFMsJp56ntC0GPsweHhIizDVhwWGIk4CAFVF'}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 px-2.5 sm:px-3 py-1 text-xs font-medium text-white hover:from-blue-400 hover:to-indigo-400 transition-all"
+              >
+                {t('header.upgrade', locale)}
+              </a>
+            )}
             <span className="text-sm text-slate-500 hidden md:inline">{session.user.email}</span>
             <SignOutButton />
           </div>

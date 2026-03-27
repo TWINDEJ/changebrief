@@ -4,21 +4,28 @@ import '../styles/global.css'
 interface Props {
   title?: string;
   description?: string;
+  lang?: string;
 }
 
 const {
-  title = "changebrief — Se vad som ändrades, inte bara att något ändrades",
-  description = "changebrief bevakar webbsidor och berättar med AI exakt vad som hände. Inga suddiga screenshots. Inga röda pixlar. Bara en tydlig mening."
+  title = "changebrief — See what changed, not just that something changed",
+  description = "changebrief monitors web pages and uses AI to tell you exactly what happened. No blurry screenshots. No red pixels. Just a clear sentence.",
+  lang = "en"
 } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="sv" class="scroll-smooth">
+<html lang={lang} class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
     <meta name="generator" content={Astro.generator} />
+
+    <!-- Fonts: Inter + JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
     <!-- Open Graph -->
     <meta property="og:title" content={title} />
@@ -26,7 +33,7 @@ const {
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://changebrief.io" />
     <meta property="og:image" content="https://changebrief.io/images/og-image.png" />
-    <meta property="og:locale" content="sv_SE" />
+    <meta property="og:locale" content="en_US" />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
@@ -40,7 +47,7 @@ const {
 
     <title>{title}</title>
   </head>
-  <body class="bg-slate-950 text-white antialiased">
+  <body class="bg-[#06080f] text-white antialiased" style="font-family: 'Inter', system-ui, sans-serif;">
     <slot />
   </body>
 </html>

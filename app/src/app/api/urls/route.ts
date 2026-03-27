@@ -27,14 +27,14 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json();
-  const { url, name, threshold, selector, mobile, minImportance } = body;
+  const { url, name, threshold, selector, mobile, minImportance, cookies, headers } = body;
 
   if (!url || !name) {
     return NextResponse.json({ error: 'url and name required' }, { status: 400 });
   }
 
   try {
-    await addWatchedUrl(user.id as string, url, name, { threshold, selector, mobile, minImportance });
+    await addWatchedUrl(user.id as string, url, name, { threshold, selector, mobile, minImportance, cookies, headers });
     return NextResponse.json({ ok: true }, { status: 201 });
   } catch (e: any) {
     if (e.message?.includes('UNIQUE')) {

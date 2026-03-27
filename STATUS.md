@@ -1,31 +1,59 @@
 # Status — changebrief
 
-## Fas: MVP Live
+## Fas: MVP Live + Strukturerad Textpipeline
 
-## Infrastruktur ✅
-- [x] Landing page live (changebrief.io)
-- [x] Webbapp live (app.changebrief.io)
+## Infrastruktur
+- [x] Landing page live (changebrief.io) — EN + SV
+- [x] Webbapp live (app.changebrief.io) — EN + SV
 - [x] Turso-databas i produktion
-- [x] GitHub Actions cron (var 6h, testat, fungerar)
+- [x] GitHub Actions cron (var 6h) — URL checks med screenshot-cache
+- [x] GitHub Actions cron (fredag 08:00 UTC) — Weekly digest
 - [x] Polar + Stripe godkänd och live
 - [x] Google + GitHub OAuth konfigurerat
-- [x] DNS korrekt (Cloudflare + Vercel)
+- [x] DNS korrekt (Namecheap + Vercel + Cloudflare Pages)
+- [x] Resend verified (changebrief.io, eu-west-1)
+- [x] Resend API-nyckel → GitHub Secret + Vercel env
+- [x] Polar webhook → app.changebrief.io/api/webhooks/polar
 
-## Features ✅
-- [x] Playwright screenshots (desktop + mobil, selektorer, cookies)
+## Features
+- [x] Playwright screenshots (desktop + mobil, selektorer, cookies, headers)
 - [x] Pixelmatch diff med konfigurerbar tröskel
 - [x] GPT-4o Vision-analys med importance scoring
-- [x] CLI med 10+ kommandon
-- [x] 6 integrationer (Slack, Teams, Discord, PagerDuty, Jira, webhooks)
-- [x] Dashboard: add/remove URLs, ändringshistorik, plangränser
+- [x] **Strukturerad text-extraktion** (priser, rubriker, knappar, länkar, listor)
+- [x] **Brus-strippning** (timestamps, cookies, session-IDs, UUIDs)
+- [x] **GPT-4o-mini pre-filter** (billig "worth analyzing?" check)
+- [x] **Pris-shortcut** (prisändringar → direkt till full analys)
+- [x] **Screenshot-cache** i GitHub Actions (baselines bevaras mellan körningar)
+- [x] Dashboard: stats-bar, grupperad change log, inline-ändringar i URL-kort
 - [x] Auth: Google + GitHub login
-- [x] Landing page: 8 sektioner, checkout-knappar
+- [x] Landing page: 6 use cases, ingen modell-referens, konsekvent branding
+- [x] Polar webhook → auto-uppdatera plan vid köp/avslut
+- [x] Notification settings UI (email, Slack, weekly digest)
+- [x] Popular watchlists (31 förslag, 7 kategorier)
+- [x] Felhantering: last_checked, last_error, consecutive_errors
+- [x] i18n: EN/SV i hela appen + landing page (/sv)
+- [x] Veckorapport (weekly digest)
+- [x] Mobilresponsiv dashboard
 
-## Kvar att göra
-- [ ] Regenerera exponerade secrets
-- [ ] Testa fullständigt end-to-end-flöde
-- [ ] Landing page på engelska
-- [ ] Polar webhook → auto-uppdatera plan vid köp
-- [ ] Dashboard: loading states, error handling
-- [ ] Onboarding-flöde
-- [ ] E-postnotiser (Resend)
+## Behöver verifieras
+- [ ] Strukturerad diff med faktiska textändringar (väntar på att sidor ändras)
+- [ ] GPT-4o-mini pre-filter i produktion (har inte trigrats ännu)
+- [ ] Dashboard "Last check"-stat visar rätt tid (buggfix deployad, ej verifierad)
+- [ ] Grupperad change log med riktigt data
+
+## Kvar att göra (manuellt)
+- [x] Skapa Resend-konto + verifiera changebrief.io-domän
+- [x] Lägga till RESEND_API_KEY som GitHub Secret + Vercel env
+- [x] Konfigurera Polar webhook URL i dashboard.polar.sh
+- [x] POLAR_WEBHOOK_SECRET tillagd i Vercel env
+- [ ] E2E-test: incognito login → add URL → trigga check-urls.yml → verifiera mejl
+- [ ] E2E-test: trigga weekly-digest.yml → verifiera digest-mejl
+- [ ] Testköp via Polar sandbox (kort 4242 4242 4242 4242)
+- [ ] Kolla OpenAI-kostnad efter ett par dagars körningar
+
+## Kvar att bygga (framtida)
+- [ ] Brusprofil per URL (auto-lär vilka delar som är dynamiska)
+- [ ] Trendanalys (prisändringar över tid)
+- [ ] Jämförelse mellan sidor (competitive dashboard)
+- [ ] Diff-arkiv med tidsstämplar (juridiskt bevis)
+- [ ] Loading skeletons i dashboard

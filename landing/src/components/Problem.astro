@@ -1,80 +1,83 @@
 ---
 ---
 
-<section class="py-20 lg:py-28">
+<section class="relative py-24 lg:py-32">
+  <div class="pointer-events-none absolute inset-0">
+    <div class="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-slate-700/50 to-transparent"></div>
+  </div>
+
   <div class="mx-auto max-w-6xl px-6">
-    <div class="text-center">
-      <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">
-        Befintliga verktyg visar dig det här...
+    <div class="text-center animate-fade-in-up">
+      <h2 class="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
+        Existing tools show you <span class="text-gradient">this...</span>
       </h2>
       <p class="mt-4 text-lg text-slate-400">
-        Du ska inte behöva tolka screenshots. AI:n gör det åt dig.
+        You shouldn't have to interpret screenshots. AI does it for you.
       </p>
     </div>
 
-    <div class="mt-16 grid gap-8 lg:grid-cols-2">
-      <!-- Visualping side -->
-      <div class="rounded-xl border border-red-500/20 bg-red-950/20 p-8">
-        <div class="mb-4 flex items-center gap-2 text-red-400">
+    <div class="mt-16 grid gap-6 lg:grid-cols-2">
+      <!-- Other tools -->
+      <div class="animate-fade-in-up delay-100 rounded-2xl border border-red-500/10 bg-red-950/10 p-8">
+        <div class="mb-5 flex items-center gap-2 text-red-400/80">
           <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
-          <span class="text-sm font-semibold uppercase tracking-wider">Andra verktyg</span>
+          <span class="text-xs font-semibold uppercase tracking-widest">Other tools</span>
         </div>
-        <div class="rounded-lg bg-slate-950 p-6">
-          <!-- Simulated blurry diff -->
+        <div class="rounded-xl bg-[#0a0e1a] p-6">
           <div class="space-y-3">
             <div class="flex items-center gap-3">
-              <div class="h-4 w-24 rounded bg-slate-700"></div>
-              <div class="h-4 w-32 rounded bg-slate-700"></div>
+              <div class="h-4 w-24 rounded bg-slate-800"></div>
+              <div class="h-4 w-32 rounded bg-slate-800"></div>
             </div>
             <div class="relative">
-              <div class="h-4 w-48 rounded bg-red-500/30"></div>
-              <div class="absolute inset-0 h-4 w-48 rounded bg-red-500/20 blur-sm"></div>
+              <div class="h-4 w-48 rounded bg-red-500/20"></div>
+              <div class="absolute inset-0 h-4 w-48 rounded bg-red-500/10 blur-sm"></div>
             </div>
             <div class="flex items-center gap-3">
-              <div class="h-4 w-36 rounded bg-slate-700"></div>
-              <div class="h-4 w-20 rounded bg-slate-700"></div>
+              <div class="h-4 w-36 rounded bg-slate-800"></div>
+              <div class="h-4 w-20 rounded bg-slate-800"></div>
             </div>
             <div class="relative">
-              <div class="h-4 w-40 rounded bg-red-500/30"></div>
-              <div class="absolute inset-0 h-4 w-40 rounded bg-red-500/20 blur-sm"></div>
+              <div class="h-4 w-40 rounded bg-red-500/20"></div>
+              <div class="absolute inset-0 h-4 w-40 rounded bg-red-500/10 blur-sm"></div>
             </div>
-            <div class="h-4 w-56 rounded bg-slate-700"></div>
+            <div class="h-4 w-56 rounded bg-slate-800"></div>
             <div class="relative">
-              <div class="h-4 w-44 rounded bg-red-500/30"></div>
-              <div class="absolute inset-0 h-4 w-44 rounded bg-red-500/20 blur-sm"></div>
+              <div class="h-4 w-44 rounded bg-red-500/20"></div>
+              <div class="absolute inset-0 h-4 w-44 rounded bg-red-500/10 blur-sm"></div>
             </div>
           </div>
-          <p class="mt-6 text-center text-sm italic text-slate-500">
-            "Något har ändrats... men vad?"
+          <p class="mt-6 text-center text-sm italic text-slate-600">
+            "Something changed... but what?"
           </p>
         </div>
       </div>
 
-      <!-- Pagewatch side -->
-      <div class="rounded-xl border border-blue-500/20 bg-blue-950/20 p-8">
-        <div class="mb-4 flex items-center gap-2 text-blue-400">
+      <!-- changebrief -->
+      <div class="animate-fade-in-up delay-200 rounded-2xl glass-card p-8">
+        <div class="mb-5 flex items-center gap-2 text-blue-400/80">
           <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
           </svg>
-          <span class="text-sm font-semibold uppercase tracking-wider">changebrief</span>
+          <span class="text-xs font-semibold uppercase tracking-widest">changebrief</span>
         </div>
-        <div class="rounded-lg bg-slate-950 p-6">
+        <div class="rounded-xl bg-[#0a0e1a] p-6">
           <div class="space-y-4">
             <div class="flex items-center gap-2">
-              <span class="rounded-full bg-orange-500/20 px-2.5 py-1 text-xs font-medium text-orange-400">Importance: 8/10</span>
-              <span class="text-xs text-slate-500">Idag 14:32</span>
+              <span class="rounded-full bg-orange-500/15 px-2.5 py-1 text-xs font-medium text-orange-400">8/10</span>
+              <span class="text-xs text-slate-600">Today 2:32 PM</span>
             </div>
             <p class="text-sm leading-relaxed text-slate-200">
-              <strong class="text-white">Acme Corp</strong> tog bort <span class="rounded bg-red-500/20 px-1 text-red-300">"Gratis i 14 dagar"</span>-knappen och höjde Pro-priset från <span class="rounded bg-red-500/20 px-1 text-red-300">299 kr</span> till <span class="rounded bg-green-500/20 px-1 text-green-300">349 kr/månad</span>.
+              <strong class="text-white">Acme Corp</strong> removed the <span class="rounded bg-red-500/15 px-1.5 text-red-300">"Free for 14 days"</span> button and raised the Pro price from <span class="rounded bg-red-500/15 px-1.5 text-red-300">$29</span> to <span class="rounded bg-emerald-500/15 px-1.5 text-emerald-300">$39/month</span>.
             </p>
             <p class="text-sm leading-relaxed text-slate-200">
-              Ny feature <span class="rounded bg-green-500/20 px-1 text-green-300">"AI Insights"</span> tillagd i Enterprise-planen.
+              New feature <span class="rounded bg-emerald-500/15 px-1.5 text-emerald-300">"AI Insights"</span> added to the Enterprise plan.
             </p>
           </div>
-          <p class="mt-6 text-center text-sm font-medium text-blue-400">
-            Kristallklart. Direkt i Slack.
+          <p class="mt-6 text-center text-sm font-medium text-blue-400/80">
+            Crystal clear. Straight to Slack.
           </p>
         </div>
       </div>
