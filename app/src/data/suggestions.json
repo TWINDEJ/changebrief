@@ -1,0 +1,474 @@
+[
+  {
+    "url": "https://www.transportstyrelsen.se/sv/om-oss/dina-rattigheter-lagar-och-regler/lagar-och-regler/information-om-nya-eller-andrade-regler/",
+    "name": "Transportstyrelsen – New rules",
+    "name_sv": "Transportstyrelsen – Nya regler",
+    "category": "Transport & Infrastructure",
+    "description": "All new and changed regulations for road, rail, aviation and maritime.",
+    "description_sv": "Alla nya och ändrade föreskrifter för väg, järnväg, luftfart och sjöfart."
+  },
+  {
+    "url": "https://www.trafikverket.se/om-oss/var-verksamhet-vision-och-uppdrag/trafikverkets-forfattningssamling/",
+    "name": "Trafikverket – Regulations",
+    "name_sv": "Trafikverket – Författningssamling",
+    "category": "Transport & Infrastructure",
+    "description": "Official regulatory collection for railways and national roads.",
+    "description_sv": "Officiell författningssamling för järnväg och statliga vägar."
+  },
+  {
+    "url": "https://www.sjv.se/amnesomraden/forfattningar/forfattningssamling.html",
+    "name": "Jordbruksverket – Regulations",
+    "name_sv": "Jordbruksverket – Författningssamling",
+    "category": "Transport & Infrastructure",
+    "description": "Regulations on animal welfare, food production and agriculture.",
+    "description_sv": "Föreskrifter om djurskydd, livsmedelsproduktion och jordbruk."
+  },
+  {
+    "url": "https://www.havochvatten.se/foreskrifter-och-lagar.html",
+    "name": "HaV – Maritime regulations",
+    "name_sv": "HaV – Föreskrifter och lagar",
+    "category": "Transport & Infrastructure",
+    "description": "Regulations on marine environment, fishing and water management.",
+    "description_sv": "Föreskrifter om havsmiljö, fiske och vattenförvaltning."
+  },
+  {
+    "url": "https://www.fi.se/en/our-registers/fffs/list-of-regulations/",
+    "name": "Finansinspektionen – Regs",
+    "name_sv": "Finansinspektionen – Föreskrifter",
+    "category": "Finance & Banking",
+    "description": "All financial regulations for banking, insurance and AML in Sweden.",
+    "description_sv": "Alla finansiella föreskrifter för bank, försäkring och penningtvätt."
+  },
+  {
+    "url": "https://www.fi.se/sv/publicerat/nyheter/",
+    "name": "Finansinspektionen – News",
+    "name_sv": "Finansinspektionen – Nyheter",
+    "category": "Finance & Banking",
+    "description": "Supervisory decisions, sanctions and market updates from Sweden's FSA.",
+    "description_sv": "Tillsynsbeslut, sanktioner och marknadsuppdateringar."
+  },
+  {
+    "url": "https://www.riksbank.se/sv/press-och-publicerat/remisser/",
+    "name": "Riksbanken – Consultations",
+    "name_sv": "Riksbanken – Remisser",
+    "category": "Finance & Banking",
+    "description": "Central bank consultations on monetary policy, payment systems and financial stability.",
+    "description_sv": "Riksbankens remisser om penningpolitik, betalningssystem och finansiell stabilitet."
+  },
+  {
+    "url": "https://www.riksgalden.se/sv/press-och-publicerat/regelarbete/",
+    "name": "Riksgälden – Rulemaking",
+    "name_sv": "Riksgälden – Regelarbete",
+    "category": "Finance & Banking",
+    "description": "Deposit guarantee, resolution framework and government debt regulations.",
+    "description_sv": "Insättningsgaranti, resolution och statsskuldsregler."
+  },
+  {
+    "url": "https://www.eba.europa.eu/regulation-and-policy/regulatory-activities",
+    "name": "EBA – Regulatory Activities",
+    "name_sv": "EBA – Regulatoriska aktiviteter",
+    "category": "Finance & Banking",
+    "description": "EU banking authority: CRR/CRD updates, stress tests, AML guidelines.",
+    "description_sv": "EU:s bankmyndighet: CRR/CRD-uppdateringar, stresstester, AML-riktlinjer."
+  },
+  {
+    "url": "https://www.esma.europa.eu/publications-and-data/publications",
+    "name": "ESMA – Publications",
+    "name_sv": "ESMA – Publikationer",
+    "category": "Finance & Banking",
+    "description": "EU securities authority: MiFID II, EMIR, prospectus and ESG disclosures.",
+    "description_sv": "EU:s värdepappersmyndighet: MiFID II, EMIR, prospekt och ESG-krav."
+  },
+  {
+    "url": "https://www.riksdagen.se/sv/dokument-och-lagar/lagar/nyheter-om-lagar/",
+    "name": "Riksdagen – New Laws",
+    "name_sv": "Riksdagen – Nya lagar",
+    "category": "Laws & Government",
+    "description": "Official feed of all laws passed by the Swedish parliament.",
+    "description_sv": "Officiellt flöde av alla lagar beslutade av riksdagen."
+  },
+  {
+    "url": "https://www.regeringen.se/remisser/",
+    "name": "Regeringen – Consultations",
+    "name_sv": "Regeringen – Remisser",
+    "category": "Laws & Government",
+    "description": "Government consultations on proposed laws and regulations.",
+    "description_sv": "Regeringens remisser om lagförslag och förordningar."
+  },
+  {
+    "url": "https://www.regeringen.se/rattsliga-dokument/statens-offentliga-utredningar/",
+    "name": "Regeringen – SOU",
+    "name_sv": "Regeringen – SOU",
+    "category": "Laws & Government",
+    "description": "Official government inquiries (SOU) that often lead to new legislation.",
+    "description_sv": "Statens offentliga utredningar som ofta leder till ny lagstiftning."
+  },
+  {
+    "url": "https://eur-lex.europa.eu/search.html?type=act&qid=recent",
+    "name": "EUR-Lex – New EU Acts",
+    "name_sv": "EUR-Lex – Nya EU-rättsakter",
+    "category": "Laws & Government",
+    "description": "All new EU regulations, directives and decisions as published in the Official Journal.",
+    "description_sv": "Alla nya EU-förordningar, direktiv och beslut i Officiella tidningen."
+  },
+  {
+    "url": "https://www.imy.se/verksamhet/utbildning-och-stod/vagledning-for-verksamheter/",
+    "name": "IMY – GDPR Guidance",
+    "name_sv": "IMY – GDPR-vägledning",
+    "category": "Data & Privacy",
+    "description": "Swedish Data Protection Authority guidance on GDPR, AI and cookies.",
+    "description_sv": "Integritetsskyddsmyndighetens vägledning om GDPR, AI och cookies."
+  },
+  {
+    "url": "https://www.imy.se/nyheter/",
+    "name": "IMY – News & Decisions",
+    "name_sv": "IMY – Nyheter och beslut",
+    "category": "Data & Privacy",
+    "description": "GDPR enforcement decisions, fines and supervisory actions in Sweden.",
+    "description_sv": "GDPR-beslut, böter och tillsynsåtgärder i Sverige."
+  },
+  {
+    "url": "https://www.edpb.europa.eu/our-work-tools/general-guidance/guidelines-recommendations-best-practices_en",
+    "name": "EDPB GDPR Guidelines",
+    "name_sv": "EDPB:s GDPR-riktlinjer",
+    "category": "Data & Privacy",
+    "description": "Central repository of all GDPR guidance on consent, transfers and AI.",
+    "description_sv": "Samlad GDPR-vägledning om samtycke, överföringar och AI."
+  },
+  {
+    "url": "https://www.pts.se/regler/foreskrifter/",
+    "name": "PTS – Telecom Regulations",
+    "name_sv": "PTS – Föreskrifter",
+    "category": "Data & Privacy",
+    "description": "Swedish Post and Telecom Authority regulations on electronic communications.",
+    "description_sv": "Post- och telestyrelsens föreskrifter om elektronisk kommunikation."
+  },
+  {
+    "url": "https://www.digg.se/nyheter/",
+    "name": "DIGG – Digital Gov News",
+    "name_sv": "DIGG – Nyheter",
+    "category": "Data & Privacy",
+    "description": "Digital standards, eID, AI regulation for the public sector.",
+    "description_sv": "Digitala standarder, e-legitimation, AI-reglering för offentlig sektor."
+  },
+  {
+    "url": "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai",
+    "name": "EU AI Act",
+    "name_sv": "EU:s AI-förordning",
+    "category": "Data & Privacy",
+    "description": "Official AI Act implementation milestones and compliance deadlines through 2027.",
+    "description_sv": "Officiella milstolpar och efterlevnadsdatum för AI-förordningen till 2027."
+  },
+  {
+    "url": "https://www.socialstyrelsen.se/regler-och-riktlinjer/foreskrifter-och-allmanna-rad/",
+    "name": "Socialstyrelsen – Regulations",
+    "name_sv": "Socialstyrelsen – Föreskrifter",
+    "category": "Health & Pharma",
+    "description": "Healthcare and social services regulations: patient safety, staffing, quality.",
+    "description_sv": "Vård- och omsorgsföreskrifter: patientsäkerhet, bemanning, kvalitet."
+  },
+  {
+    "url": "https://www.lakemedelsverket.se/sv/lagar-och-regler/",
+    "name": "Läkemedelsverket – Regulations",
+    "name_sv": "Läkemedelsverket – Regler",
+    "category": "Health & Pharma",
+    "description": "Pharmaceutical, medical device and clinical trial regulations in Sweden.",
+    "description_sv": "Läkemedels-, medicintekniska och kliniska prövningsregler."
+  },
+  {
+    "url": "https://www.ema.europa.eu/en/human-regulatory-overview/marketing-authorisation",
+    "name": "EMA – Authorisations",
+    "name_sv": "EMA – Godkännanden",
+    "category": "Health & Pharma",
+    "description": "European Medicines Agency new drug approvals, safety updates and guideline changes.",
+    "description_sv": "Europeiska läkemedelsmyndighetens godkännanden, säkerhetsuppdateringar och riktlinjer."
+  },
+  {
+    "url": "https://www.folkhalsomyndigheten.se/publicerat-material/foreskrifter/",
+    "name": "Folkhälsomyndigheten – Regulations",
+    "name_sv": "Folkhälsomyndigheten – Föreskrifter",
+    "category": "Health & Pharma",
+    "description": "Public health regulations: infectious diseases, vaccination, environmental health.",
+    "description_sv": "Folkhälsoföreskrifter: smittsamma sjukdomar, vaccination, miljöhälsa."
+  },
+  {
+    "url": "https://www.livsmedelsverket.se/om-oss/lagstiftning1/",
+    "name": "Livsmedelsverket – Food regulations",
+    "name_sv": "Livsmedelsverket – Lagstiftning",
+    "category": "Health & Pharma",
+    "description": "Food safety, labeling, additives and contaminant regulations.",
+    "description_sv": "Regler om livsmedelssäkerhet, märkning, tillsatser och föroreningar."
+  },
+  {
+    "url": "https://www.naturvardsverket.se/lagar-och-regler/",
+    "name": "Naturvårdsverket – Environment",
+    "name_sv": "Naturvårdsverket – Lagar och regler",
+    "category": "Environment & Energy",
+    "description": "Environmental protection regulations: emissions, waste, chemicals, biodiversity.",
+    "description_sv": "Miljöskyddsföreskrifter: utsläpp, avfall, kemikalier, biologisk mångfald."
+  },
+  {
+    "url": "https://www.energimyndigheten.se/fornybart/regelandringar/",
+    "name": "Energimyndigheten – Regulation changes",
+    "name_sv": "Energimyndigheten – Regeländringar",
+    "category": "Environment & Energy",
+    "description": "Energy efficiency, renewable energy and emissions trading regulations.",
+    "description_sv": "Regler om energieffektivitet, förnybar energi och utsläppshandel."
+  },
+  {
+    "url": "https://www.kemi.se/lagar-och-regler/",
+    "name": "Kemikalieinspektionen – Chemicals",
+    "name_sv": "Kemikalieinspektionen – Lagar och regler",
+    "category": "Environment & Energy",
+    "description": "REACH, CLP and Swedish chemical regulations for industry.",
+    "description_sv": "REACH, CLP och svenska kemikalieregler för industrin."
+  },
+  {
+    "url": "https://echa.europa.eu/regulations",
+    "name": "ECHA – EU Chemical Regulations",
+    "name_sv": "ECHA – EU kemikalieregler",
+    "category": "Environment & Energy",
+    "description": "European Chemicals Agency: REACH authorisations, restrictions and SVHC updates.",
+    "description_sv": "Europeiska kemikaliemyndigheten: REACH-godkännanden, begränsningar och SVHC."
+  },
+  {
+    "url": "https://www.av.se/arbetsmiljoarbete-och-inspektioner/publikationer/foreskrifter/",
+    "name": "Arbetsmiljöverket – Regulations",
+    "name_sv": "Arbetsmiljöverket – Föreskrifter",
+    "category": "Labor & Workplace",
+    "description": "Workplace safety regulations: AFS on chemicals, ergonomics, construction.",
+    "description_sv": "Arbetsmiljöföreskrifter (AFS): kemikalier, ergonomi, byggnads- och anläggning."
+  },
+  {
+    "url": "https://www.msb.se/sv/regler/forfattningar/",
+    "name": "MSB – Civil Protection",
+    "name_sv": "MSB – Författningar",
+    "category": "Labor & Workplace",
+    "description": "Civil protection, crisis preparedness and information security regulations.",
+    "description_sv": "Föreskrifter om civilt försvar, krisberedskap och informationssäkerhet."
+  },
+  {
+    "url": "https://www.boverket.se/sv/lag--ratt/forfattningssamling/",
+    "name": "Boverket – Building regs",
+    "name_sv": "Boverket – Författningssamling",
+    "category": "Labor & Workplace",
+    "description": "Building codes (BBR), construction product regulations and planning standards.",
+    "description_sv": "Byggföreskrifter (BBR), konstruktionsregler och planstandarder."
+  },
+  {
+    "url": "https://www.skatteverket.se/omoss/regelarbete.4.71004e4c133e23bf6db800060531.html",
+    "name": "Skatteverket – Rulemaking",
+    "name_sv": "Skatteverket – Regelarbete",
+    "category": "Laws & Government",
+    "description": "Tax authority guidance, positions and regulatory changes.",
+    "description_sv": "Skatteverkets ställningstaganden, vägledningar och regeländringar."
+  },
+  {
+    "url": "https://www.konkurrensverket.se/publicerat/foreskrifter/",
+    "name": "Konkurrensverket – Competition",
+    "name_sv": "Konkurrensverket – Föreskrifter",
+    "category": "Laws & Government",
+    "description": "Competition law, public procurement and merger control regulations.",
+    "description_sv": "Föreskrifter om konkurrens, upphandling och fusionskontroll."
+  },
+  {
+    "url": "https://www.eiopa.europa.eu/publications_en",
+    "name": "EIOPA – Insurance & Pensions",
+    "name_sv": "EIOPA – Försäkring och pension",
+    "category": "Finance & Banking",
+    "description": "EU insurance/pension authority: Solvency II updates, IDD guidelines, PEPP.",
+    "description_sv": "EU:s försäkringsmyndighet: Solvency II, IDD-riktlinjer, PEPP."
+  },
+  {
+    "url": "https://www.sec.gov/rules-regulations/rulemaking-activity",
+    "name": "SEC Rulemaking",
+    "name_sv": "SEC regelarbete",
+    "category": "Finance & Banking",
+    "description": "All SEC proposed and final rules including cybersecurity disclosure.",
+    "description_sv": "Alla SEC-förslag och slutgiltiga regler inkl. cybersäkerhetsrapportering."
+  },
+  {
+    "url": "https://www.nist.gov/cyberframework",
+    "name": "NIST Cybersecurity Framework",
+    "name_sv": "NIST Cybersecurity Framework",
+    "category": "Standards",
+    "description": "CSF 2.0 resources used across US federal and private sector.",
+    "description_sv": "CSF 2.0-resurser som används i både offentlig och privat sektor i USA."
+  },
+  {
+    "url": "https://owasp.org/www-project-top-ten/",
+    "name": "OWASP Top 10",
+    "name_sv": "OWASP Top 10",
+    "category": "Standards",
+    "description": "The de facto web security risk standard — reshapes testing and procurement.",
+    "description_sv": "De facto-standarden för webbsäkerhetsrisker — påverkar testning och upphandling."
+  },
+  {
+    "url": "https://www.w3.org/WAI/standards-guidelines/wcag/",
+    "name": "W3C WCAG",
+    "name_sv": "W3C WCAG",
+    "category": "Standards",
+    "description": "Accessibility standard driving legal compliance under ADA, EAA and Section 508.",
+    "description_sv": "Tillgänglighetsstandard som styr efterlevnad under ADA, EAA och Section 508."
+  },
+  {
+    "url": "https://nodejs.org/en/about/previous-releases",
+    "name": "Node.js Release Schedule",
+    "name_sv": "Node.js releaseplan",
+    "category": "Standards",
+    "description": "LTS and EOL dates affecting production runtime security.",
+    "description_sv": "LTS- och EOL-datum som påverkar säkerheten i produktionsmiljöer."
+  },
+  {
+    "url": "https://openai.com/api/pricing/",
+    "name": "OpenAI API Pricing",
+    "name_sv": "OpenAI API-priser",
+    "category": "Pricing",
+    "description": "Per-token costs for GPT models that shift with new releases.",
+    "description_sv": "Pris per token för GPT-modeller som ändras vid nya releaser."
+  },
+  {
+    "url": "https://www.anthropic.com/pricing",
+    "name": "Anthropic Claude Pricing",
+    "name_sv": "Anthropic Claude-priser",
+    "category": "Pricing",
+    "description": "Claude model pricing per million tokens across Opus, Sonnet and Haiku.",
+    "description_sv": "Claudes modellpriser per miljon tokens för Opus, Sonnet och Haiku."
+  },
+  {
+    "url": "https://stripe.com/pricing",
+    "name": "Stripe Pricing",
+    "name_sv": "Stripe-priser",
+    "category": "Pricing",
+    "description": "Payment processing rates that directly impact margins.",
+    "description_sv": "Betalningsavgifter som direkt påverkar marginaler."
+  },
+  {
+    "url": "https://vercel.com/pricing",
+    "name": "Vercel Pricing",
+    "name_sv": "Vercel-priser",
+    "category": "Pricing",
+    "description": "Hosting and deployment plan tiers and usage overages.",
+    "description_sv": "Hosting- och deploy-planer med förbrukningsavgifter."
+  },
+  {
+    "url": "https://aws.amazon.com/s3/pricing/",
+    "name": "AWS S3 Pricing",
+    "name_sv": "AWS S3-priser",
+    "category": "Pricing",
+    "description": "Cloud storage rates for the most widely used storage service.",
+    "description_sv": "Molnlagringspriser för världens mest använda lagringstjänst."
+  },
+  {
+    "url": "https://openai.com/policies/usage-policies/",
+    "name": "OpenAI Usage Policies",
+    "name_sv": "OpenAI-användarpolicy",
+    "category": "Legal",
+    "description": "Defines what developers can build with the API — updated 2-4x per year.",
+    "description_sv": "Definierar vad utvecklare får bygga med API:t — uppdateras 2-4 ggr/år."
+  },
+  {
+    "url": "https://policies.google.com/terms",
+    "name": "Google Terms of Service",
+    "name_sv": "Googles användarvillkor",
+    "category": "Legal",
+    "description": "Covers the entire Google ecosystem — changes affect data rights globally.",
+    "description_sv": "Täcker hela Googles ekosystem — ändringar påverkar datarättigheter globalt."
+  },
+  {
+    "url": "https://aws.amazon.com/agreement/",
+    "name": "AWS Customer Agreement",
+    "name_sv": "AWS kundavtal",
+    "category": "Legal",
+    "description": "Core contract for all AWS usage — liability, IP and service terms.",
+    "description_sv": "Grundavtalet för all AWS-användning — ansvar, IP och tjänstevillkor."
+  },
+  {
+    "url": "https://stripe.com/legal/connect-account",
+    "name": "Stripe Connect Agreement",
+    "name_sv": "Stripe Connect-avtal",
+    "category": "Legal",
+    "description": "Governs marketplace payments and merchant liability.",
+    "description_sv": "Styr marknadsplatsbetalningar och handlaransvar."
+  },
+  {
+    "url": "https://www.githubstatus.com",
+    "name": "GitHub Status",
+    "name_sv": "GitHub-status",
+    "category": "Status",
+    "description": "GitHub service availability and incident history.",
+    "description_sv": "GitHubs tjänsttillgänglighet och incidenthistorik."
+  },
+  {
+    "url": "https://www.cloudflarestatus.com",
+    "name": "Cloudflare Status",
+    "name_sv": "Cloudflare-status",
+    "category": "Status",
+    "description": "CDN, DNS and security service status.",
+    "description_sv": "Status för CDN, DNS och säkerhetstjänster."
+  },
+  {
+    "url": "https://status.openai.com",
+    "name": "OpenAI Status",
+    "name_sv": "OpenAI-status",
+    "category": "Status",
+    "description": "API availability and ongoing incidents.",
+    "description_sv": "API-tillgänglighet och pågående incidenter."
+  },
+  {
+    "url": "https://www.bugatti.com/media/news/",
+    "name": "Bugatti News",
+    "name_sv": "Bugatti-nyheter",
+    "category": "Newsrooms",
+    "description": "New hypercar reveals, limited editions and Rimac-era updates.",
+    "description_sv": "Nya hyperbilar, limiterade upplagor och Rimac-uppdateringar."
+  },
+  {
+    "url": "https://www.lego.com/en-us/categories/new-sets",
+    "name": "LEGO – New Sets",
+    "name_sv": "LEGO – Nya set",
+    "category": "Newsrooms",
+    "description": "Product page updates in real-time when new sets drop.",
+    "description_sv": "Produktsidan uppdateras i realtid när nya set släpps."
+  },
+  {
+    "url": "https://www.tesla.com/blog",
+    "name": "Tesla Blog",
+    "name_sv": "Tesla-bloggen",
+    "category": "Newsrooms",
+    "description": "Software updates, Autopilot features and price changes.",
+    "description_sv": "Mjukvaruuppdateringar, Autopilot-funktioner och prisändringar."
+  },
+  {
+    "url": "https://newsroom.porsche.com/en.html",
+    "name": "Porsche Newsroom",
+    "name_sv": "Porsche Newsroom",
+    "category": "Newsrooms",
+    "description": "New 911 generations and Taycan updates with full press kits.",
+    "description_sv": "Nya 911-generationer och Taycan-uppdateringar med fullständiga presskit."
+  },
+  {
+    "url": "https://www.apple.com/newsroom/",
+    "name": "Apple Newsroom",
+    "name_sv": "Apple Newsroom",
+    "category": "Newsrooms",
+    "description": "New Mac, iPhone and Vision Pro announced here first.",
+    "description_sv": "Nya Mac, iPhone och Vision Pro annonseras här först."
+  },
+  {
+    "url": "https://newsroom.rolex.com/",
+    "name": "Rolex Newsroom",
+    "name_sv": "Rolex Newsroom",
+    "category": "Newsrooms",
+    "description": "New watch references revealed once a year, usually in April.",
+    "description_sv": "Nya referensnummer avslöjas en gång per år, vanligtvis i april."
+  },
+  {
+    "url": "https://media.stellantisnorthamerica.com/newsroom.do?id=2&mid=3",
+    "name": "Chrysler Newsroom",
+    "name_sv": "Chrysler Newsroom",
+    "category": "Newsrooms",
+    "description": "New Pacifica models, anniversary editions and EV plans.",
+    "description_sv": "Nya Pacifica-modeller, jubileumsupplagor och elbilsplaner."
+  }
+]

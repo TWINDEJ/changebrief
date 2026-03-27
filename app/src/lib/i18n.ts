@@ -126,6 +126,10 @@ const translations = {
   'form.webhook.help': { en: 'We POST a JSON payload when this page changes.', sv: 'Vi skickar JSON via POST när sidan ändras.' },
   'form.webhook.pro': { en: 'Webhooks are a Pro feature', sv: 'Webhooks är en Pro-funktion' },
 
+  // ─── Compliance ───
+  'compliance.title': { en: 'Regulatory Changes', sv: 'Regulatoriska ändringar' },
+  'compliance.desc': { en: 'AI-classified changes from government agencies and regulators', sv: 'AI-klassificerade ändringar från myndigheter och tillsynsorgan' },
+
   // ─── Checkout ───
   'checkout.success': { en: 'Plan upgraded! Welcome aboard.', sv: 'Plan uppgraderad! Välkommen ombord.' },
 } as const;

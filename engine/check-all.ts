@@ -70,6 +70,10 @@ async function initSchema() {
     'ALTER TABLE users ADD COLUMN checks_month TEXT',
     'ALTER TABLE users ADD COLUMN digest_frequency TEXT DEFAULT \'weekly\'',
     'ALTER TABLE watched_urls ADD COLUMN webhook_url TEXT',
+    'ALTER TABLE watched_urls ADD COLUMN category TEXT',
+    'ALTER TABLE change_history ADD COLUMN jurisdiction TEXT',
+    'ALTER TABLE change_history ADD COLUMN document_type TEXT',
+    'ALTER TABLE change_history ADD COLUMN compliance_action TEXT',
   ]) {
     try { await db.execute(col); } catch { /* already exists */ }
   }
@@ -241,18 +245,22 @@ async function checkUrl(row: any) {
         beforePath,
         afterPath,
         url,
-        structuredDiff?.summary
+        structuredDiff?.summary,
+        row.category as string | undefined
       );
-      console.log(`  → ${analysis.summary} (${analysis.importance}/10)`);
+      console.log(`  → ${analysis.summary} (${analysis.importance}/10)${analysis.complianceAction ? ` [${analysis.complianceAction}]` : ''}`);
 
       await db.execute({
-        sql: `INSERT INTO change_history (user_id, url, name, change_percent, summary, importance, changed_elements, has_significant_change)
-              VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        sql: `INSERT INTO change_history (user_id, url, name, change_percent, summary, importance, changed_elements, has_significant_change, jurisdiction, document_type, compliance_action)
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         args: [
           user_id, url, name, pixelDiff.changePercent,
           analysis.summary, analysis.importance,
           JSON.stringify(analysis.changedElements),
-          analysis.hasSignificantChange ? 1 : 0
+          analysis.hasSignificantChange ? 1 : 0,
+          analysis.jurisdiction ?? null,
+          analysis.documentType ?? null,
+          analysis.complianceAction ?? null,
         ]
       });
 

@@ -16,7 +16,7 @@ export async function GET() {
 
   const history = await getChangeHistory(user.id as string, 10000) as any[];
 
-  const csvHeader = 'date,url,name,importance,summary,change_percent';
+  const csvHeader = 'date,url,name,importance,summary,change_percent,jurisdiction,document_type,compliance_action';
   const csvRows = history.map((row) => {
     const date = row.checked_at || '';
     const url = `"${(row.url || '').replace(/"/g, '""')}"`;
@@ -24,7 +24,10 @@ export async function GET() {
     const importance = row.importance ?? '';
     const summary = `"${(row.summary || '').replace(/"/g, '""')}"`;
     const changePercent = row.change_percent != null ? Number(row.change_percent).toFixed(2) : '';
-    return `${date},${url},${name},${importance},${summary},${changePercent}`;
+    const jurisdiction = row.jurisdiction || '';
+    const documentType = row.document_type || '';
+    const complianceAction = row.compliance_action || '';
+    return `${date},${url},${name},${importance},${summary},${changePercent},${jurisdiction},${documentType},${complianceAction}`;
   });
 
   const csv = [csvHeader, ...csvRows].join('\n');

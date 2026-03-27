@@ -74,6 +74,10 @@ export async function initDb() {
     'ALTER TABLE users ADD COLUMN checks_month TEXT',
     'ALTER TABLE users ADD COLUMN digest_frequency TEXT DEFAULT \'weekly\'',
     'ALTER TABLE watched_urls ADD COLUMN webhook_url TEXT',
+    'ALTER TABLE watched_urls ADD COLUMN category TEXT',
+    'ALTER TABLE change_history ADD COLUMN jurisdiction TEXT',
+    'ALTER TABLE change_history ADD COLUMN document_type TEXT',
+    'ALTER TABLE change_history ADD COLUMN compliance_action TEXT',
   ]) {
     try { await db.execute(col); } catch { /* column already exists */ }
   }
@@ -161,9 +165,9 @@ export async function getWatchedUrls(userId: string) {
   return result.rows;
 }
 
-export async function addWatchedUrl(userId: string, url: string, name: string, options?: { threshold?: number; selector?: string; mobile?: boolean; minImportance?: number; cookies?: string; headers?: string; webhookUrl?: string }) {
+export async function addWatchedUrl(userId: string, url: string, name: string, options?: { threshold?: number; selector?: string; mobile?: boolean; minImportance?: number; cookies?: string; headers?: string; webhookUrl?: string; category?: string }) {
   await getDb().execute({
-    sql: 'INSERT INTO watched_urls (user_id, url, name, threshold, selector, mobile, min_importance, cookies, headers, webhook_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+    sql: 'INSERT INTO watched_urls (user_id, url, name, threshold, selector, mobile, min_importance, cookies, headers, webhook_url, category) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
     args: [
       userId, url, name,
       options?.threshold ?? 0.3,
@@ -173,6 +177,7 @@ export async function addWatchedUrl(userId: string, url: string, name: string, o
       options?.cookies ?? null,
       options?.headers ?? null,
       options?.webhookUrl ?? null,
+      options?.category ?? null,
     ]
   });
 }
@@ -209,20 +214,52 @@ export async function addChangeRecord(userId: string, record: {
   url: string; name: string; changePercent: number;
   summary?: string; importance?: number; changedElements?: string[];
   hasSignificantChange?: boolean;
+  jurisdiction?: string; documentType?: string; complianceAction?: string;
 }) {
   await getDb().execute({
-    sql: 'INSERT INTO change_history (user_id, url, name, change_percent, summary, importance, changed_elements, has_significant_change) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+    sql: 'INSERT INTO change_history (user_id, url, name, change_percent, summary, importance, changed_elements, has_significant_change, jurisdiction, document_type, compliance_action) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
     args: [
       userId, record.url, record.name, record.changePercent,
       record.summary ?? null, record.importance ?? null,
       record.changedElements ? JSON.stringify(record.changedElements) : null,
-      record.hasSignificantChange ? 1 : 0
+      record.hasSignificantChange ? 1 : 0,
+      record.jurisdiction ?? null, record.documentType ?? null, record.complianceAction ?? null,
     ]
   });
 }
 
 export async function getChangeHistory(userId: string, limit = 50) {
   const result = await getDb().execute({ sql: 'SELECT * FROM change_history WHERE user_id = ? ORDER BY checked_at DESC LIMIT ?', args: [userId, limit] });
+  return result.rows;
+}
+
+export async function getComplianceHistory(userId: string, filters?: {
+  jurisdiction?: string;
+  documentType?: string;
+  complianceAction?: string;
+  limit?: number;
+}) {
+  const conditions = ['user_id = ?', 'compliance_action IS NOT NULL'];
+  const args: any[] = [userId];
+
+  if (filters?.jurisdiction) {
+    conditions.push('jurisdiction = ?');
+    args.push(filters.jurisdiction);
+  }
+  if (filters?.documentType) {
+    conditions.push('document_type = ?');
+    args.push(filters.documentType);
+  }
+  if (filters?.complianceAction) {
+    conditions.push('compliance_action = ?');
+    args.push(filters.complianceAction);
+  }
+
+  args.push(filters?.limit ?? 100);
+  const result = await getDb().execute({
+    sql: `SELECT * FROM change_history WHERE ${conditions.join(' AND ')} ORDER BY checked_at DESC LIMIT ?`,
+    args,
+  });
   return result.rows;
 }
 

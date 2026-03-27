@@ -9,6 +9,9 @@ export interface ChangeAnalysis {
   importance: number; // 1-10
   changedElements: string[];
   hasSignificantChange: boolean;
+  jurisdiction?: string;    // t.ex. "SE", "EU", "US"
+  documentType?: string;    // t.ex. "regulation", "guidance", "consultation", "decision"
+  complianceAction?: string; // "action_required" | "review_recommended" | "info_only"
 }
 
 /**
@@ -57,11 +60,19 @@ export async function shouldAnalyze(diff: StructuredDiffResult): Promise<boolean
   }
 }
 
+// Regulatoriska kategorier som triggar utökad compliance-analys
+const REGULATORY_CATEGORIES = new Set([
+  'Finance & Banking', 'Transport & Infrastructure', 'Health & Pharma',
+  'Data & Privacy', 'Environment & Energy', 'Labor & Workplace',
+  'Laws & Government', 'Regulatory',
+]);
+
 export async function analyzeChange(
   beforeImagePath: string,
   afterImagePath: string,
   url: string,
-  structuredDiff?: string
+  structuredDiff?: string,
+  urlCategory?: string
 ): Promise<ChangeAnalysis> {
   const beforeBase64 = fs.readFileSync(beforeImagePath).toString('base64');
   const afterBase64 = fs.readFileSync(afterImagePath).toString('base64');
@@ -70,6 +81,27 @@ export async function analyzeChange(
   if (structuredDiff) {
     textContext = `\n\nDessutom har sidans innehåll ändrats:\n${structuredDiff}\n\nAnvänd BÅDE bilderna och textändringarna för din analys.`;
   }
+
+  const isRegulatory = urlCategory && REGULATORY_CATEGORIES.has(urlCategory);
+
+  const complianceFields = isRegulatory ? `
+  "jurisdiction": "SE",
+  "documentType": "regulation",
+  "complianceAction": "action_required",` : '';
+
+  const complianceInstructions = isRegulatory ? `
+
+REGULATORISK KLASSIFICERING (denna sida tillhör kategorin "${urlCategory}"):
+Lägg till dessa fält i din JSON:
+- "jurisdiction": Landskod för regeln (t.ex. "SE", "EU", "US", "UK"). Om oklart, gissa baserat på myndigheten.
+- "documentType": En av: "regulation" (bindande föreskrift), "guidance" (vägledning/riktlinje), "consultation" (remiss/förslag), "decision" (tillsynsbeslut/sanktion), "standard" (teknisk standard), "law" (lag/förordning).
+- "complianceAction": En av:
+  * "action_required" — ny eller ändrad bindande regel, deadline, sanktion, eller krav som kräver åtgärd
+  * "review_recommended" — vägledning, remiss eller förslag som bör granskas men inte kräver omedelbar åtgärd
+  * "info_only" — redaktionell ändring, formatuppdatering, eller informationstext utan regulatorisk påverkan
+
+Var STRIKT med "action_required" — använd det bara för faktiska regeländringar som påverkar efterlevnad.
+Höj importance med +2 om complianceAction är "action_required" (max 10).` : '';
 
   const response = await client.chat.completions.create({
     model: 'gpt-4o',
@@ -90,7 +122,7 @@ Svara ENDAST med JSON i detta format:
   "summary": "En mening som beskriver vad som ändrades, t.ex. 'Priset för Pro-planen höjdes från $29 till $39/månad'",
   "importance": 7,
   "changedElements": ["pricing table", "CTA button"],
-  "hasSignificantChange": true
+  "hasSignificantChange": true${complianceFields}
 }
 
 Importance-skalan:
@@ -98,7 +130,7 @@ Importance-skalan:
 4-6 = Innehållsändring (ny text, uppdaterad info)
 7-9 = Viktig ändring (pris, features, villkor, CTA)
 10 = Kritisk ändring (sidan borttagen, helt ny layout)
-
+${complianceInstructions}
 Om bilderna ser likadana ut, sätt hasSignificantChange: false och importance: 1.`
         },
         {
