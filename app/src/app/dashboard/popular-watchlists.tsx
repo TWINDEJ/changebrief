@@ -98,7 +98,7 @@ export function PopularWatchlists({ existingUrls, canAdd }: { existingUrls: stri
           ))}
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-2" style={{ minHeight: 'calc(6 * (4.5rem + 0.75rem))' }}>
+        <div className="grid gap-3 sm:grid-cols-2 content-start min-h-[480px]">
           {visible.map((s) => {
             const isExisting = existingUrls.includes(s.url) || added.has(s.url);
             const isAdding = adding === s.url;
