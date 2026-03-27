@@ -13,11 +13,15 @@ interface ChangeRow {
   importance: number | null;
   change_percent: number;
   checked_at: string;
+  jurisdiction: string | null;
+  document_type: string | null;
+  compliance_action: string | null;
 }
 
 interface UserDigest {
   email: string;
   changes: ChangeRow[];
+  complianceChanges: ChangeRow[];
   totalUrls: number;
 }
 
@@ -33,12 +37,15 @@ async function getUsersWithDigest(): Promise<UserDigest[]> {
   for (const user of users.rows) {
     // Get changes from the past 7 days with a summary (significant changes only)
     const changes = await db.execute({
-      sql: `SELECT url, name, summary, importance, change_percent, checked_at
+      sql: `SELECT url, name, summary, importance, change_percent, checked_at, jurisdiction, document_type, compliance_action
             FROM change_history
             WHERE user_id = ? AND summary IS NOT NULL AND checked_at >= datetime('now', '-7 days')
             ORDER BY importance DESC, checked_at DESC`,
       args: [user.id]
     });
+
+    const allChanges = changes.rows as unknown as ChangeRow[];
+    const complianceChanges = allChanges.filter(c => c.compliance_action != null);
 
     const totalUrls = await db.execute({
       sql: `SELECT COUNT(*) as count FROM watched_urls WHERE user_id = ? AND active = 1`,
@@ -47,7 +54,8 @@ async function getUsersWithDigest(): Promise<UserDigest[]> {
 
     digests.push({
       email: user.email as string,
-      changes: changes.rows as unknown as ChangeRow[],
+      changes: allChanges,
+      complianceChanges,
       totalUrls: Number(totalUrls.rows[0].count),
     });
   }
@@ -55,8 +63,47 @@ async function getUsersWithDigest(): Promise<UserDigest[]> {
   return digests;
 }
 
+function buildComplianceSection(complianceChanges: ChangeRow[]): string {
+  if (complianceChanges.length === 0) return '';
+
+  const actionRequired = complianceChanges.filter(c => c.compliance_action === 'action_required');
+  const review = complianceChanges.filter(c => c.compliance_action === 'review_recommended');
+
+  const rows = complianceChanges.slice(0, 8).map(c => {
+    const actionColor = c.compliance_action === 'action_required' ? '#ef4444'
+      : c.compliance_action === 'review_recommended' ? '#f59e0b' : '#64748b';
+    const actionLabel = c.compliance_action === 'action_required' ? '🔴 Action'
+      : c.compliance_action === 'review_recommended' ? '🟡 Review' : 'ℹ️ Info';
+    const juris = c.jurisdiction ? `[${c.jurisdiction}]` : '';
+    const docType = c.document_type || '';
+
+    return `
+      <tr>
+        <td style="padding: 10px 16px; border-bottom: 1px solid #1e293b;">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+            <span style="color: ${actionColor}; font-size: 12px; font-weight: 600;">${actionLabel}</span>
+            <span style="color: #475569; font-size: 11px;">${juris} ${docType}</span>
+          </div>
+          <strong style="color: #f1f5f9; font-size: 14px;">${c.name}</strong>
+          <p style="margin: 2px 0 0; color: #94a3b8; font-size: 13px;">${c.summary || ''}</p>
+        </td>
+      </tr>`;
+  }).join('');
+
+  return `
+    <!-- Compliance section -->
+    <div style="background: #0f172a; border: 1px solid rgba(239,68,68,0.2); border-radius: 16px; overflow: hidden; margin-bottom: 24px;">
+      <div style="padding: 16px; border-bottom: 1px solid #1e293b; display: flex; align-items: center; gap: 12px;">
+        <h3 style="color: #f1f5f9; font-size: 14px; margin: 0;">⚖️ Regulatory Changes</h3>
+        ${actionRequired.length > 0 ? `<span style="background: rgba(239,68,68,0.15); color: #ef4444; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600;">${actionRequired.length} action required</span>` : ''}
+        ${review.length > 0 ? `<span style="background: rgba(245,158,11,0.15); color: #f59e0b; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600;">${review.length} to review</span>` : ''}
+      </div>
+      <table style="width: 100%; border-collapse: collapse;">${rows}</table>
+    </div>`;
+}
+
 function buildDigestHtml(digest: UserDigest): string {
-  const { changes, totalUrls } = digest;
+  const { changes, complianceChanges, totalUrls } = digest;
   const changedPages = new Set(changes.map(c => c.name)).size;
   const topChange = changes[0];
 
@@ -118,6 +165,8 @@ function buildDigestHtml(digest: UserDigest): string {
       <p style="color: #64748b; font-size: 14px; margin: 0;">No significant changes detected this week. Your monitored pages are stable.</p>
     </div>
     ` : `
+    ${buildComplianceSection(complianceChanges)}
+
     <!-- Top change highlight -->
     ${topChange ? `
     <div style="background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(59,130,246,0.1)); border: 1px solid rgba(99,102,241,0.2); border-radius: 16px; padding: 20px; margin-bottom: 24px;">

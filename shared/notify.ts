@@ -37,6 +37,7 @@ export async function sendEmailNotification(
     <div style="font-family: -apple-system, sans-serif; max-width: 600px; margin: 0 auto;">
       <h2 style="color: #3b82f6;">${emoji} Change detected: ${name}</h2>
       <p style="font-size: 16px; color: #1e293b;">${analysis.summary}</p>
+      ${analysis.complianceAction ? `<div style="margin: 12px 0; padding: 8px 12px; border-radius: 8px; font-size: 14px; font-weight: 600; ${analysis.complianceAction === 'action_required' ? 'background: #fef2f2; color: #dc2626; border: 1px solid #fecaca;' : analysis.complianceAction === 'review_recommended' ? 'background: #fffbeb; color: #d97706; border: 1px solid #fde68a;' : 'background: #f8fafc; color: #64748b; border: 1px solid #e2e8f0;'}">${analysis.complianceAction === 'action_required' ? '🔴 Action required' : analysis.complianceAction === 'review_recommended' ? '🟡 Review recommended' : 'ℹ️ Info only'}${analysis.jurisdiction ? ` [${analysis.jurisdiction}]` : ''}${analysis.documentType ? ` • ${analysis.documentType}` : ''}</div>` : ''}
       <table style="margin: 16px 0; font-size: 14px; color: #475569;">
         <tr><td style="padding-right: 16px;"><strong>Importance:</strong></td><td>${analysis.importance}/10</td></tr>
         <tr><td style="padding-right: 16px;"><strong>URL:</strong></td><td><a href="${url}">${url}</a></td></tr>
@@ -89,6 +90,14 @@ export async function sendSlackNotification(
 ): Promise<void> {
   const emoji = analysis.importance >= 7 ? '🔴' : analysis.importance >= 4 ? '🟡' : '🟢';
 
+  // Compliance-taggar om de finns
+  const complianceTag = analysis.complianceAction === 'action_required' ? '🔴 ACTION REQUIRED'
+    : analysis.complianceAction === 'review_recommended' ? '🟡 Review recommended'
+    : analysis.complianceAction === 'info_only' ? 'ℹ️ Info only' : '';
+  const jurisdictionTag = analysis.jurisdiction ? ` [${analysis.jurisdiction}]` : '';
+  const docTypeTag = analysis.documentType ? ` • ${analysis.documentType}` : '';
+  const complianceLine = complianceTag ? `\n${complianceTag}${jurisdictionTag}${docTypeTag}` : '';
+
   const blocks: SlackBlock[] = [
     {
       type: 'header',
@@ -96,7 +105,7 @@ export async function sendSlackNotification(
     },
     {
       type: 'section',
-      text: { type: 'mrkdwn', text: `*${analysis.summary}*` }
+      text: { type: 'mrkdwn', text: `*${analysis.summary}*${complianceLine}` }
     },
     {
       type: 'section',
@@ -142,6 +151,11 @@ export async function sendTeamsNotification(
         body: [
           { type: 'TextBlock', text: `Change on ${name}`, weight: 'Bolder', size: 'Large', color: analysis.importance >= 7 ? 'Attention' : 'Default' },
           { type: 'TextBlock', text: analysis.summary, wrap: true },
+          ...(analysis.complianceAction ? [{
+            type: 'TextBlock',
+            text: `**${analysis.complianceAction === 'action_required' ? '🔴 ACTION REQUIRED' : analysis.complianceAction === 'review_recommended' ? '🟡 Review recommended' : 'ℹ️ Info only'}**${analysis.jurisdiction ? ` [${analysis.jurisdiction}]` : ''}${analysis.documentType ? ` • ${analysis.documentType}` : ''}`,
+            wrap: true, color: analysis.complianceAction === 'action_required' ? 'Attention' : 'Default'
+          }] : []),
           {
             type: 'ColumnSet',
             columns: [

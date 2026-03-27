@@ -130,6 +130,10 @@ const translations = {
   'compliance.title': { en: 'Regulatory Changes', sv: 'Regulatoriska ändringar' },
   'compliance.desc': { en: 'AI-classified changes from government agencies and regulators', sv: 'AI-klassificerade ändringar från myndigheter och tillsynsorgan' },
 
+  // ─── Trend ───
+  'trend.title': { en: 'Regulatory Trend', sv: 'Regulatorisk trend' },
+  'trend.desc': { en: 'Changes per source — ranked by activity', sv: 'Ändringar per källa — rankade efter aktivitet' },
+
   // ─── Checkout ───
   'checkout.success': { en: 'Plan upgraded! Welcome aboard.', sv: 'Plan uppgraderad! Välkommen ombord.' },
 } as const;

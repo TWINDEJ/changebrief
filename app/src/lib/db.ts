@@ -263,6 +263,23 @@ export async function getComplianceHistory(userId: string, filters?: {
   return result.rows;
 }
 
+export async function getComplianceTrend(userId: string) {
+  const result = await getDb().execute({
+    sql: `SELECT
+            name,
+            compliance_action,
+            COUNT(*) as count,
+            strftime('%Y-%m', checked_at) as month
+          FROM change_history
+          WHERE user_id = ? AND compliance_action IS NOT NULL
+          GROUP BY name, compliance_action, month
+          ORDER BY month DESC, count DESC
+          LIMIT 200`,
+    args: [userId],
+  });
+  return result.rows;
+}
+
 export async function deleteChangeHistoryByUrl(userId: string, url: string) {
   await getDb().execute({ sql: 'DELETE FROM change_history WHERE user_id = ? AND url = ?', args: [userId, url] });
 }

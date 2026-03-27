@@ -1,7 +1,7 @@
 import { auth } from '@/lib/auth';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { getUserByEmail, getWatchedUrls, getChangeHistory, getComplianceHistory, getUrlLimit, getDashboardStats } from '@/lib/db';
+import { getUserByEmail, getWatchedUrls, getChangeHistory, getComplianceHistory, getComplianceTrend, getUrlLimit, getDashboardStats } from '@/lib/db';
 import { t, type Locale } from '@/lib/i18n';
 import { Onboarding } from './onboarding';
 import { AddUrlForm } from './add-url-form';
@@ -9,6 +9,7 @@ import { MonitoredGrid } from './monitored-grid';
 import { ActivityFeed } from './activity-feed';
 import { PopularWatchlists } from './popular-watchlists';
 import { ComplianceFeed } from './compliance-feed';
+import { ComplianceTrend } from './compliance-trend';
 import { SettingsForm } from './settings-form';
 import { SignOutButton } from './sign-out-button';
 import { CheckoutToast } from './checkout-toast';
@@ -40,10 +41,11 @@ export default async function DashboardPage({
   const params = await searchParams;
   const checkoutSuccess = params.checkout === 'success';
 
-  const [urls, history, complianceHistory, stats] = await Promise.all([
+  const [urls, history, complianceHistory, trendData, stats] = await Promise.all([
     getWatchedUrls(user.id as string) as Promise<any[]>,
     getChangeHistory(user.id as string, 50) as Promise<any[]>,
     getComplianceHistory(user.id as string) as Promise<any[]>,
+    getComplianceTrend(user.id as string) as Promise<any[]>,
     getDashboardStats(user.id as string),
   ]);
   const urlLimit = getUrlLimit(user.plan as string);
@@ -176,6 +178,15 @@ export default async function DashboardPage({
             <h2 className="text-lg font-semibold text-white/90 mb-1">{t('compliance.title', locale)}</h2>
             <p className="text-sm text-slate-500 mb-4">{t('compliance.desc', locale)}</p>
             <ComplianceFeed history={complianceHistory} plan={user.plan as string} />
+          </section>
+        )}
+
+        {/* 3c. Compliance Trend */}
+        {trendData.length > 0 && (
+          <section>
+            <h2 className="text-lg font-semibold text-white/90 mb-1">{t('trend.title', locale)}</h2>
+            <p className="text-sm text-slate-500 mb-4">{t('trend.desc', locale)}</p>
+            <ComplianceTrend data={trendData} />
           </section>
         )}
 
