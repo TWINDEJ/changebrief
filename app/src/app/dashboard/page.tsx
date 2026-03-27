@@ -154,7 +154,7 @@ export default async function DashboardPage({
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
                 </summary>
-                <div className="absolute right-0 top-10 z-20 w-80 rounded-2xl glass-card p-4 sm:p-5 shadow-2xl shadow-black/40 animate-fade-in">
+                <div className="absolute right-0 top-10 z-20 w-80 rounded-2xl bg-[#0c1120] border border-white/10 p-4 sm:p-5 shadow-2xl shadow-black/60 animate-fade-in">
                   <SettingsForm
                     initialNotifyEmail={user.notify_email !== 0}
                     initialSlackWebhookUrl={(user.slack_webhook_url as string) || ''}
