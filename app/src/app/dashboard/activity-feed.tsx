@@ -30,7 +30,12 @@ function ImportanceDot({ importance }: { importance: number | null }) {
       : importance >= 4
         ? 'bg-orange-500'
         : 'bg-emerald-500';
-  return <span className={`inline-block h-2 w-2 shrink-0 rounded-full ${color}`} />;
+  return (
+    <span
+      className={`inline-block h-2 w-2 shrink-0 rounded-full ${color} tooltip-wrapper`}
+      data-tooltip={`${importance}/10`}
+    />
+  );
 }
 
 export function ActivityFeed({ history: initialHistory, plan = 'free' }: { history: ChangeEntry[]; plan?: string }) {
@@ -147,14 +152,14 @@ export function ActivityFeed({ history: initialHistory, plan = 'free' }: { histo
 
   if (history.length === 0) {
     return (
-      <div className="rounded-2xl border border-dashed border-slate-200 p-12 text-center">
-        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-slate-100">
-          <svg className="h-6 w-6 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div className="rounded-2xl border border-dashed border-slate-200 p-12 text-center animate-fade-in">
+        <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50">
+          <svg className="h-7 w-7 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
         </div>
-        <p className="text-sm font-medium text-slate-600">{t('changes.empty')}</p>
-        <p className="mt-1 text-xs text-slate-500">{t('changes.empty.desc')}</p>
+        <p className="text-sm font-semibold text-slate-700">{t('changes.empty')}</p>
+        <p className="mt-1.5 text-xs text-slate-500 max-w-xs mx-auto leading-relaxed">{t('changes.empty.desc')}</p>
       </div>
     );
   }

@@ -105,9 +105,9 @@ export function MonitoredGrid({ urls }: { urls: WatchedUrl[] }) {
 
   if (urls.length === 0) {
     return (
-      <div className="rounded-2xl border border-dashed border-slate-200 p-12 text-center">
-        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-slate-100">
-          <svg className="h-6 w-6 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div className="rounded-2xl border border-dashed border-slate-200 p-12 text-center animate-fade-in">
+        <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50">
+          <svg className="h-7 w-7 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -116,8 +116,8 @@ export function MonitoredGrid({ urls }: { urls: WatchedUrl[] }) {
             />
           </svg>
         </div>
-        <p className="text-sm font-medium text-slate-600">{t('urls.empty')}</p>
-        <p className="mt-1 text-xs text-slate-600">{t('urls.empty.desc')}</p>
+        <p className="text-sm font-semibold text-slate-700">{t('urls.empty')}</p>
+        <p className="mt-1.5 text-xs text-slate-500 max-w-xs mx-auto leading-relaxed">{t('urls.empty.desc')}</p>
       </div>
     );
   }
