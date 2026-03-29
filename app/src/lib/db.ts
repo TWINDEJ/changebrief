@@ -84,6 +84,11 @@ export async function initDb() {
     'ALTER TABLE users ADD COLUMN notify_action_required INTEGER DEFAULT 1',
     'ALTER TABLE users ADD COLUMN notify_review_recommended INTEGER DEFAULT 1',
     'ALTER TABLE users ADD COLUMN notify_info_only INTEGER DEFAULT 0',
+    'ALTER TABLE users ADD COLUMN webhook_url TEXT',
+    'ALTER TABLE users ADD COLUMN sla_action_hours INTEGER DEFAULT 48',
+    'ALTER TABLE users ADD COLUMN sla_review_hours INTEGER DEFAULT 168',
+    'ALTER TABLE change_history ADD COLUMN assigned_to TEXT',
+    'ALTER TABLE change_history ADD COLUMN assigned_at TEXT',
   ]) {
     try { await db.execute(col); } catch { /* column already exists */ }
   }
@@ -124,7 +129,7 @@ export async function updateUserPolarId(userId: string, polarCustomerId: string)
   await getDb().execute({ sql: 'UPDATE users SET polar_customer_id = ? WHERE id = ?', args: [polarCustomerId, userId] });
 }
 
-export async function updateUserSettings(userId: string, settings: { notifyEmail?: boolean; slackWebhookUrl?: string | null; weeklyDigest?: boolean; digestFrequency?: string; notifyActionRequired?: boolean; notifyReviewRecommended?: boolean; notifyInfoOnly?: boolean }) {
+export async function updateUserSettings(userId: string, settings: { notifyEmail?: boolean; slackWebhookUrl?: string | null; weeklyDigest?: boolean; digestFrequency?: string; notifyActionRequired?: boolean; notifyReviewRecommended?: boolean; notifyInfoOnly?: boolean; webhookUrl?: string | null; slaActionHours?: number; slaReviewHours?: number }) {
   const updates: string[] = [];
   const args: any[] = [];
 
@@ -155,6 +160,18 @@ export async function updateUserSettings(userId: string, settings: { notifyEmail
   if (settings.notifyInfoOnly !== undefined) {
     updates.push('notify_info_only = ?');
     args.push(settings.notifyInfoOnly ? 1 : 0);
+  }
+  if (settings.webhookUrl !== undefined) {
+    updates.push('webhook_url = ?');
+    args.push(settings.webhookUrl);
+  }
+  if (settings.slaActionHours !== undefined) {
+    updates.push('sla_action_hours = ?');
+    args.push(settings.slaActionHours);
+  }
+  if (settings.slaReviewHours !== undefined) {
+    updates.push('sla_review_hours = ?');
+    args.push(settings.slaReviewHours);
   }
 
   if (updates.length === 0) return;
@@ -321,6 +338,22 @@ export async function updateReviewNote(userId: string, changeId: number, reviewN
 
 export async function deleteChangeHistoryByUrl(userId: string, url: string) {
   await getDb().execute({ sql: 'DELETE FROM change_history WHERE user_id = ? AND url = ?', args: [userId, url] });
+}
+
+// ─── Assignment ───
+
+export async function assignChange(userId: string, changeId: number, assignedTo: string) {
+  await getDb().execute({
+    sql: 'UPDATE change_history SET assigned_to = ?, assigned_at = datetime(\'now\') WHERE id = ? AND user_id = ?',
+    args: [assignedTo, changeId, userId],
+  });
+}
+
+export async function unassignChange(userId: string, changeId: number) {
+  await getDb().execute({
+    sql: 'UPDATE change_history SET assigned_to = NULL, assigned_at = NULL WHERE id = ? AND user_id = ?',
+    args: [changeId, userId],
+  });
 }
 
 // ─── URL status updates (for engine) ───

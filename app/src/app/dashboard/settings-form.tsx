@@ -10,17 +10,23 @@ interface SettingsProps {
   initialNotifyActionRequired?: boolean;
   initialNotifyReviewRecommended?: boolean;
   initialNotifyInfoOnly?: boolean;
+  initialWebhookUrl?: string;
+  initialSlaActionHours?: number;
+  initialSlaReviewHours?: number;
   plan: string;
 }
 
-export function SettingsForm({ initialNotifyEmail, initialSlackWebhookUrl, initialDigestFrequency, initialNotifyActionRequired = true, initialNotifyReviewRecommended = true, initialNotifyInfoOnly = false, plan }: SettingsProps) {
-  const { t } = useLocale();
+export function SettingsForm({ initialNotifyEmail, initialSlackWebhookUrl, initialDigestFrequency, initialNotifyActionRequired = true, initialNotifyReviewRecommended = true, initialNotifyInfoOnly = false, initialWebhookUrl = '', initialSlaActionHours = 48, initialSlaReviewHours = 168, plan }: SettingsProps) {
+  const { t, locale } = useLocale();
   const [notifyEmail, setNotifyEmail] = useState(initialNotifyEmail);
   const [digestFrequency, setDigestFrequency] = useState(initialDigestFrequency || 'weekly');
   const [slackWebhookUrl, setSlackWebhookUrl] = useState(initialSlackWebhookUrl);
   const [notifyActionRequired, setNotifyActionRequired] = useState(initialNotifyActionRequired);
   const [notifyReviewRecommended, setNotifyReviewRecommended] = useState(initialNotifyReviewRecommended);
   const [notifyInfoOnly, setNotifyInfoOnly] = useState(initialNotifyInfoOnly);
+  const [webhookUrl, setWebhookUrl] = useState(initialWebhookUrl);
+  const [slaActionHours, setSlaActionHours] = useState(initialSlaActionHours);
+  const [slaReviewHours, setSlaReviewHours] = useState(initialSlaReviewHours);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
@@ -33,7 +39,7 @@ export function SettingsForm({ initialNotifyEmail, initialSlackWebhookUrl, initi
     await fetch('/api/settings', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ notifyEmail, slackWebhookUrl, weeklyDigest, digestFrequency, notifyActionRequired, notifyReviewRecommended, notifyInfoOnly }),
+      body: JSON.stringify({ notifyEmail, slackWebhookUrl, weeklyDigest, digestFrequency, notifyActionRequired, notifyReviewRecommended, notifyInfoOnly, webhookUrl, slaActionHours, slaReviewHours }),
     });
     setSaving(false);
     setSaved(true);
@@ -134,6 +140,81 @@ export function SettingsForm({ initialNotifyEmail, initialSlackWebhookUrl, initi
           className="w-full rounded-xl glass px-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none"
         />
       </div>
+
+      {/* GRC Webhook */}
+      {(plan === 'pro' || plan === 'team') && (
+        <div>
+          <label className="block text-sm font-medium text-slate-900 mb-1">
+            GRC Webhook
+          </label>
+          <p className="text-xs text-slate-500 mb-2">
+            {locale === 'sv'
+              ? 'Skickar strukturerad JSON vid varje regulatorisk ändring. Koppla till ServiceNow, OneTrust, Archer m.fl.'
+              : 'Sends structured JSON on every regulatory change. Connect to ServiceNow, OneTrust, Archer, etc.'}
+          </p>
+          <input
+            type="url"
+            placeholder="https://your-grc-system.com/api/webhook"
+            value={webhookUrl}
+            onChange={(e) => setWebhookUrl(e.target.value)}
+            className="w-full rounded-xl glass px-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none"
+          />
+          {webhookUrl && (
+            <p className="mt-1 text-xs text-slate-500">
+              {locale === 'sv' ? 'Payload: ' : 'Payload: '}
+              <code className="text-xs">{'{ event, url, source, jurisdiction, action, importance, summary, timestamp }'}</code>
+            </p>
+          )}
+        </div>
+      )}
+
+      {/* SLA Deadlines */}
+      {(plan === 'pro' || plan === 'team') && (
+        <div>
+          <p className="text-sm font-medium text-slate-900 mb-2">
+            {locale === 'sv' ? 'SLA — Granskningstider' : 'SLA — Review deadlines'}
+          </p>
+          <p className="text-xs text-slate-500 mb-3">
+            {locale === 'sv'
+              ? 'Maximalt antal timmar innan en ändring måste granskas. Överskridna ändringar markeras i dashboarden.'
+              : 'Maximum hours before a change must be reviewed. Overdue changes are flagged in the dashboard.'}
+          </p>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-medium text-red-700">
+                {locale === 'sv' ? 'Åtgärd krävs' : 'Action required'}
+              </span>
+              <div className="flex items-center gap-2">
+                <input
+                  type="number"
+                  min="1"
+                  max="720"
+                  value={slaActionHours}
+                  onChange={(e) => setSlaActionHours(Number(e.target.value))}
+                  className="w-16 rounded-lg glass px-2 py-1 text-sm text-slate-900 text-center focus:outline-none"
+                />
+                <span className="text-xs text-slate-500">{locale === 'sv' ? 'timmar' : 'hours'}</span>
+              </div>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-medium text-amber-700">
+                {locale === 'sv' ? 'Granskning rekommenderas' : 'Review recommended'}
+              </span>
+              <div className="flex items-center gap-2">
+                <input
+                  type="number"
+                  min="1"
+                  max="720"
+                  value={slaReviewHours}
+                  onChange={(e) => setSlaReviewHours(Number(e.target.value))}
+                  className="w-16 rounded-lg glass px-2 py-1 text-sm text-slate-900 text-center focus:outline-none"
+                />
+                <span className="text-xs text-slate-500">{locale === 'sv' ? 'timmar' : 'hours'}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <button
         onClick={handleSave}

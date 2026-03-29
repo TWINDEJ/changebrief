@@ -227,6 +227,9 @@ export default async function DashboardPage({
                     initialNotifyActionRequired={(user as any).notify_action_required !== 0}
                     initialNotifyReviewRecommended={(user as any).notify_review_recommended !== 0}
                     initialNotifyInfoOnly={(user as any).notify_info_only === 1}
+                    initialWebhookUrl={(user as any).webhook_url || ''}
+                    initialSlaActionHours={(user as any).sla_action_hours ?? 48}
+                    initialSlaReviewHours={(user as any).sla_review_hours ?? 168}
                     plan={user.plan as string}
                   />
                 </div>
@@ -244,9 +247,10 @@ export default async function DashboardPage({
           <section>
             <SectionErrorBoundary fallbackTitle={locale === 'sv' ? 'Kunde inte ladda compliance' : 'Could not load compliance'}>
               <ComplianceTabs
-                feedContent={<ComplianceFeed history={complianceHistory} plan={user.plan as string} />}
+                feedContent={<ComplianceFeed history={complianceHistory} plan={user.plan as string} slaActionHours={(user as any).sla_action_hours ?? 48} slaReviewHours={(user as any).sla_review_hours ?? 168} />}
                 overviewContent={<ComplianceOverview data={complianceOverview} />}
                 trendContent={trendData.length > 0 ? <ComplianceTrend data={trendData} /> : null}
+                plan={user.plan as string}
               />
             </SectionErrorBoundary>
           </section>

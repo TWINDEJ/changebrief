@@ -2,16 +2,18 @@
 
 import { useState, useEffect, useCallback, type ReactNode } from 'react';
 import { useLocale } from '../locale-provider';
+import { CompliancePdfExport } from './compliance-pdf-export';
 
 interface Props {
   feedContent: ReactNode;
   overviewContent: ReactNode;
   trendContent: ReactNode | null;
+  plan?: string;
 }
 
 type Tab = 'changes' | 'sources' | 'trend';
 
-export function ComplianceTabs({ feedContent, overviewContent, trendContent }: Props) {
+export function ComplianceTabs({ feedContent, overviewContent, trendContent, plan = 'free' }: Props) {
   const { locale, t } = useLocale();
   const [activeTab, setActiveTab] = useState<Tab>('changes');
   const [rssCopied, setRssCopied] = useState(false);
@@ -56,6 +58,7 @@ export function ComplianceTabs({ feedContent, overviewContent, trendContent }: P
             </svg>
             {rssCopied ? (locale === 'sv' ? 'Kopierat!' : 'Copied!') : 'RSS'}
           </button>
+          <CompliancePdfExport plan={plan} />
         </div>
         <div className="flex gap-1 rounded-lg bg-slate-100 p-1">
           {tabs.filter(tab => tab.show).map(({ key, label }) => (

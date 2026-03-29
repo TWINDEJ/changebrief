@@ -85,11 +85,44 @@ export function PopularWatchlists({ existingUrls, canAdd }: { existingUrls: stri
     setAdding(null);
   }, [canAdd, locale, router, show, t]);
 
+  const [bulkAdding, setBulkAdding] = useState(false);
+
+  const handleBulkAdd = useCallback(async () => {
+    const currentFiltered = suggestions.filter(s => {
+      if (activeJurisdiction && s.jurisdiction !== activeJurisdiction) return false;
+      if (activeCategory && s.category !== activeCategory) return false;
+      return true;
+    });
+    const toAdd = currentFiltered.filter(s => !existingUrls.includes(s.url) && !added.has(s.url));
+    if (toAdd.length === 0) { show(locale === 'sv' ? 'Alla redan tillagda' : 'All already added', 'success'); return; }
+    if (!canAdd) { show(t('watchlists.upgradeError'), 'error'); return; }
+
+    setBulkAdding(true);
+    let addedCount = 0;
+    for (const s of toAdd) {
+      try {
+        const res = await fetch('/api/urls', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url: s.url, name: locale === 'sv' ? s.name_sv : s.name, category: s.category }),
+        });
+        if (res.ok) {
+          setAdded(prev => new Set(prev).add(s.url));
+          addedCount++;
+        } else { break; }
+      } catch { break; }
+    }
+    show(`${locale === 'sv' ? 'Lade till' : 'Added'} ${addedCount} ${locale === 'sv' ? 'sidor' : 'pages'}`, 'success');
+    router.refresh();
+    setBulkAdding(false);
+  }, [activeJurisdiction, activeCategory, existingUrls, added, canAdd, locale, router, show, t]);
+
   const filtered = suggestions.filter(s => {
     if (activeJurisdiction && s.jurisdiction !== activeJurisdiction) return false;
     if (activeCategory && s.category !== activeCategory) return false;
     return true;
   });
+  const newInFilter = filtered.filter(s => !existingUrls.includes(s.url) && !added.has(s.url)).length;
   const visible = expanded ? filtered : filtered.slice(0, 12);
   const hasMore = filtered.length > 12;
 
@@ -127,6 +160,31 @@ export function PopularWatchlists({ existingUrls, canAdd }: { existingUrls: stri
             </button>
           ))}
         </div>
+
+        {/* Bulk add button */}
+        {(activeJurisdiction || activeCategory) && newInFilter > 0 && (
+          <button
+            onClick={handleBulkAdd}
+            disabled={bulkAdding || !canAdd}
+            className="flex items-center gap-2 cursor-pointer rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-2 text-xs font-medium text-white shadow-lg shadow-blue-500/10 hover:shadow-blue-500/20 transition disabled:opacity-50"
+          >
+            {bulkAdding ? (
+              <>
+                <svg className="h-3.5 w-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+                {locale === 'sv' ? 'Lägger till...' : 'Adding...'}
+              </>
+            ) : (
+              <>
+                {locale === 'sv'
+                  ? `+ Lägg till alla ${newInFilter} ${activeJurisdiction || ''} ${activeCategory || ''} sidor`
+                  : `+ Add all ${newInFilter} ${activeJurisdiction || ''} ${activeCategory || ''} pages`}
+              </>
+            )}
+          </button>
+        )}
 
         <div className="grid gap-3 sm:grid-cols-2 content-start min-h-[480px]">
           {visible.map((s) => {

@@ -15,6 +15,8 @@ interface ComplianceEntry {
   document_type: string | null;
   compliance_action: string | null;
   reviewed_at: string | null;
+  assigned_to: string | null;
+  assigned_at: string | null;
 }
 
 type ActionFilter = 'all' | 'action_required' | 'review_recommended' | 'info_only';
@@ -61,13 +63,15 @@ function ActionBadge({ action, locale }: { action: string; locale: string }) {
   );
 }
 
-export function ComplianceFeed({ history: initialHistory, plan = 'free' }: { history: ComplianceEntry[]; plan?: string }) {
+export function ComplianceFeed({ history: initialHistory, plan = 'free', slaActionHours = 48, slaReviewHours = 168 }: { history: ComplianceEntry[]; plan?: string; slaActionHours?: number; slaReviewHours?: number }) {
   const { locale } = useLocale();
   const [history, setHistory] = useState(initialHistory);
   const [actionFilter, setActionFilter] = useState<ActionFilter>('all');
   const [jurisdictionFilter, setJurisdictionFilter] = useState<string>('');
   const [expanded, setExpanded] = useState<Set<number>>(new Set());
   const [reviewing, setReviewing] = useState<number | null>(null);
+  const [assigning, setAssigning] = useState<number | null>(null);
+  const [assignInput, setAssignInput] = useState('');
 
   const jurisdictions = useMemo(() => {
     const set = new Set<string>();
@@ -112,6 +116,24 @@ export function ComplianceFeed({ history: initialHistory, plan = 'free' }: { his
       );
     }
     setReviewing(null);
+  };
+
+  const handleAssign = async (changeId: number, assignedTo: string) => {
+    setAssigning(changeId);
+    const res = await fetch('/api/assign', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ changeId, assignedTo: assignedTo || null }),
+    });
+    if (res.ok) {
+      setHistory((prev) =>
+        prev.map((e) => e.id === changeId
+          ? { ...e, assigned_to: assignedTo || null, assigned_at: assignedTo ? new Date().toISOString() : null }
+          : e)
+      );
+      setAssignInput('');
+    }
+    setAssigning(null);
   };
 
   const formatDate = (dateStr: string) =>
@@ -239,15 +261,29 @@ export function ComplianceFeed({ history: initialHistory, plan = 'free' }: { his
             ? docTypeLabels[entry.document_type]?.[locale as 'en' | 'sv'] || entry.document_type
             : null;
 
+          // SLA overdue check
+          const isOverdue = !entry.reviewed_at && entry.compliance_action && entry.checked_at && (() => {
+            const ageMs = Date.now() - new Date(entry.checked_at + 'Z').getTime();
+            const ageHours = ageMs / 3600000;
+            if (entry.compliance_action === 'action_required') return ageHours > slaActionHours;
+            if (entry.compliance_action === 'review_recommended') return ageHours > slaReviewHours;
+            return false;
+          })();
+
           return (
             <div key={entry.id}>
               <button
                 onClick={() => toggleExpand(entry.id)}
-                className="w-full cursor-pointer px-4 py-3 flex items-center gap-3 hover:bg-slate-50 transition text-left"
+                className={`w-full cursor-pointer px-4 py-3 flex items-center gap-3 hover:bg-slate-50 transition text-left ${isOverdue ? 'bg-red-50/50' : ''}`}
               >
                 <span className="text-xs text-slate-500 w-24 shrink-0">{formatDate(entry.checked_at)}</span>
                 {entry.compliance_action && (
                   <ActionBadge action={entry.compliance_action} locale={locale} />
+                )}
+                {isOverdue && (
+                  <span className="rounded-full bg-red-50 px-1.5 py-0.5 text-[10px] font-bold text-red-600 shrink-0" title={locale === 'sv' ? 'SLA överskriden' : 'SLA overdue'}>
+                    ⚠ {locale === 'sv' ? 'Försenad' : 'Overdue'}
+                  </span>
                 )}
                 {entry.jurisdiction && (
                   <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-mono text-slate-500 shrink-0">
@@ -304,7 +340,7 @@ export function ComplianceFeed({ history: initialHistory, plan = 'free' }: { his
                       ))}
                     </div>
                   )}
-                  <div className="flex items-center gap-3 pt-1">
+                  <div className="flex items-center gap-3 pt-1 flex-wrap">
                     {!entry.reviewed_at ? (
                       <button
                         onClick={(e) => {
@@ -322,6 +358,39 @@ export function ComplianceFeed({ history: initialHistory, plan = 'free' }: { his
                       <span className="text-xs text-emerald-600/50">
                         {locale === 'sv' ? 'Granskad' : 'Reviewed'} {new Date(entry.reviewed_at + 'Z').toLocaleDateString(locale === 'sv' ? 'sv-SE' : 'en-US')}
                       </span>
+                    )}
+                    {plan === 'team' && (
+                      entry.assigned_to ? (
+                        <span className="flex items-center gap-1.5 text-xs">
+                          <span className="rounded-full bg-blue-50 border border-blue-100 px-2 py-0.5 text-blue-700">
+                            → {entry.assigned_to}
+                          </span>
+                          <button
+                            onClick={(e) => { e.stopPropagation(); handleAssign(entry.id, ''); }}
+                            className="text-slate-400 hover:text-red-500 transition cursor-pointer"
+                          >×</button>
+                        </span>
+                      ) : (
+                        <span className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+                          <input
+                            type="email"
+                            placeholder={locale === 'sv' ? 'tilldela@email.se' : 'assign@email.com'}
+                            value={assigning === entry.id ? assignInput : ''}
+                            onFocus={() => { setAssigning(entry.id); setAssignInput(''); }}
+                            onChange={(e) => setAssignInput(e.target.value)}
+                            onKeyDown={(e) => { if (e.key === 'Enter' && assignInput) handleAssign(entry.id, assignInput); }}
+                            className="w-36 rounded-md bg-slate-50 border border-slate-200 px-2 py-0.5 text-xs text-slate-600 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-blue-300"
+                          />
+                          {assigning === entry.id && assignInput && (
+                            <button
+                              onClick={() => handleAssign(entry.id, assignInput)}
+                              className="text-xs text-blue-600 hover:text-blue-700 transition cursor-pointer"
+                            >
+                              {locale === 'sv' ? 'Tilldela' : 'Assign'}
+                            </button>
+                          )}
+                        </span>
+                      )
                     )}
                   </div>
                 </div>

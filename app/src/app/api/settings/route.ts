@@ -14,6 +14,9 @@ export async function GET() {
     slackWebhookUrl: user.slack_webhook_url || '',
     weeklyDigest: user.weekly_digest !== 0,
     digestFrequency: (user.digest_frequency as string) || 'weekly',
+    webhookUrl: (user as any).webhook_url || '',
+    slaActionHours: (user as any).sla_action_hours ?? 48,
+    slaReviewHours: (user as any).sla_review_hours ?? 168,
   });
 }
 
@@ -25,7 +28,7 @@ export async function PUT(req: NextRequest) {
   if (!user) return NextResponse.json({ error: 'User not found' }, { status: 404 });
 
   const body = await req.json();
-  const { notifyEmail, slackWebhookUrl, weeklyDigest, digestFrequency, notifyActionRequired, notifyReviewRecommended, notifyInfoOnly } = body;
+  const { notifyEmail, slackWebhookUrl, weeklyDigest, digestFrequency, notifyActionRequired, notifyReviewRecommended, notifyInfoOnly, webhookUrl, slaActionHours, slaReviewHours } = body;
 
   await updateUserSettings(user.id as string, {
     notifyEmail: notifyEmail !== undefined ? Boolean(notifyEmail) : undefined,
@@ -35,6 +38,9 @@ export async function PUT(req: NextRequest) {
     notifyActionRequired: notifyActionRequired !== undefined ? Boolean(notifyActionRequired) : undefined,
     notifyReviewRecommended: notifyReviewRecommended !== undefined ? Boolean(notifyReviewRecommended) : undefined,
     notifyInfoOnly: notifyInfoOnly !== undefined ? Boolean(notifyInfoOnly) : undefined,
+    webhookUrl: webhookUrl !== undefined ? (webhookUrl || null) : undefined,
+    slaActionHours: slaActionHours !== undefined ? Number(slaActionHours) : undefined,
+    slaReviewHours: slaReviewHours !== undefined ? Number(slaReviewHours) : undefined,
   });
 
   return NextResponse.json({ ok: true });
