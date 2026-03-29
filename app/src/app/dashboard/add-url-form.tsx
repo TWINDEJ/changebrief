@@ -119,6 +119,10 @@ export function AddUrlForm({ canAdd, plan = 'free' }: { canAdd: boolean; plan?: 
         show(t('form.success'), 'success');
         setUrl(''); setName(''); setSelector(''); setCookies([]); setHeaders([]); setWebhookUrl('');
         setShowAdvanced(false);
+        // Konfetti vid lyckat tillägg
+        if (typeof window !== 'undefined' && (window as any).__triggerConfetti) {
+          (window as any).__triggerConfetti();
+        }
         router.refresh();
       } else {
         const data = await res.json();

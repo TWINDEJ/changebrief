@@ -24,7 +24,7 @@ export function Onboarding() {
   const { locale } = useLocale();
 
   return (
-    <div className="rounded-2xl glass-card p-8">
+    <div className="rounded-2xl glass-card p-8 animate-fade-in">
       <div className="text-center mb-8">
         <h2 className="text-xl font-bold text-slate-900">
           {locale === 'sv' ? 'Välkommen till changebrief' : 'Welcome to changebrief'}
@@ -34,9 +34,9 @@ export function Onboarding() {
         </p>
       </div>
 
-      <div className="grid gap-6 sm:grid-cols-3">
+      <div className="grid gap-6 sm:grid-cols-3 stagger-children">
         {steps.map((step, i) => (
-          <div key={i} className="text-center">
+          <div key={i} className="text-center animate-fade-in">
             <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
               {step.icon}
             </div>

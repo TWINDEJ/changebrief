@@ -19,6 +19,8 @@ import { SectionErrorBoundary } from './error-boundary';
 import { KeyboardShortcutsHelp } from './keyboard-shortcuts';
 import { LanguageSwitcher } from '../locale-provider';
 import { ThemeToggle } from './theme-toggle';
+import { AnimatedNumber } from './animated-number';
+import { DashboardShell } from './dashboard-shell';
 import ComplianceOnboarding from './compliance-onboarding';
 
 function formatLastCheck(dateStr: string | null, locale: Locale): string {
@@ -70,8 +72,7 @@ export default async function DashboardPage({
       {/* Checkout success toast */}
       <CheckoutToast show={checkoutSuccess} />
 
-      {/* Header */}
-      <header className="relative border-b px-4 sm:px-6 py-4" style={{ borderColor: 'var(--app-border)', background: 'var(--app-header-bg)' }}>
+      <DashboardShell header={
         <div className="mx-auto flex max-w-5xl items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600">
@@ -115,7 +116,7 @@ export default async function DashboardPage({
             <SignOutButton />
           </div>
         </div>
-      </header>
+      }>
 
       <main className="relative mx-auto max-w-5xl px-4 sm:px-6 py-6 sm:py-8 space-y-6 sm:space-y-8">
         {/* 1. Onboarding for new users */}
@@ -137,15 +138,15 @@ export default async function DashboardPage({
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 stagger-children">
                 <div className="rounded-xl bg-red-50 border border-red-100 px-4 py-3">
                   <p className="text-xs text-red-600/70 font-medium">{locale === 'sv' ? 'Åtgärd krävs' : 'Action required'}</p>
-                  <p className="mt-1 text-2xl font-bold text-red-700">{complianceSummary.actionRequired}</p>
+                  <p className="mt-1 text-2xl font-bold text-red-700"><AnimatedNumber value={complianceSummary.actionRequired} /></p>
                 </div>
                 <div className="rounded-xl bg-amber-50 border border-amber-100 px-4 py-3">
                   <p className="text-xs text-amber-600/70 font-medium">{locale === 'sv' ? 'Granska' : 'Review'}</p>
-                  <p className="mt-1 text-2xl font-bold text-amber-700">{complianceSummary.reviewRecommended}</p>
+                  <p className="mt-1 text-2xl font-bold text-amber-700"><AnimatedNumber value={complianceSummary.reviewRecommended} /></p>
                 </div>
                 <div className="rounded-xl bg-emerald-50 border border-emerald-100 px-4 py-3">
                   <p className="text-xs text-emerald-600/70 font-medium">{locale === 'sv' ? 'Granskade (7d)' : 'Reviewed (7d)'}</p>
-                  <p className="mt-1 text-2xl font-bold text-emerald-700">{complianceSummary.reviewedThisWeek}</p>
+                  <p className="mt-1 text-2xl font-bold text-emerald-700"><AnimatedNumber value={complianceSummary.reviewedThisWeek} /></p>
                 </div>
                 <div className="rounded-xl glass-card px-4 py-3">
                   <p className="text-xs text-slate-500 font-medium">{t('stats.lastcheck', locale)}</p>
@@ -157,7 +158,7 @@ export default async function DashboardPage({
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 stagger-children">
               <div className="rounded-xl glass-card px-4 py-3 animate-fade-in">
                 <p className="text-xs text-slate-500 font-medium">{t('stats.pages', locale)}</p>
-                <p className="mt-1 text-2xl font-bold text-slate-900">{urls.length}<span className="text-sm font-normal text-slate-500">/{urlLimit}</span></p>
+                <p className="mt-1 text-2xl font-bold text-slate-900"><AnimatedNumber value={urls.length} /><span className="text-sm font-normal text-slate-500">/{urlLimit}</span></p>
               </div>
               <div className="rounded-xl glass-card px-4 py-3">
                 <p className="text-xs text-slate-500 font-medium">{t('stats.changes', locale)}</p>
@@ -171,7 +172,7 @@ export default async function DashboardPage({
               </div>
               <div className="rounded-xl glass-card px-4 py-3">
                 <p className="text-xs text-slate-500 font-medium">{t('stats.checks', locale)}</p>
-                <p className="mt-1 text-2xl font-bold text-slate-900">{stats.totalChecks7d}</p>
+                <p className="mt-1 text-2xl font-bold text-slate-900"><AnimatedNumber value={stats.totalChecks7d} /></p>
               </div>
               {!(complianceHistory.length > 0 && (complianceSummary.actionRequired > 0 || complianceSummary.reviewRecommended > 0 || complianceSummary.reviewedThisWeek > 0)) && (
                 <div className="rounded-xl glass-card px-4 py-3">
@@ -292,6 +293,7 @@ export default async function DashboardPage({
       </main>
 
       <KeyboardShortcutsHelp />
+      </DashboardShell>
     </div>
   );
 }
