@@ -1,82 +1,106 @@
 # HANDOFF — changebrief
 
-## Senast uppdaterad: 2026-03-29
+## Session 2026-03-29 (stor session)
 
-## Vad gjordes denna session
+### Vad som gjordes
 
-### Notisum-konkurrensanalys → Implementation (8 faser + 3 iterationer)
+**Dark mode fix**
+- ~100 CSS-overrides i globals.css som automatiskt mappar alla Tailwind-klasser under `[data-theme="dark"]`
+- GitHub-ikon på login fixad med `currentColor`
 
-**Fas 0: Ljust tema (hela produkten)**
-- Dark `#06080f` → vit/slate-50 i landing + app
-- 30+ filer uppdaterade: globals.css, alla dashboard-komponenter, landing-sidor
-- Glass-effekter → vita kort med border-slate-200 + subtil shadow
-- Glow-effekter borttagna, ersatta med subtila gradienter
+**5 konkurrensfeatures (från konkurrentanalys)**
+1. PDF-rapport — compliance audit trail med jsPDF (klientsida, Pro+)
+2. GRC webhook — globalt webhook URL i settings, strukturerad JSON-payload (Pro+)
+3. Team-tilldelning — assign ändringar till kollegor via email (Team)
+4. SLA-uppföljning — konfigurerbara granskningstider med overdue-flaggor (Pro+)
+5. Bulk add sources — "Lägg till alla" per land/kategori i Discover
 
-**Fas 1: Compliance Action Summary**
-- Ny `getComplianceActionSummary()` i db.ts
-- Färgkodade rutor i dashboard: "3 actions pending | 2 review | 12 reviewed (7d)"
+**Mejl- & rapport-lokalisering (SV/EN)**
+- Ändringsnotis: full SV/EN + CTA-knapp + "Hantera inställningar"-länk
+- Veckodigest: full SV/EN + locale-medvetna datum + lokaliserad subject-rad
+- PDF-titel lokaliserad
+- Ny `locale` kolumn i users-tabellen, sparas vid språkbyte
 
-**Fas 2: Kvittens-workflow**
-- DB: `reviewed_by`, `review_note` kolumner
-- API: POST med reviewer-attribution, PATCH för anteckningar
-- Two-speed review: snabbklick (default) + optional anteckning
-- CSV export: +3 kolumner (reviewed_at, reviewed_by, review_note)
+**UX-förbättringar (4 rundor)**
+- Toast: slide-in/out + notifikationsljud (Web Audio API)
+- Knappar: scale(0.97) press-feedback
+- AnimatedNumber: count-up på stats-kort med IntersectionObserver
+- Sticky header med glasmorfism vid scroll
+- Konfetti vid URL-tillägg (canvas-baserad)
+- FaviconBadge: visar ogranskade antal i browsertabben
+- LiveTime: auto-uppdaterande relativa tider (varje minut)
+- Smooth expand/collapse på feed-items
+- Gradient card borders vid hover (CSS mask)
+- Smooth theme toggle (300ms transition)
+- CopyUrl: hover-reveal kopieringsknapp med flash-animation
+- Shimmer-skeletons istället för pulse
+- CSS tooltips (pure CSS, theme-aware)
+- Keyboard shortcut hint (first visit, 3s delay)
+- Status pulse ring på aktiva URLs
 
-**Fas 3: Compliance Feed + Overview som flikar**
-- Ny `ComplianceOverview` (tabell desktop / kort mobil)
-- `ComplianceTabs` wrapper: "Senaste ändringar" / "Källor" / "Trend"
-- localStorage för flik-val, print-stöd
+**Enterprise-readiness (landing page)**
+- Security & Trust-sida (`/security` + `/sv/security`)
+- Privacy Policy (`/privacy` + `/sv/privacy`)
+- Terms of Service (`/terms` + `/sv/terms`)
+- DPA — Data Processing Agreement (`/dpa`) med print/PDF-knapp
+- Enterprise pricing-tier (SSO, DPA, SLA, faktura)
+- Uppdaterade Pro/Team-tiers med nya features
+- Footer med alla juridiska länkar
+- Login-sidans "terms of service" länkar nu till /terms
 
-**Fas 4: Nordiska myndigheter + jurisdiktionsfilter**
-- 15 nya myndigheter (DK/NO/FI) i suggestions.json
-- `jurisdiction`-fält på alla 71 poster
-- Jurisdiktionsfilter SE|DK|NO|FI|EU|US i Discover
+**Konkurrentanalys**
+- COMPETITIVE-ANALYSIS.md med 15 konkurrenter, 8 marknadsluckor, prisrekommendation
+- Ny konkurrent upptäckt: Changeflow (närmast changebrief)
 
-**Fas 5: Notifikationspreferenser**
-- 3 DB-kolumner: notify_action_required (on), notify_review_recommended (on), notify_info_only (off)
-- Engine respekterar preferenser innan notification dispatch
-- Settings-toggles i dashboard
+### DB-migrationer (körs automatiskt)
+- `users.webhook_url TEXT` — globalt GRC webhook
+- `users.sla_action_hours INTEGER DEFAULT 48`
+- `users.sla_review_hours INTEGER DEFAULT 168`
+- `users.locale TEXT DEFAULT 'en'`
+- `change_history.assigned_to TEXT`
+- `change_history.assigned_at TEXT`
 
-**Fas 6: Compliance-onboarding + empty states**
-- 3-stegs wizard: jurisdiktion → sektor → "Add all recommended"
-- Triggas via `?ref=compliance` från landing page
-- Ghost empty state med mock Finansinspektionen-ändring
+### Nya filer
+- `app/src/app/dashboard/animated-number.tsx`
+- `app/src/app/dashboard/confetti.tsx`
+- `app/src/app/dashboard/compliance-pdf-export.tsx`
+- `app/src/app/dashboard/copy-url.tsx`
+- `app/src/app/dashboard/dashboard-shell.tsx`
+- `app/src/app/dashboard/favicon-badge.tsx`
+- `app/src/app/dashboard/live-time.tsx`
+- `app/src/app/dashboard/scroll-header.tsx`
+- `app/src/app/dashboard/shortcut-hint.tsx`
+- `app/src/app/api/assign/route.ts`
+- `app/src/app/api/locale/route.ts`
+- `landing/src/components/SecurityPage.astro`
+- `landing/src/pages/security.astro` + sv
+- `landing/src/pages/privacy.astro` + sv
+- `landing/src/pages/terms.astro` + sv
+- `landing/src/pages/dpa.astro`
 
-**Fas 7: Landing page omskrivning**
-- 4 nya sektioner: "Why changebrief", ISO-framing, "Beyond legislation", siffror-strip
-- "How it works" (3-stegs compliance-flöde)
-- FAQ med Notisum-jämförelse + FAQPage JSON-LD
-- Compliance-länk i header, highlighted regulatory use-case kort
-- ~80 nya i18n-nycklar (EN+SV)
+---
 
-**Iterationer (bugfixes + UX)**
-- OAuth ref=compliance bevaras genom login-flödet
-- Väntindikator för URLs som väntar på första check
-- RSS-feed synlig med copy-to-clipboard
-- Export upgrade CTA istället för döda knappar
-- Badge-tooltips (vad "Action required" betyder)
-- Toast.tsx ljust tema
-- Locale-provider ljust tema
-- Svenska tecken (å,ä,ö) fixade i compliance-overview
-- Weekly digest visar review-status + pending count
-- Compliance-aware engine error (importance 8)
-- Jurisdiktions-badge i activity feed
+## Nästa session — vad som återstår
 
-## Deployat
-- Landing: Cloudflare Pages (changebrief.io) — ✅
-- App: Vercel (app.changebrief.io) — ✅
+### Blockerare för enterprise-försäljning
+1. **Multi-user / Org-modell** — Idag är varje user isolerad. Behövs: organizations-tabell, team invites, delat dashboard, roller (Admin/Reviewer/Viewer). STOR insats men enda tekniska blockeraren för teamförsäljning.
+2. **Fakturabetalning** — Polar/Stripe kräver kort. Behöver manuell faktura-process eller Stripe Invoicing för enterprise.
 
-## Commits
-- `be3c247` — Light theme + Notisum-competitive features + compliance UX overhaul
-- `a8ebd4b` — Fix: remove unused _initialWeeklyDigest
-- `77121ff` — Fix: lint errors in compliance-onboarding
+### Hög effekt (bygger förtroende)
+3. **Interaktiv demo utan inloggning** — Låt besökare se en mock-dashboard
+4. **Kundcitat / logotyper** — Social proof från tidiga testare
+5. **API-dokumentation** — Webhook payload-spec, endpoints
+6. **Statuspage** — status.changebrief.io (gratis via Instatus/Upptime)
+7. **Onboarding-video** (60 sek) — Landing page video konverterar 2-3x
 
-## Blockerare
-- Compliance-klassificering väntar fortfarande på riktiga regulatoriska ändringar (myndigheter måste faktiskt uppdatera sina sidor)
-- RAG-integration (8000 föreskrifter) planerad som framtida fas
+### Tekniska förbättringar
+8. **SSO/SAML implementation** — Nämns på Enterprise-sidan men inte byggt
+9. **Webhook i engine** — GRC webhook sparas i settings men engine:n skickar inte till den ännu (bara per-URL webhook)
+10. **DPA som riktig PDF** — Nu print-vänlig HTML, kunde vara genererad PDF
+11. **Flerspråkiga AI-summaries** — AI:n skriver alltid på engelska, kunde sammanfatta på SV
 
-## Nästa steg
-1. Testa flödet live: signup via /compliance → onboarding → add authorities → vänta på check
-2. Verifiera att Nordic authorities (DK/NO/FI) faktiskt fungerar med screenshots
-3. Sätta upp testare / beta-användare
-4. Överväga Notisum-specifik comparison page för SEO
+### Positioning (från konkurrentanalysen)
+- **One-liner:** "RegTech-grade regulatory monitoring at SMB prices"
+- **Sweet spot:** $149/mån compliance-plan (mellan $99/mån webbövervakare och $50K/år enterprise RegTech)
+- **Närmaste konkurrent:** Changeflow (saknar visuell övervakning + nordiskt fokus)
+- **Moat:** Enda verktyget som kombinerar screenshot-monitoring + AI-förklaring + compliance-klassificering + review workflow + nordiskt fokus + överkomlig self-serve-prissättning
