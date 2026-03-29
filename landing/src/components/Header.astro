@@ -20,7 +20,10 @@ const otherUrl = lang === 'en' ? '/sv' : '/';
       </a>
       <div class="flex items-center gap-3">
         <a href={lang === 'sv' ? '/sv/compliance' : '/compliance'} class="hidden sm:inline-flex cursor-pointer text-sm font-medium theme-text-secondary hover:theme-text transition-all duration-200">
-          {lang === 'sv' ? 'Compliance' : 'Compliance'}
+          Compliance
+        </a>
+        <a href={lang === 'sv' ? '/sv/security' : '/security'} class="hidden sm:inline-flex cursor-pointer text-sm font-medium theme-text-secondary hover:theme-text transition-all duration-200">
+          {lang === 'sv' ? 'Säkerhet' : 'Security'}
         </a>
         <!-- Theme toggle -->
         <button
