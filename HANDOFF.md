@@ -1,57 +1,82 @@
 # HANDOFF — changebrief
 
-## Session 2026-03-27 (eftermiddag)
+## Senast uppdaterad: 2026-03-29
 
-### Vad som gjordes
+## Vad gjordes denna session
 
-**RegTech-expansion (Fas 1-3) — komplett:**
-- DB-schema: 4 nya kolumner (category, jurisdiction, document_type, compliance_action)
-- 58 watchlists i 12 sektorer — 26 svenska/EU-myndigheter
-- AI-prompt: GPT-4o klassificerar regulatoriska ändringar med jurisdiktion, dokumenttyp, åtgärdsnivå
-- Compliance Feed i dashboarden med action-badges och filter
-- Compliance Trend — stacked bar chart per myndighet
-- Audit trail CSV-export (/api/export/compliance)
-- RSS-feed (/api/feed med jurisdiction/action-filter)
-- Compliance-sektion i weekly digest
-- Slack/Teams/Email med compliance-badges
-- Dedikerad landing page: /compliance (EN) + /sv/compliance (SV)
+### Notisum-konkurrensanalys → Implementation (8 faser + 3 iterationer)
 
-**Teknisk skuld — löst:**
-- Polar webhook-signaturverifiering aktiverad
-- Weekly digest E2E-testad (2 mejl skickade framgångsrikt)
-- OpenAI kostnadsloggning per engine-körning (tokens + USD)
-- tsconfig.json fixad för GitHub Actions (types: ["node"])
+**Fas 0: Ljust tema (hela produkten)**
+- Dark `#06080f` → vit/slate-50 i landing + app
+- 30+ filer uppdaterade: globals.css, alla dashboard-komponenter, landing-sidor
+- Glass-effekter → vita kort med border-slate-200 + subtil shadow
+- Glow-effekter borttagna, ersatta med subtila gradienter
 
-**Dashboard UX:**
-- Activity Feed: "Ändringar"-filter som default (döljer no-change-rader)
-- Settings: kugghjulsikon i Activity-header istället för separat sektion
-- Expanderbara monitored page-kort (klicka → detaljer)
-- Discover: 12 items default, stabil grid-höjd, add-animation
-- Feedback-knapp i header (pulsande amber, mailto kristian@changebrief.io)
-- CSS-animationer (fade-in, fade-in-scale)
+**Fas 1: Compliance Action Summary**
+- Ny `getComplianceActionSummary()` i db.ts
+- Färgkodade rutor i dashboard: "3 actions pending | 2 review | 12 reviewed (7d)"
 
-**E-post:**
-- kristian@changebrief.io konfigurerad via Namecheap Email Forwarding → thewigander@gmail.com
-- Reply-To på alla utgående mejl (notiser + digest)
+**Fas 2: Kvittens-workflow**
+- DB: `reviewed_by`, `review_note` kolumner
+- API: POST med reviewer-attribution, PATCH för anteckningar
+- Two-speed review: snabbklick (default) + optional anteckning
+- CSV export: +3 kolumner (reviewed_at, reviewed_by, review_note)
 
-### Var vi är
+**Fas 3: Compliance Feed + Overview som flikar**
+- Ny `ComplianceOverview` (tabell desktop / kort mobil)
+- `ComplianceTabs` wrapper: "Senaste ändringar" / "Källor" / "Trend"
+- localStorage för flik-val, print-stöd
 
-RegTech MVP komplett. Alla features deployade. Väntar på att myndigheter uppdaterar sidor så compliance-klassificering triggas i produktion. Baselines tagna för Trafikverket + Finansinspektionen.
+**Fas 4: Nordiska myndigheter + jurisdiktionsfilter**
+- 15 nya myndigheter (DK/NO/FI) i suggestions.json
+- `jurisdiction`-fält på alla 71 poster
+- Jurisdiktionsfilter SE|DK|NO|FI|EU|US i Discover
 
-### Nästa steg
+**Fas 5: Notifikationspreferenser**
+- 3 DB-kolumner: notify_action_required (on), notify_review_recommended (on), notify_info_only (off)
+- Engine respekterar preferenser innan notification dispatch
+- Settings-toggles i dashboard
 
-1. **Hitta 2-3 compliance-testare** — Kristian kontaktar via LinkedIn/mejl (personligt, ej Twindej)
-2. **RAG-integration** — Koppla lokal-rag:s 1900 indexerade föreskrifter. Fas 1: exportera metadata-JSON
-3. **Acknowledged/Reviewed-workflow** — Markera ändringar som granskade (audit trail)
-4. **Teamfunktion** — Delade bevakningslistor, motiverar Team-planen
-5. **SEO** — Optimera /compliance för sökmotorer
+**Fas 6: Compliance-onboarding + empty states**
+- 3-stegs wizard: jurisdiktion → sektor → "Add all recommended"
+- Triggas via `?ref=compliance` från landing page
+- Ghost empty state med mock Finansinspektionen-ändring
 
-### Kvarstående tekniskt
-- [ ] Verifiera compliance-klassificering med riktiga regulatoriska ändringar
-- [ ] Verifiera GPT-4o-mini pre-filter i produktion
-- [ ] Kolla OpenAI-kostnad efter ett par dagars körningar (loggas nu per körning)
+**Fas 7: Landing page omskrivning**
+- 4 nya sektioner: "Why changebrief", ISO-framing, "Beyond legislation", siffror-strip
+- "How it works" (3-stegs compliance-flöde)
+- FAQ med Notisum-jämförelse + FAQPage JSON-LD
+- Compliance-länk i header, highlighted regulatory use-case kort
+- ~80 nya i18n-nycklar (EN+SV)
 
-### Deploy-process
-- **App (Vercel):** `cd app && npx vercel --prod --yes` (auto-deploy fungerar INTE pålitligt via git push)
-- **Landing (Cloudflare):** `cd landing && npm run build && npx wrangler pages deploy dist --project-name pagewatch`
-- **Engine (GitHub Actions):** Triggas automatiskt var 6h, eller `gh workflow run check-urls.yml`
+**Iterationer (bugfixes + UX)**
+- OAuth ref=compliance bevaras genom login-flödet
+- Väntindikator för URLs som väntar på första check
+- RSS-feed synlig med copy-to-clipboard
+- Export upgrade CTA istället för döda knappar
+- Badge-tooltips (vad "Action required" betyder)
+- Toast.tsx ljust tema
+- Locale-provider ljust tema
+- Svenska tecken (å,ä,ö) fixade i compliance-overview
+- Weekly digest visar review-status + pending count
+- Compliance-aware engine error (importance 8)
+- Jurisdiktions-badge i activity feed
+
+## Deployat
+- Landing: Cloudflare Pages (changebrief.io) — ✅
+- App: Vercel (app.changebrief.io) — ✅
+
+## Commits
+- `be3c247` — Light theme + Notisum-competitive features + compliance UX overhaul
+- `a8ebd4b` — Fix: remove unused _initialWeeklyDigest
+- `77121ff` — Fix: lint errors in compliance-onboarding
+
+## Blockerare
+- Compliance-klassificering väntar fortfarande på riktiga regulatoriska ändringar (myndigheter måste faktiskt uppdatera sina sidor)
+- RAG-integration (8000 föreskrifter) planerad som framtida fas
+
+## Nästa steg
+1. Testa flödet live: signup via /compliance → onboarding → add authorities → vänta på check
+2. Verifiera att Nordic authorities (DK/NO/FI) faktiskt fungerar med screenshots
+3. Sätta upp testare / beta-användare
+4. Överväga Notisum-specifik comparison page för SEO
