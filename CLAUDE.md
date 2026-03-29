@@ -56,7 +56,22 @@ gh workflow run check-urls.yml   # Trigga cron manuellt
 AUTH_SECRET, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, AUTH_URL, TURSO_DATABASE_URL, TURSO_AUTH_TOKEN
 
 ## Env vars (GitHub Secrets)
-OPENAI_API_KEY, TURSO_DATABASE_URL, TURSO_AUTH_TOKEN
+OPENAI_API_KEY, TURSO_DATABASE_URL, TURSO_AUTH_TOKEN, RESEND_API_KEY
+
+## Tester
+```bash
+npm test  # 29 tester, 3 sviter (engine, rate-limit, schema-sync)
+```
+
+## Nya viktiga filer
+```
+shared/schema.ts       — Centralt DB-schema (engine + app använder detta)
+tests/                 — Vitest testsviter
+app/src/lib/rate-limit.ts   — In-memory rate limiter
+app/src/lib/api-auth.ts     — Bearer token auth för public API
+app/src/app/demo/page.tsx   — Interaktiv demo (ingen auth)
+app/src/app/status/page.tsx — Publik statuspage
+```
 
 ## Lektioner
 - pixelmatch v7 är ESM-only
@@ -65,3 +80,9 @@ OPENAI_API_KEY, TURSO_DATABASE_URL, TURSO_AUTH_TOKEN
 - Polar kräver pris > $0 — gratis plan hanteras utan checkout
 - better-sqlite3 fungerar INTE i Vercel serverless — använd Turso/libsql
 - serverExternalPackages i next.config.ts hjälper inte med Turbopack-buggen
+- DB-schema definieras i shared/schema.ts — ändra ALLTID där, inte i db.ts
+- schema-sync.test.ts fångar drift mellan engine och app — kör tester efter schemaändringar
+- POLAR_WEBHOOK_SECRET måste vara satt — annars returnerar webhook 503
+- Next.js app kan inte importera från ../../shared/ — app har egen kopia av schema
+- Rate limiting i serverless: in-memory Map per instans, inte globalt. Good enough för nu.
+- Bygg inte features ingen frågar efter. Fokusera på testaren och verifiering.

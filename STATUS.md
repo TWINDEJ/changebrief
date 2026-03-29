@@ -2,31 +2,35 @@
 
 ## Uppdaterad: 2026-03-29
 
-## Status: Live — Notisum-konkurrensfunktioner deployade
+## Status: Live — production hardened
 
 ### Teknik
-- **Landing:** Cloudflare Pages (changebrief.io) — ✅ live
-- **App:** Vercel (app.changebrief.io) — ✅ live
-- **DB:** Turso (eu-west-1) — schema uppdaterat med reviewed_by, review_note, notification preferences
-- **Engine:** GitHub Actions cron var 6h
+- **Landing:** Cloudflare Pages (changebrief.io) — live
+- **App:** Vercel (app.changebrief.io) — live
+- **DB:** Turso (eu-west-1) — daglig backup
+- **Engine:** GitHub Actions cron var 6h — crash alerting
+- **CI:** Tester + build vid varje push
+- **Uptime:** Health check var 5:e minut, mejl vid downtime
 
-### Nya funktioner (2026-03-29)
-- Ljust tema (hela produkten)
-- Compliance Action Summary (dashboard)
-- Kvittens-workflow med reviewer-attribution
-- Compliance Overview-tabell (sortbar, filtrerbar, mobilanpassad)
-- Flikar: Senaste ändringar / Källor / Trend
-- 71 myndigheter (15 nya nordiska: DK/NO/FI)
-- Jurisdiktionsfilter i Discover
-- Notifikationspreferenser per åtgärdsnivå
-- Compliance-onboarding (3-stegs wizard)
-- Landing page: Why, ISO, Beyond, FAQ, How it works
-- RSS synlig, badge-tooltips, väntindikator, export upgrade CTA
+### Produktionsmognad: 8-9/10
+- 29 tester (engine logik, rate limiting, schema sync)
+- Rate limiting på alla publika endpoints
+- Centraliserat DB-schema med drift-detection
+- Crash alerting, uptime monitoring, daglig DB-backup
+- Polar webhook-secret obligatoriskt
+
+### Nya sidor
+- `/demo` — interaktiv demo utan inloggning
+- `/status` — publik statuspage med live DB-check
+- `/api/health` — maskinläsbar health check
+- `/api/v1/changes` — public API (bearer auth, Pro+)
+- `/api/v1/sources` — public API (bearer auth, Pro+)
+- `/api/keys` — API key management (Pro+)
 
 ### Blockerare
 - Compliance-klassificering ej verifierad med riktiga regulatoriska ändringar
-- RAG-integration (8000 föreskrifter) — framtida fas
+- RAG-integration (8595 föreskrifter) — avvaktar, plan utvärderad
 
 ### Väntar på
-- Testare / beta-användare
-- Riktiga regulatoriska ändringar att verifiera AI-klassificering mot
+- Feedback från testare
+- Betalande kund
