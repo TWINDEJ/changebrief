@@ -134,7 +134,7 @@ export default async function DashboardPage({
           <section className="space-y-3">
             {/* Compliance action summary (shown when compliance data exists) */}
             {complianceHistory.length > 0 && (complianceSummary.actionRequired > 0 || complianceSummary.reviewRecommended > 0 || complianceSummary.reviewedThisWeek > 0) && (
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 stagger-children">
                 <div className="rounded-xl bg-red-50 border border-red-100 px-4 py-3">
                   <p className="text-xs text-red-600/70 font-medium">{locale === 'sv' ? 'Åtgärd krävs' : 'Action required'}</p>
                   <p className="mt-1 text-2xl font-bold text-red-700">{complianceSummary.actionRequired}</p>
@@ -154,8 +154,8 @@ export default async function DashboardPage({
               </div>
             )}
             {/* Generic stats */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <div className="rounded-xl glass-card px-4 py-3">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 stagger-children">
+              <div className="rounded-xl glass-card px-4 py-3 animate-fade-in">
                 <p className="text-xs text-slate-500 font-medium">{t('stats.pages', locale)}</p>
                 <p className="mt-1 text-2xl font-bold text-slate-900">{urls.length}<span className="text-sm font-normal text-slate-500">/{urlLimit}</span></p>
               </div>

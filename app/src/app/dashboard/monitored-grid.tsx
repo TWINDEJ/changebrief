@@ -139,7 +139,7 @@ export function MonitoredGrid({ urls }: { urls: WatchedUrl[] }) {
       </div>
 
       {/* Grid */}
-      <div className="grid gap-3 grid-cols-1 sm:grid-cols-2">
+      <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 stagger-children">
         {sorted.map((u) => {
           const isMuted = u.muted === 1;
           const hasError = u.last_error && (u.consecutive_errors ?? 0) > 0;
