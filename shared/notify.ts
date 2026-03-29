@@ -20,7 +20,8 @@ export async function sendEmailNotification(
   to: string,
   name: string,
   url: string,
-  analysis: ChangeAnalysis
+  analysis: ChangeAnalysis,
+  locale: string = 'en'
 ): Promise<void> {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
@@ -28,26 +29,54 @@ export async function sendEmailNotification(
     return;
   }
 
+  const sv = locale === 'sv';
   const emoji = analysis.importance >= 7 ? '🔴' : analysis.importance >= 4 ? '🟡' : '🟢';
   const elements = analysis.changedElements.length > 0
     ? analysis.changedElements.map(el => `<li>${el}</li>`).join('')
-    : '<li>N/A</li>';
+    : `<li>${sv ? 'Ej specificerat' : 'N/A'}</li>`;
+
+  const actionLabels: Record<string, { en: string; sv: string }> = {
+    action_required: { en: '🔴 Action required', sv: '🔴 Åtgärd krävs' },
+    review_recommended: { en: '🟡 Review recommended', sv: '🟡 Granskning rekommenderas' },
+    info_only: { en: 'ℹ️ Info only', sv: 'ℹ️ Endast information' },
+  };
 
   const html = `
-    <div style="font-family: -apple-system, sans-serif; max-width: 600px; margin: 0 auto;">
-      <h2 style="color: #3b82f6;">${emoji} Change detected: ${name}</h2>
-      <p style="font-size: 16px; color: #1e293b;">${analysis.summary}</p>
-      ${analysis.complianceAction ? `<div style="margin: 12px 0; padding: 8px 12px; border-radius: 8px; font-size: 14px; font-weight: 600; ${analysis.complianceAction === 'action_required' ? 'background: #fef2f2; color: #dc2626; border: 1px solid #fecaca;' : analysis.complianceAction === 'review_recommended' ? 'background: #fffbeb; color: #d97706; border: 1px solid #fde68a;' : 'background: #f8fafc; color: #64748b; border: 1px solid #e2e8f0;'}">${analysis.complianceAction === 'action_required' ? '🔴 Action required' : analysis.complianceAction === 'review_recommended' ? '🟡 Review recommended' : 'ℹ️ Info only'}${analysis.jurisdiction ? ` [${analysis.jurisdiction}]` : ''}${analysis.documentType ? ` • ${analysis.documentType}` : ''}</div>` : ''}
-      <table style="margin: 16px 0; font-size: 14px; color: #475569;">
-        <tr><td style="padding-right: 16px;"><strong>Importance:</strong></td><td>${analysis.importance}/10</td></tr>
-        <tr><td style="padding-right: 16px;"><strong>URL:</strong></td><td><a href="${url}">${url}</a></td></tr>
-      </table>
-      <p style="font-size: 14px; color: #475569;"><strong>Changed elements:</strong></p>
-      <ul style="font-size: 14px; color: #475569;">${elements}</ul>
-      <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 24px 0;" />
-      <p style="font-size: 12px; color: #94a3b8;">Sent by <a href="https://changebrief.io" style="color: #3b82f6;">changebrief</a></p>
+    <div style="font-family: -apple-system, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff;">
+      <div style="padding: 24px;">
+        <h2 style="color: #0f172a; font-size: 20px; margin: 0 0 4px;">
+          ${emoji} ${sv ? 'Ändring upptäckt' : 'Change detected'}: ${name}
+        </h2>
+        <p style="font-size: 16px; color: #1e293b; line-height: 1.6; margin: 12px 0;">${analysis.summary}</p>
+        ${analysis.complianceAction ? `
+        <div style="margin: 16px 0; padding: 10px 14px; border-radius: 8px; font-size: 14px; font-weight: 600; ${analysis.complianceAction === 'action_required' ? 'background: #fef2f2; color: #dc2626; border: 1px solid #fecaca;' : analysis.complianceAction === 'review_recommended' ? 'background: #fffbeb; color: #d97706; border: 1px solid #fde68a;' : 'background: #f8fafc; color: #64748b; border: 1px solid #e2e8f0;'}">
+          ${actionLabels[analysis.complianceAction]?.[locale as 'en' | 'sv'] || analysis.complianceAction}${analysis.jurisdiction ? ` [${analysis.jurisdiction}]` : ''}${analysis.documentType ? ` · ${analysis.documentType}` : ''}
+        </div>` : ''}
+        <table style="margin: 16px 0; font-size: 14px; color: #475569;">
+          <tr><td style="padding: 4px 16px 4px 0;"><strong>${sv ? 'Vikt' : 'Importance'}:</strong></td><td>${analysis.importance}/10</td></tr>
+          <tr><td style="padding: 4px 16px 4px 0;"><strong>URL:</strong></td><td><a href="${url}" style="color: #3b82f6;">${url}</a></td></tr>
+        </table>
+        <p style="font-size: 14px; color: #475569; margin-bottom: 4px;"><strong>${sv ? 'Ändrade element' : 'Changed elements'}:</strong></p>
+        <ul style="font-size: 14px; color: #475569; margin: 0; padding-left: 20px;">${elements}</ul>
+
+        <div style="text-align: center; margin: 28px 0 12px;">
+          <a href="https://app.changebrief.io/dashboard" style="display: inline-block; background: linear-gradient(135deg, #2563eb, #4f46e5); color: white; padding: 10px 28px; border-radius: 10px; text-decoration: none; font-weight: 600; font-size: 14px;">
+            ${sv ? 'Öppna Dashboard' : 'Open Dashboard'}
+          </a>
+        </div>
+      </div>
+      <div style="border-top: 1px solid #e2e8f0; padding: 16px 24px;">
+        <p style="font-size: 12px; color: #94a3b8; margin: 0;">
+          ${sv ? 'Skickat av' : 'Sent by'} <a href="https://changebrief.io" style="color: #3b82f6; text-decoration: none;">changebrief</a>
+          · <a href="https://app.changebrief.io/dashboard" style="color: #94a3b8; text-decoration: none;">${sv ? 'Hantera inställningar' : 'Manage settings'}</a>
+        </p>
+      </div>
     </div>
   `;
+
+  const subject = sv
+    ? `${emoji} ${name}: ${analysis.summary}`
+    : `${emoji} ${name}: ${analysis.summary}`;
 
   const response = await fetch('https://api.resend.com/emails', {
     method: 'POST',
@@ -59,7 +88,7 @@ export async function sendEmailNotification(
       from: 'changebrief <notifications@changebrief.io>',
       reply_to: 'kristian@changebrief.io',
       to: [to],
-      subject: `${emoji} ${name}: ${analysis.summary}`,
+      subject,
       html,
     }),
   });

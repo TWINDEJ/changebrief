@@ -89,6 +89,7 @@ export async function initDb() {
     'ALTER TABLE users ADD COLUMN sla_review_hours INTEGER DEFAULT 168',
     'ALTER TABLE change_history ADD COLUMN assigned_to TEXT',
     'ALTER TABLE change_history ADD COLUMN assigned_at TEXT',
+    'ALTER TABLE users ADD COLUMN locale TEXT DEFAULT \'en\'',
   ]) {
     try { await db.execute(col); } catch { /* column already exists */ }
   }
@@ -129,7 +130,7 @@ export async function updateUserPolarId(userId: string, polarCustomerId: string)
   await getDb().execute({ sql: 'UPDATE users SET polar_customer_id = ? WHERE id = ?', args: [polarCustomerId, userId] });
 }
 
-export async function updateUserSettings(userId: string, settings: { notifyEmail?: boolean; slackWebhookUrl?: string | null; weeklyDigest?: boolean; digestFrequency?: string; notifyActionRequired?: boolean; notifyReviewRecommended?: boolean; notifyInfoOnly?: boolean; webhookUrl?: string | null; slaActionHours?: number; slaReviewHours?: number }) {
+export async function updateUserSettings(userId: string, settings: { notifyEmail?: boolean; slackWebhookUrl?: string | null; weeklyDigest?: boolean; digestFrequency?: string; notifyActionRequired?: boolean; notifyReviewRecommended?: boolean; notifyInfoOnly?: boolean; webhookUrl?: string | null; slaActionHours?: number; slaReviewHours?: number; locale?: string }) {
   const updates: string[] = [];
   const args: any[] = [];
 
@@ -172,6 +173,10 @@ export async function updateUserSettings(userId: string, settings: { notifyEmail
   if (settings.slaReviewHours !== undefined) {
     updates.push('sla_review_hours = ?');
     args.push(settings.slaReviewHours);
+  }
+  if (settings.locale !== undefined) {
+    updates.push('locale = ?');
+    args.push(settings.locale);
   }
 
   if (updates.length === 0) return;

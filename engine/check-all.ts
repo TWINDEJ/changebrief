@@ -105,7 +105,7 @@ async function sendNotifications(row: any, analysis: any, diffPercent: number) {
 
   // Email notification
   if (notify_email && email) {
-    promises.push(sendEmailNotification(email, name, url, analysis));
+    promises.push(sendEmailNotification(email, name, url, analysis, (row.locale as string) || 'en'));
   }
 
   // Slack notification (per-user webhook URL)
@@ -316,7 +316,7 @@ async function main() {
   await initSchema();
 
   const result = await db.execute({
-    sql: 'SELECT wu.*, u.email, u.plan, u.notify_email, u.slack_webhook_url, u.notify_action_required, u.notify_review_recommended, u.notify_info_only FROM watched_urls wu JOIN users u ON wu.user_id = u.id WHERE wu.active = 1 AND (wu.muted IS NULL OR wu.muted = 0)',
+    sql: 'SELECT wu.*, u.email, u.plan, u.notify_email, u.slack_webhook_url, u.notify_action_required, u.notify_review_recommended, u.notify_info_only, u.locale FROM watched_urls wu JOIN users u ON wu.user_id = u.id WHERE wu.active = 1 AND (wu.muted IS NULL OR wu.muted = 0)',
     args: []
   });
 

@@ -34,7 +34,7 @@ export function CompliancePdfExport({ plan }: { plan: string }) {
       // Header
       doc.setFontSize(18);
       doc.setTextColor(15, 23, 42);
-      doc.text('changebrief — Compliance Audit Report', 14, 18);
+      doc.text(locale === 'sv' ? 'changebrief — Compliance-granskningsrapport' : 'changebrief — Compliance Audit Report', 14, 18);
 
       doc.setFontSize(10);
       doc.setTextColor(100, 116, 139);

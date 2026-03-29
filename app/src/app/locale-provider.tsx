@@ -19,6 +19,12 @@ export function LocaleProvider({ initialLocale, children }: { initialLocale: Loc
   const setLocale = useCallback((l: Locale) => {
     setLocaleState(l);
     document.cookie = `locale=${l};path=/;max-age=${60 * 60 * 24 * 365}`;
+    // Spara locale till DB så engine kan använda rätt språk i mejl
+    fetch('/api/locale', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ locale: l }),
+    }).catch(() => {});
     window.location.reload();
   }, []);
 
