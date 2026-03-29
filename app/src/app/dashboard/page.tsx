@@ -234,6 +234,9 @@ export default async function DashboardPage({
                     initialWebhookUrl={(user as any).webhook_url || ''}
                     initialSlaActionHours={(user as any).sla_action_hours ?? 48}
                     initialSlaReviewHours={(user as any).sla_review_hours ?? 168}
+                    initialTeamsWebhookUrl={(user as any).teams_webhook_url || ''}
+                    initialDiscordWebhookUrl={(user as any).discord_webhook_url || ''}
+                    initialPagerdutyRoutingKey={(user as any).pagerduty_routing_key || ''}
                     plan={user.plan as string}
                   />
                 </div>

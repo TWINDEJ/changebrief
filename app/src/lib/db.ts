@@ -13,6 +13,8 @@ function getDb(): Client {
 }
 
 // ─── Schema initialization ───
+// VIKTIGT: Migrationer definieras centralt i shared/schema.ts.
+// Denna kopia måste hållas i synk — testet tests/schema-sync.test.ts verifierar detta.
 
 export async function initDb() {
   const db = getDb();
@@ -59,6 +61,20 @@ export async function initDb() {
     );
   `);
 
+  // API keys table
+  await db.execute(`
+    CREATE TABLE IF NOT EXISTS api_keys (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL REFERENCES users(id),
+      name TEXT NOT NULL,
+      key_hash TEXT NOT NULL UNIQUE,
+      key_prefix TEXT NOT NULL,
+      created_at TEXT DEFAULT (datetime('now')),
+      last_used_at TEXT,
+      revoked_at TEXT
+    )
+  `);
+
   // Add columns if they don't exist (migration for existing DBs)
   for (const col of [
     'ALTER TABLE users ADD COLUMN notify_email INTEGER DEFAULT 1',
@@ -90,6 +106,9 @@ export async function initDb() {
     'ALTER TABLE change_history ADD COLUMN assigned_to TEXT',
     'ALTER TABLE change_history ADD COLUMN assigned_at TEXT',
     'ALTER TABLE users ADD COLUMN locale TEXT DEFAULT \'en\'',
+    'ALTER TABLE users ADD COLUMN teams_webhook_url TEXT',
+    'ALTER TABLE users ADD COLUMN discord_webhook_url TEXT',
+    'ALTER TABLE users ADD COLUMN pagerduty_routing_key TEXT',
   ]) {
     try { await db.execute(col); } catch { /* column already exists */ }
   }
@@ -130,7 +149,7 @@ export async function updateUserPolarId(userId: string, polarCustomerId: string)
   await getDb().execute({ sql: 'UPDATE users SET polar_customer_id = ? WHERE id = ?', args: [polarCustomerId, userId] });
 }
 
-export async function updateUserSettings(userId: string, settings: { notifyEmail?: boolean; slackWebhookUrl?: string | null; weeklyDigest?: boolean; digestFrequency?: string; notifyActionRequired?: boolean; notifyReviewRecommended?: boolean; notifyInfoOnly?: boolean; webhookUrl?: string | null; slaActionHours?: number; slaReviewHours?: number; locale?: string }) {
+export async function updateUserSettings(userId: string, settings: { notifyEmail?: boolean; slackWebhookUrl?: string | null; weeklyDigest?: boolean; digestFrequency?: string; notifyActionRequired?: boolean; notifyReviewRecommended?: boolean; notifyInfoOnly?: boolean; webhookUrl?: string | null; slaActionHours?: number; slaReviewHours?: number; locale?: string; teamsWebhookUrl?: string | null; discordWebhookUrl?: string | null; pagerdutyRoutingKey?: string | null }) {
   const updates: string[] = [];
   const args: any[] = [];
 
@@ -177,6 +196,18 @@ export async function updateUserSettings(userId: string, settings: { notifyEmail
   if (settings.locale !== undefined) {
     updates.push('locale = ?');
     args.push(settings.locale);
+  }
+  if (settings.teamsWebhookUrl !== undefined) {
+    updates.push('teams_webhook_url = ?');
+    args.push(settings.teamsWebhookUrl);
+  }
+  if (settings.discordWebhookUrl !== undefined) {
+    updates.push('discord_webhook_url = ?');
+    args.push(settings.discordWebhookUrl);
+  }
+  if (settings.pagerdutyRoutingKey !== undefined) {
+    updates.push('pagerduty_routing_key = ?');
+    args.push(settings.pagerdutyRoutingKey);
   }
 
   if (updates.length === 0) return;
@@ -459,6 +490,65 @@ export async function getComplianceOverview(userId: string) {
     args: [userId],
   });
   return result.rows;
+}
+
+// ─── API Keys ───
+
+export async function createApiKey(userId: string, name: string): Promise<{ id: string; key: string }> {
+  const db = getDb();
+  const id = crypto.randomUUID();
+  // Prefix with "cb_" for easy identification, then 32 random hex chars
+  const keyBytes = new Uint8Array(32);
+  crypto.getRandomValues(keyBytes);
+  const key = 'cb_' + Array.from(keyBytes).map(b => b.toString(16).padStart(2, '0')).join('');
+  const keyHash = await hashApiKey(key);
+
+  await db.execute({
+    sql: 'INSERT INTO api_keys (id, user_id, name, key_hash, key_prefix, created_at) VALUES (?, ?, ?, ?, ?, datetime(\'now\'))',
+    args: [id, userId, name, keyHash, key.slice(0, 10)],
+  });
+  return { id, key }; // key only returned on creation
+}
+
+export async function listApiKeys(userId: string) {
+  const result = await getDb().execute({
+    sql: 'SELECT id, name, key_prefix, created_at, last_used_at FROM api_keys WHERE user_id = ? AND revoked_at IS NULL ORDER BY created_at DESC',
+    args: [userId],
+  });
+  return result.rows;
+}
+
+export async function revokeApiKey(userId: string, keyId: string) {
+  await getDb().execute({
+    sql: 'UPDATE api_keys SET revoked_at = datetime(\'now\') WHERE id = ? AND user_id = ?',
+    args: [keyId, userId],
+  });
+}
+
+export async function getUserByApiKey(key: string) {
+  const db = getDb();
+  const keyHash = await hashApiKey(key);
+  const result = await db.execute({
+    sql: `SELECT u.* FROM api_keys ak JOIN users u ON ak.user_id = u.id
+          WHERE ak.key_hash = ? AND ak.revoked_at IS NULL`,
+    args: [keyHash],
+  });
+  if (result.rows.length === 0) return null;
+
+  // Update last_used_at
+  await db.execute({
+    sql: 'UPDATE api_keys SET last_used_at = datetime(\'now\') WHERE key_hash = ?',
+    args: [keyHash],
+  });
+
+  return result.rows[0];
+}
+
+async function hashApiKey(key: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(key);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
 // ─── Plan limits ───

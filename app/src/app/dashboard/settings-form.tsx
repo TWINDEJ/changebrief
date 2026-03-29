@@ -13,10 +13,13 @@ interface SettingsProps {
   initialWebhookUrl?: string;
   initialSlaActionHours?: number;
   initialSlaReviewHours?: number;
+  initialTeamsWebhookUrl?: string;
+  initialDiscordWebhookUrl?: string;
+  initialPagerdutyRoutingKey?: string;
   plan: string;
 }
 
-export function SettingsForm({ initialNotifyEmail, initialSlackWebhookUrl, initialDigestFrequency, initialNotifyActionRequired = true, initialNotifyReviewRecommended = true, initialNotifyInfoOnly = false, initialWebhookUrl = '', initialSlaActionHours = 48, initialSlaReviewHours = 168, plan }: SettingsProps) {
+export function SettingsForm({ initialNotifyEmail, initialSlackWebhookUrl, initialDigestFrequency, initialNotifyActionRequired = true, initialNotifyReviewRecommended = true, initialNotifyInfoOnly = false, initialWebhookUrl = '', initialSlaActionHours = 48, initialSlaReviewHours = 168, initialTeamsWebhookUrl = '', initialDiscordWebhookUrl = '', initialPagerdutyRoutingKey = '', plan }: SettingsProps) {
   const { t, locale } = useLocale();
   const [notifyEmail, setNotifyEmail] = useState(initialNotifyEmail);
   const [digestFrequency, setDigestFrequency] = useState(initialDigestFrequency || 'weekly');
@@ -27,6 +30,9 @@ export function SettingsForm({ initialNotifyEmail, initialSlackWebhookUrl, initi
   const [webhookUrl, setWebhookUrl] = useState(initialWebhookUrl);
   const [slaActionHours, setSlaActionHours] = useState(initialSlaActionHours);
   const [slaReviewHours, setSlaReviewHours] = useState(initialSlaReviewHours);
+  const [teamsWebhookUrl, setTeamsWebhookUrl] = useState(initialTeamsWebhookUrl);
+  const [discordWebhookUrl, setDiscordWebhookUrl] = useState(initialDiscordWebhookUrl);
+  const [pagerdutyRoutingKey, setPagerdutyRoutingKey] = useState(initialPagerdutyRoutingKey);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
@@ -39,7 +45,7 @@ export function SettingsForm({ initialNotifyEmail, initialSlackWebhookUrl, initi
     await fetch('/api/settings', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ notifyEmail, slackWebhookUrl, weeklyDigest, digestFrequency, notifyActionRequired, notifyReviewRecommended, notifyInfoOnly, webhookUrl, slaActionHours, slaReviewHours }),
+      body: JSON.stringify({ notifyEmail, slackWebhookUrl, weeklyDigest, digestFrequency, notifyActionRequired, notifyReviewRecommended, notifyInfoOnly, webhookUrl, slaActionHours, slaReviewHours, teamsWebhookUrl, discordWebhookUrl, pagerdutyRoutingKey }),
     });
     setSaving(false);
     setSaved(true);
@@ -140,6 +146,58 @@ export function SettingsForm({ initialNotifyEmail, initialSlackWebhookUrl, initi
           className="w-full rounded-xl glass px-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none"
         />
       </div>
+
+      {/* Pro+ integrations: Teams, Discord, PagerDuty, GRC Webhook */}
+      {(plan === 'pro' || plan === 'team') && (
+        <>
+          {/* Microsoft Teams */}
+          <div>
+            <label className="block text-sm font-medium text-slate-900 mb-1">Microsoft Teams</label>
+            <p className="text-xs text-slate-500 mb-2">
+              {locale === 'sv' ? 'Incoming Webhook URL från Teams-kanalen.' : 'Incoming Webhook URL from your Teams channel.'}
+            </p>
+            <input
+              type="url"
+              placeholder="https://outlook.office.com/webhook/..."
+              value={teamsWebhookUrl}
+              onChange={(e) => setTeamsWebhookUrl(e.target.value)}
+              className="w-full rounded-xl glass px-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none"
+            />
+          </div>
+
+          {/* Discord */}
+          <div>
+            <label className="block text-sm font-medium text-slate-900 mb-1">Discord</label>
+            <p className="text-xs text-slate-500 mb-2">
+              {locale === 'sv' ? 'Webhook URL från Discord-kanalinställningar.' : 'Webhook URL from Discord channel settings.'}
+            </p>
+            <input
+              type="url"
+              placeholder="https://discord.com/api/webhooks/..."
+              value={discordWebhookUrl}
+              onChange={(e) => setDiscordWebhookUrl(e.target.value)}
+              className="w-full rounded-xl glass px-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none"
+            />
+          </div>
+
+          {/* PagerDuty */}
+          <div>
+            <label className="block text-sm font-medium text-slate-900 mb-1">PagerDuty</label>
+            <p className="text-xs text-slate-500 mb-2">
+              {locale === 'sv'
+                ? 'Events API v2 Routing Key. Triggar incidenter vid importance >= 6.'
+                : 'Events API v2 Routing Key. Triggers incidents for importance >= 6.'}
+            </p>
+            <input
+              type="text"
+              placeholder="R0..."
+              value={pagerdutyRoutingKey}
+              onChange={(e) => setPagerdutyRoutingKey(e.target.value)}
+              className="w-full rounded-xl glass px-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none"
+            />
+          </div>
+        </>
+      )}
 
       {/* GRC Webhook */}
       {(plan === 'pro' || plan === 'team') && (

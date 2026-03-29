@@ -106,7 +106,8 @@ export async function analyzeChange(
   afterImagePath: string,
   url: string,
   structuredDiff?: string,
-  urlCategory?: string
+  urlCategory?: string,
+  locale?: string
 ): Promise<ChangeAnalysis> {
   const beforeBase64 = fs.readFileSync(beforeImagePath).toString('base64');
   const afterBase64 = fs.readFileSync(afterImagePath).toString('base64');
@@ -117,6 +118,9 @@ export async function analyzeChange(
   }
 
   const isRegulatory = urlCategory && REGULATORY_CATEGORIES.has(urlCategory);
+  const langInstruction = locale === 'sv'
+    ? '\n\nSkriv "summary" på SVENSKA.'
+    : '';
 
   const complianceFields = isRegulatory ? `
   "jurisdiction": "SE",
@@ -165,7 +169,7 @@ Importance-skalan:
 7-9 = Viktig ändring (pris, features, villkor, CTA)
 10 = Kritisk ändring (sidan borttagen, helt ny layout)
 ${complianceInstructions}
-Om bilderna ser likadana ut, sätt hasSignificantChange: false och importance: 1.`
+Om bilderna ser likadana ut, sätt hasSignificantChange: false och importance: 1.${langInstruction}`
         },
         {
           type: 'image_url',

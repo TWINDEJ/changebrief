@@ -1,0 +1,65 @@
+name: Uptime Monitor
+
+on:
+  schedule:
+    # Var 5:e minut
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+
+    steps:
+      - name: Check app health
+        id: health
+        run: |
+          HTTP_CODE=$(curl -s -o /tmp/health.json -w "%{http_code}" https://app.changebrief.io/api/health --max-time 10 || echo "000")
+          echo "http_code=$HTTP_CODE" >> $GITHUB_OUTPUT
+
+          if [ "$HTTP_CODE" = "200" ]; then
+            echo "status=healthy" >> $GITHUB_OUTPUT
+            cat /tmp/health.json | python3 -m json.tool 2>/dev/null || cat /tmp/health.json
+          else
+            echo "status=down" >> $GITHUB_OUTPUT
+            echo "App returned HTTP $HTTP_CODE"
+            cat /tmp/health.json 2>/dev/null || true
+          fi
+
+      - name: Check landing page
+        id: landing
+        run: |
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" https://changebrief.io --max-time 10 || echo "000")
+          echo "http_code=$HTTP_CODE" >> $GITHUB_OUTPUT
+
+          if [ "$HTTP_CODE" = "200" ]; then
+            echo "status=healthy" >> $GITHUB_OUTPUT
+          else
+            echo "status=down" >> $GITHUB_OUTPUT
+            echo "Landing page returned HTTP $HTTP_CODE"
+          fi
+
+      - name: Alert on failure
+        if: steps.health.outputs.status == 'down' || steps.landing.outputs.status == 'down'
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+        run: |
+          APP_STATUS="${{ steps.health.outputs.status }} (HTTP ${{ steps.health.outputs.http_code }})"
+          LANDING_STATUS="${{ steps.landing.outputs.status }} (HTTP ${{ steps.landing.outputs.http_code }})"
+
+          curl -s -X POST https://api.resend.com/emails \
+            -H "Authorization: Bearer $RESEND_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"from\": \"changebrief <notifications@changebrief.io>\",
+              \"to\": [\"kristian@changebrief.io\"],
+              \"subject\": \"[changebrief] DOWNTIME ALERT\",
+              \"html\": \"<h2 style='color:#dc2626'>Downtime detected</h2><p><strong>App:</strong> ${APP_STATUS}</p><p><strong>Landing:</strong> ${LANDING_STATUS}</p><p>Timestamp: $(date -u +%Y-%m-%dT%H:%M:%SZ)</p><p><a href='https://github.com/TWINDEJ/pagewatch/actions'>View logs</a></p>\"
+            }"
+
+          echo "Alert sent!"
+
+      - name: Fail workflow on downtime
+        if: steps.health.outputs.status == 'down' || steps.landing.outputs.status == 'down'
+        run: exit 1

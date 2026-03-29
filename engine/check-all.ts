@@ -3,7 +3,8 @@ import { createClient } from '@libsql/client';
 import { takeScreenshot } from '../shared/screenshot';
 import { compareScreenshots, compareStructured } from '../shared/diff';
 import { analyzeChange, shouldAnalyze, getSessionUsage } from '../shared/vision';
-import { sendEmailNotification, sendSlackNotification, sendWebhookNotification } from '../shared/notify';
+import { sendEmailNotification, sendSlackNotification, sendWebhookNotification, sendTeamsNotification, sendDiscordNotification, sendPagerDutyAlert } from '../shared/notify';
+import { initSchema } from '../shared/schema';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -13,71 +14,6 @@ const db = createClient({
   url: process.env.TURSO_DATABASE_URL!,
   authToken: process.env.TURSO_AUTH_TOKEN,
 });
-
-async function initSchema() {
-  await db.executeMultiple(`
-    CREATE TABLE IF NOT EXISTS users (
-      id TEXT PRIMARY KEY,
-      email TEXT UNIQUE NOT NULL,
-      name TEXT,
-      image TEXT,
-      plan TEXT DEFAULT 'free',
-      polar_customer_id TEXT,
-      notify_email INTEGER DEFAULT 1,
-      slack_webhook_url TEXT,
-      created_at TEXT DEFAULT (datetime('now'))
-    );
-    CREATE TABLE IF NOT EXISTS watched_urls (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      user_id TEXT NOT NULL REFERENCES users(id),
-      url TEXT NOT NULL,
-      name TEXT NOT NULL,
-      active INTEGER DEFAULT 1,
-      threshold REAL DEFAULT 0.3,
-      selector TEXT,
-      mobile INTEGER DEFAULT 0,
-      min_importance INTEGER DEFAULT 5,
-      created_at TEXT DEFAULT (datetime('now')),
-      UNIQUE(user_id, url)
-    );
-    CREATE TABLE IF NOT EXISTS change_history (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      user_id TEXT NOT NULL REFERENCES users(id),
-      url TEXT NOT NULL,
-      name TEXT NOT NULL,
-      change_percent REAL NOT NULL,
-      summary TEXT,
-      importance INTEGER,
-      changed_elements TEXT,
-      has_significant_change INTEGER DEFAULT 0,
-      before_screenshot TEXT,
-      after_screenshot TEXT,
-      checked_at TEXT DEFAULT (datetime('now'))
-    );
-  `);
-  // Add columns if they don't exist (migration)
-  for (const col of [
-    'ALTER TABLE users ADD COLUMN notify_email INTEGER DEFAULT 1',
-    'ALTER TABLE users ADD COLUMN slack_webhook_url TEXT',
-    'ALTER TABLE watched_urls ADD COLUMN last_checked_at TEXT',
-    'ALTER TABLE watched_urls ADD COLUMN last_error TEXT',
-    'ALTER TABLE watched_urls ADD COLUMN consecutive_errors INTEGER DEFAULT 0',
-    'ALTER TABLE watched_urls ADD COLUMN cookies TEXT',
-    'ALTER TABLE watched_urls ADD COLUMN headers TEXT',
-    'ALTER TABLE users ADD COLUMN weekly_digest INTEGER DEFAULT 1',
-    'ALTER TABLE watched_urls ADD COLUMN muted INTEGER DEFAULT 0',
-    'ALTER TABLE users ADD COLUMN checks_this_month INTEGER DEFAULT 0',
-    'ALTER TABLE users ADD COLUMN checks_month TEXT',
-    'ALTER TABLE users ADD COLUMN digest_frequency TEXT DEFAULT \'weekly\'',
-    'ALTER TABLE watched_urls ADD COLUMN webhook_url TEXT',
-    'ALTER TABLE watched_urls ADD COLUMN category TEXT',
-    'ALTER TABLE change_history ADD COLUMN jurisdiction TEXT',
-    'ALTER TABLE change_history ADD COLUMN document_type TEXT',
-    'ALTER TABLE change_history ADD COLUMN compliance_action TEXT',
-  ]) {
-    try { await db.execute(col); } catch { /* already exists */ }
-  }
-}
 
 async function sendNotifications(row: any, analysis: any, diffPercent: number) {
   const { url, name, email, notify_email, slack_webhook_url, min_importance } = row;
@@ -116,6 +52,26 @@ async function sendNotifications(row: any, analysis: any, diffPercent: number) {
   // Per-URL webhook notification
   if (row.webhook_url) {
     promises.push(sendWebhookNotification(row.webhook_url as string, url, name, analysis, diffPercent));
+  }
+
+  // Global GRC webhook (user-level, separate from per-URL webhook)
+  if (row.user_webhook_url) {
+    promises.push(sendWebhookNotification(row.user_webhook_url as string, url, name, analysis, diffPercent));
+  }
+
+  // Microsoft Teams
+  if (row.teams_webhook_url) {
+    promises.push(sendTeamsNotification(row.teams_webhook_url as string, url, name, analysis, diffPercent));
+  }
+
+  // Discord
+  if (row.discord_webhook_url) {
+    promises.push(sendDiscordNotification(row.discord_webhook_url as string, url, name, analysis, diffPercent));
+  }
+
+  // PagerDuty (only for high-importance changes)
+  if (row.pagerduty_routing_key && analysis.importance >= 6) {
+    promises.push(sendPagerDutyAlert(row.pagerduty_routing_key as string, url, name, analysis, diffPercent));
   }
 
   if (promises.length > 0) {
@@ -259,7 +215,8 @@ async function checkUrl(row: any) {
         afterPath,
         url,
         structuredDiff?.summary,
-        row.category as string | undefined
+        row.category as string | undefined,
+        (row.locale as string) || 'en'
       );
       console.log(`  → ${analysis.summary} (${analysis.importance}/10)${analysis.complianceAction ? ` [${analysis.complianceAction}]` : ''}`);
 
@@ -313,10 +270,10 @@ async function checkUrl(row: any) {
 
 async function main() {
   fs.mkdirSync(DATA_DIR, { recursive: true });
-  await initSchema();
+  await initSchema(db);
 
   const result = await db.execute({
-    sql: 'SELECT wu.*, u.email, u.plan, u.notify_email, u.slack_webhook_url, u.notify_action_required, u.notify_review_recommended, u.notify_info_only, u.locale FROM watched_urls wu JOIN users u ON wu.user_id = u.id WHERE wu.active = 1 AND (wu.muted IS NULL OR wu.muted = 0)',
+    sql: 'SELECT wu.*, u.email, u.plan, u.notify_email, u.slack_webhook_url, u.notify_action_required, u.notify_review_recommended, u.notify_info_only, u.locale, u.webhook_url as user_webhook_url, u.teams_webhook_url, u.discord_webhook_url, u.pagerduty_routing_key FROM watched_urls wu JOIN users u ON wu.user_id = u.id WHERE wu.active = 1 AND (wu.muted IS NULL OR wu.muted = 0)',
     args: []
   });
 
@@ -379,4 +336,42 @@ async function main() {
   console.log('\nDone!');
 }
 
-main().catch(console.error);
+// ─── Crash alert: mejla vid total krasch ───
+
+async function sendCrashAlert(error: Error) {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    console.error('RESEND_API_KEY missing, cannot send crash alert');
+    return;
+  }
+
+  try {
+    await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+      body: JSON.stringify({
+        from: 'changebrief <notifications@changebrief.io>',
+        to: ['kristian@changebrief.io'],
+        subject: `[changebrief] Engine crash: ${error.message.slice(0, 80)}`,
+        html: `
+          <div style="font-family: -apple-system, sans-serif; max-width: 600px; margin: 0 auto;">
+            <h2 style="color: #dc2626;">Engine crashed</h2>
+            <p><strong>Error:</strong> ${error.message}</p>
+            <pre style="background: #f1f5f9; padding: 16px; border-radius: 8px; overflow-x: auto; font-size: 12px;">${error.stack?.slice(0, 2000) || 'No stack trace'}</pre>
+            <p style="color: #64748b; font-size: 12px;">Timestamp: ${new Date().toISOString()}</p>
+            <p style="color: #64748b; font-size: 12px;">Check <a href="https://github.com/TWINDEJ/pagewatch/actions">GitHub Actions</a> for full logs.</p>
+          </div>
+        `,
+      }),
+    });
+    console.log('Crash alert sent to kristian@changebrief.io');
+  } catch (emailErr) {
+    console.error('Failed to send crash alert:', emailErr);
+  }
+}
+
+main().catch(async (err) => {
+  console.error('Engine crashed:', err);
+  await sendCrashAlert(err instanceof Error ? err : new Error(String(err)));
+  process.exit(1);
+});

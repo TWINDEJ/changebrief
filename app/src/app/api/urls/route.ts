@@ -1,5 +1,6 @@
 import { auth } from '@/lib/auth';
 import { getUserByEmail, getWatchedUrls, addWatchedUrl, removeWatchedUrl, countWatchedUrls, getUrlLimit, muteUrl } from '@/lib/db';
+import { checkRateLimit, getClientIp } from '@/lib/rate-limit';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET() {
@@ -14,6 +15,16 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
+  // Rate limit: 10 URL-additions per minut per IP
+  const ip = getClientIp(req.headers);
+  const rl = checkRateLimit(`urls:post:${ip}`, 10);
+  if (!rl.allowed) {
+    return NextResponse.json({ error: 'Too many requests. Try again later.' }, {
+      status: 429,
+      headers: { 'Retry-After': String(Math.ceil((rl.resetAt - Date.now()) / 1000)) },
+    });
+  }
+
   const session = await auth();
   if (!session?.user?.email) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 

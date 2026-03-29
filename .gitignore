@@ -7,3 +7,8 @@ dist/
 /data/integrations.json
 .token_cache
 .vercel
+.playwright-mcp/
+.serena/
+*.png
+!app/public/**/*.png
+!landing/public/**/*.png

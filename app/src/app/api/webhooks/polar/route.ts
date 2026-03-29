@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getUserByEmail, updateUserPlan, updateUserPolarId } from '@/lib/db';
+import { checkRateLimit, getClientIp } from '@/lib/rate-limit';
 import crypto from 'crypto';
 
 // Polar webhook: uppdatera plan vid köp/avslut
@@ -42,17 +43,25 @@ function mapProductToPlan(productName: string, priceAmount: number): string {
 }
 
 export async function POST(req: NextRequest) {
+  // Rate limit: 30 webhook calls per minut (Polar bör aldrig skicka mer)
+  const ip = getClientIp(req.headers);
+  const rl = checkRateLimit(`polar:${ip}`, 30);
+  if (!rl.allowed) {
+    return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
+  }
+
   try {
     const body = await req.text();
     const secret = process.env.POLAR_WEBHOOK_SECRET;
 
-    if (secret) {
-      if (!verifyStandardWebhook(body, req.headers, secret)) {
-        console.error('Polar webhook: invalid signature');
-        return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
-      }
-    } else {
-      console.warn('Polar webhook: POLAR_WEBHOOK_SECRET not set, skipping signature verification');
+    if (!secret) {
+      console.error('Polar webhook: POLAR_WEBHOOK_SECRET not configured — rejecting request');
+      return NextResponse.json({ error: 'Webhook not configured' }, { status: 503 });
+    }
+
+    if (!verifyStandardWebhook(body, req.headers, secret)) {
+      console.error('Polar webhook: invalid signature');
+      return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
     }
 
     const event = JSON.parse(body);

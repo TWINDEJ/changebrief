@@ -1,0 +1,61 @@
+name: Database Backup
+
+on:
+  schedule:
+    # Dagligen kl 03:00 UTC (04:00 CET / 05:00 CEST)
+    - cron: '0 3 * * *'
+  workflow_dispatch: # Manuell trigger
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Export database
+        env:
+          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
+        run: |
+          node -e "
+          const { createClient } = require('@libsql/client');
+          const fs = require('fs');
+          const db = createClient({ url: process.env.TURSO_DATABASE_URL, authToken: process.env.TURSO_AUTH_TOKEN });
+
+          async function backup() {
+            const tables = ['users', 'watched_urls', 'change_history', 'api_keys'];
+            const data = {};
+
+            for (const table of tables) {
+              try {
+                const result = await db.execute('SELECT * FROM ' + table);
+                data[table] = { rows: result.rows, count: result.rows.length };
+                console.log(table + ': ' + result.rows.length + ' rows');
+              } catch (err) {
+                console.log(table + ': skipped (' + err.message + ')');
+                data[table] = { rows: [], count: 0, error: err.message };
+              }
+            }
+
+            const filename = 'backup-' + new Date().toISOString().slice(0, 10) + '.json';
+            fs.writeFileSync(filename, JSON.stringify(data, null, 2));
+            console.log('Backup saved to ' + filename);
+          }
+          backup().catch(err => { console.error(err); process.exit(1); });
+          "
+
+      - name: Upload backup as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: db-backup-${{ github.run_id }}
+          path: backup-*.json
+          retention-days: 30
