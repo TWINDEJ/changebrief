@@ -18,7 +18,7 @@ import { CheckoutToast } from './checkout-toast';
 import { SectionErrorBoundary } from './error-boundary';
 import { KeyboardShortcutsHelp } from './keyboard-shortcuts';
 import { LanguageSwitcher } from '../locale-provider';
-import { ComplianceOnboarding } from './compliance-onboarding';
+import ComplianceOnboarding from './compliance-onboarding';
 
 function formatLastCheck(dateStr: string | null, locale: Locale): string {
   if (!dateStr) return t('stats.never', locale);
@@ -119,7 +119,7 @@ export default async function DashboardPage({
         {/* 1. Onboarding for new users */}
         {isNewUser && isComplianceRef ? (
           <section>
-            <ComplianceOnboarding existingUrlCount={urls.length} canAdd={urls.length < urlLimit} />
+            <ComplianceOnboarding canAdd={urls.length < urlLimit} />
           </section>
         ) : isNewUser ? (
           <section>

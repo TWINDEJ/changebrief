@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation';
 import suggestions from '@/data/suggestions.json';
 
 interface Props {
-  existingUrlCount: number;
   canAdd: boolean;
 }
 
@@ -74,7 +73,7 @@ const i18n = {
   },
 };
 
-export default function ComplianceOnboarding({ existingUrlCount, canAdd }: Props) {
+export default function ComplianceOnboarding({ canAdd }: Props) {
   const { locale } = useLocale();
   const router = useRouter();
   const tx = locale === 'sv' ? i18n.sv : i18n.en;
@@ -90,7 +89,7 @@ export default function ComplianceOnboarding({ existingUrlCount, canAdd }: Props
   const toggleJurisdiction = useCallback((j: Jurisdiction) => {
     setSelectedJurisdictions(prev => {
       const next = new Set(prev);
-      if (next.has(j)) next.delete(j); else next.add(j);
+      if (next.has(j)) { next.delete(j); } else { next.add(j); }
       return next;
     });
   }, []);
