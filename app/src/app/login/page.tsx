@@ -14,8 +14,8 @@ export default async function LoginPage({
   const redirectTo = ref ? `/dashboard?ref=${ref}` : '/dashboard';
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-50">
-      <div className="relative w-full max-w-sm space-y-6 rounded-2xl bg-white border border-slate-200 shadow-lg p-8">
+    <div className="flex min-h-screen items-center justify-center" style={{ background: 'var(--app-bg)' }}>
+      <div className="relative w-full max-w-sm space-y-6 rounded-2xl shadow-lg p-8" style={{ background: 'var(--app-bg-card)', border: '1px solid var(--app-border)' }}>
         <div className="text-center">
           <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600">
             <svg className="h-6 w-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">

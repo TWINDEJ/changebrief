@@ -1,36 +1,75 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-background: #f8fafc;
-  --color-foreground: #0f172a;
+  --color-background: var(--app-bg);
+  --color-foreground: var(--app-text);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-body {
-  background: #f8fafc;
-  color: #0f172a;
+/* ─── Theme variables ─── */
+
+:root {
+  --app-bg: #f8fafc;
+  --app-bg-card: #ffffff;
+  --app-bg-secondary: #f1f5f9;
+  --app-bg-muted: #e2e8f0;
+  --app-text: #0f172a;
+  --app-text-secondary: #475569;
+  --app-text-muted: #94a3b8;
+  --app-border: #e2e8f0;
+  --app-border-secondary: #cbd5e1;
+  --app-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.03);
+  --app-shadow-hover: 0 4px 12px rgba(0,0,0,0.06);
+  --app-glass: rgba(255, 255, 255, 0.8);
+  --app-glass-border: rgba(0, 0, 0, 0.06);
+  --app-header-bg: #ffffff;
+  --app-overlay: rgba(0, 0, 0, 0.2);
 }
 
-/* ─── Card effects (light theme) ─── */
+[data-theme="dark"] {
+  --app-bg: #0f172a;
+  --app-bg-card: #1e293b;
+  --app-bg-secondary: #1e293b;
+  --app-bg-muted: #334155;
+  --app-text: #f1f5f9;
+  --app-text-secondary: #cbd5e1;
+  --app-text-muted: #64748b;
+  --app-border: #334155;
+  --app-border-secondary: #475569;
+  --app-shadow: 0 1px 3px rgba(0,0,0,0.2), 0 1px 2px rgba(0,0,0,0.15);
+  --app-shadow-hover: 0 4px 16px rgba(0,0,0,0.3);
+  --app-glass: rgba(30, 41, 59, 0.8);
+  --app-glass-border: rgba(255, 255, 255, 0.06);
+  --app-header-bg: #1e293b;
+  --app-overlay: rgba(0, 0, 0, 0.6);
+}
+
+body {
+  background: var(--app-bg);
+  color: var(--app-text);
+  transition: background-color 0.2s, color 0.2s;
+}
+
+/* ─── Card effects (theme-aware) ─── */
 
 .glass {
-  background: rgba(255, 255, 255, 0.8);
+  background: var(--app-glass);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--app-glass-border);
 }
 
 .glass-card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.03);
+  background: var(--app-bg-card);
+  border: 1px solid var(--app-border);
+  box-shadow: var(--app-shadow);
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .glass-card:hover {
-  border-color: #cbd5e1;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  border-color: var(--app-border-secondary);
+  box-shadow: var(--app-shadow-hover);
 }
 
 /* ─── Smooth transitions everywhere ─── */

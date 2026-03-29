@@ -2,9 +2,9 @@ import { StatsSkeleton, FeedSkeleton, GridSkeleton } from './skeleton';
 
 export default function DashboardLoading() {
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
+    <div className="min-h-screen" style={{ background: 'var(--app-bg)', color: 'var(--app-text)' }}>
       {/* Header skeleton */}
-      <header className="relative border-b border-slate-200 bg-white px-4 sm:px-6 py-4">
+      <header className="relative border-b px-4 sm:px-6 py-4" style={{ borderColor: 'var(--app-border)', background: 'var(--app-header-bg)' }}>
         <div className="mx-auto flex max-w-5xl items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600">

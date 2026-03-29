@@ -18,6 +18,7 @@ import { CheckoutToast } from './checkout-toast';
 import { SectionErrorBoundary } from './error-boundary';
 import { KeyboardShortcutsHelp } from './keyboard-shortcuts';
 import { LanguageSwitcher } from '../locale-provider';
+import { ThemeToggle } from './theme-toggle';
 import ComplianceOnboarding from './compliance-onboarding';
 
 function formatLastCheck(dateStr: string | null, locale: Locale): string {
@@ -64,13 +65,13 @@ export default async function DashboardPage({
   const isNewUser = urls.length === 0 && history.length === 0;
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
+    <div className="min-h-screen" style={{ background: 'var(--app-bg)', color: 'var(--app-text)' }}>
 
       {/* Checkout success toast */}
       <CheckoutToast show={checkoutSuccess} />
 
       {/* Header */}
-      <header className="relative border-b border-slate-200 bg-white px-4 sm:px-6 py-4">
+      <header className="relative border-b px-4 sm:px-6 py-4" style={{ borderColor: 'var(--app-border)', background: 'var(--app-header-bg)' }}>
         <div className="mx-auto flex max-w-5xl items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600">
@@ -84,6 +85,7 @@ export default async function DashboardPage({
             </h1>
           </div>
           <div className="flex items-center gap-2 sm:gap-3">
+            <ThemeToggle />
             <LanguageSwitcher />
             <span className="rounded-full bg-blue-50 border border-blue-100 px-2.5 sm:px-3 py-1 text-xs font-medium text-blue-700">
               {planLabel}
@@ -217,7 +219,7 @@ export default async function DashboardPage({
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
                 </summary>
-                <div className="absolute right-0 top-10 z-20 w-80 rounded-2xl bg-white border border-slate-200 p-4 sm:p-5 shadow-xl animate-fade-in">
+                <div className="absolute right-0 top-10 z-20 w-80 rounded-2xl p-4 sm:p-5 shadow-xl animate-fade-in" style={{ background: 'var(--app-bg-card)', borderColor: 'var(--app-border)', border: '1px solid var(--app-border)' }}>
                   <SettingsForm
                     initialNotifyEmail={user.notify_email !== 0}
                     initialSlackWebhookUrl={(user.slack_webhook_url as string) || ''}
