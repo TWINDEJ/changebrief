@@ -135,18 +135,29 @@ const sv = lang === 'sv';
     </h2>
     <p class="theme-text-secondary text-sm mb-6 max-w-lg mx-auto">
       {sv
-        ? 'Vi erbjuder databehandlingsavtal (DPA), säkerhetsöversikter och kan svara på er IT-avdelnings frågor. Kontakta oss direkt.'
-        : 'We provide Data Processing Agreements (DPA), security overviews, and can answer your IT department\'s questions. Contact us directly.'}
+        ? 'Vi erbjuder databehandlingsavtal (DPA), säkerhetsöversikter och kan svara på er IT-avdelnings frågor.'
+        : 'We provide Data Processing Agreements (DPA), security overviews, and can answer your IT department\'s questions.'}
     </p>
-    <a
-      href="mailto:kristian@changebrief.io?subject=Security%20%26%20DPA%20inquiry"
-      class="btn-glow inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-600 to-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-lg transition-all duration-200 cursor-pointer"
-    >
-      <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-      </svg>
-      kristian@changebrief.io
-    </a>
+    <div class="flex flex-wrap justify-center gap-3">
+      <a
+        href="/dpa"
+        class="btn-glow inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-600 to-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-lg transition-all duration-200 cursor-pointer"
+      >
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+        {sv ? 'Läs DPA' : 'View DPA'}
+      </a>
+      <a
+        href="mailto:kristian@changebrief.io?subject=Security%20%26%20DPA%20inquiry"
+        class="inline-flex items-center gap-2 rounded-full glass px-6 py-3 text-sm font-semibold theme-text-secondary hover:theme-text transition-all duration-200 cursor-pointer"
+      >
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+        </svg>
+        {sv ? 'Kontakta oss' : 'Contact us'}
+      </a>
+    </div>
   </div>
 
   <!-- Compliance Badges -->

@@ -1,0 +1,85 @@
+---
+import Base from '../../layouts/Base.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+---
+
+<Base title="Integritetspolicy — changebrief" description="Hur changebrief samlar in, använder och skyddar dina data." lang="sv">
+  <Header lang="sv" />
+  <div class="mx-auto max-w-3xl px-6 pt-32 pb-24 animate-fade-in-up">
+    <h1 class="text-4xl font-bold tracking-tight theme-text mb-2">Integritetspolicy</h1>
+    <p class="theme-text-muted text-sm mb-12">Senast uppdaterad: 29 mars 2026</p>
+
+    <div class="prose-custom space-y-8 text-sm theme-text-secondary leading-relaxed">
+      <section>
+        <h2 class="text-lg font-semibold theme-text mb-3">1. Vilka vi är</h2>
+        <p>changebrief drivs av Kristian Wigander som enskild firma i Sverige. Kontakt: <a href="mailto:kristian@changebrief.io" class="text-blue-500 hover:text-blue-400">kristian@changebrief.io</a>.</p>
+      </section>
+
+      <section>
+        <h2 class="text-lg font-semibold theme-text mb-3">2. Vilka uppgifter vi samlar in</h2>
+        <ul class="list-disc pl-5 space-y-1.5">
+          <li><strong>Kontodata:</strong> E-postadress, namn och profilbild från din OAuth-leverantör (Google eller GitHub).</li>
+          <li><strong>Bevakningsdata:</strong> URL:er du lägger till, screenshots av dessa sidor, AI-genererade ändringssammanfattningar och dina granskningsåtgärder.</li>
+          <li><strong>Användardata:</strong> Grundläggande analys (sidvisningar, funktionsanvändning) för att förbättra tjänsten. Inga tredjepartsspårare.</li>
+          <li><strong>Betalningsdata:</strong> Hanteras helt av Polar/Stripe. Vi ser eller lagrar aldrig dina kortuppgifter.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2 class="text-lg font-semibold theme-text mb-3">3. Hur vi använder dina uppgifter</h2>
+        <ul class="list-disc pl-5 space-y-1.5">
+          <li>För att tillhandahålla bevakningstjänsten (screenshots, AI-analys, notiser).</li>
+          <li>För att skicka e-postnotiser och sammanfattningar du valt att ta emot.</li>
+          <li>För att förbättra tjänsten baserat på aggregerad, anonymiserad användningsdata.</li>
+        </ul>
+        <p class="mt-2">Vi <strong>säljer, hyr eller delar inte</strong> dina uppgifter med tredje part i marknadsföringssyfte.</p>
+      </section>
+
+      <section>
+        <h2 class="text-lg font-semibold theme-text mb-3">4. Underbiträden</h2>
+        <ul class="list-disc pl-5 space-y-1.5">
+          <li><strong>OpenAI</strong> — AI-analys av screenshots (bilder skickas via API, lagras inte av OpenAI enligt deras datapolicy).</li>
+          <li><strong>Turso</strong> — Databashosting (EU, AWS eu-west-1, Irland).</li>
+          <li><strong>Vercel</strong> — Applikationshosting (edge-nätverk, EU-prioriterad routing).</li>
+          <li><strong>Resend</strong> — E-postleverans.</li>
+          <li><strong>Polar/Stripe</strong> — Betalningshantering.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2 class="text-lg font-semibold theme-text mb-3">5. Datalagring & säkerhet</h2>
+        <p>All data lagras inom EU (AWS eu-west-1, Irland). Data krypteras under överföring (TLS 1.3) och i vila (AES-256). Åtkomst till produktionssystem är begränsad till tjänsteoperatören.</p>
+      </section>
+
+      <section>
+        <h2 class="text-lg font-semibold theme-text mb-3">6. Dina rättigheter (GDPR)</h2>
+        <p>Du har rätt att:</p>
+        <ul class="list-disc pl-5 space-y-1.5">
+          <li><strong>Tillgång</strong> — Begära en kopia av alla uppgifter vi har om dig.</li>
+          <li><strong>Rättelse</strong> — Korrigera felaktiga uppgifter.</li>
+          <li><strong>Radering</strong> — Begära radering av ditt konto och all tillhörande data.</li>
+          <li><strong>Dataportabilitet</strong> — Exportera dina data i CSV-format (tillgängligt i dashboarden).</li>
+          <li><strong>Invändning</strong> — Invända mot behandling av dina uppgifter.</li>
+        </ul>
+        <p class="mt-2">För att utöva dessa rättigheter, kontakta <a href="mailto:kristian@changebrief.io" class="text-blue-500 hover:text-blue-400">kristian@changebrief.io</a>. Vi svarar inom 30 dagar.</p>
+      </section>
+
+      <section>
+        <h2 class="text-lg font-semibold theme-text mb-3">7. Lagringstid</h2>
+        <p>Ändringshistorik sparas enligt din plan (7 dagar till 1 år). När du raderar ditt konto tas all data bort permanent inom 30 dagar.</p>
+      </section>
+
+      <section>
+        <h2 class="text-lg font-semibold theme-text mb-3">8. Cookies</h2>
+        <p>Vi använder enbart nödvändiga cookies: autentiseringssession, språkval och temaval. Inga annons- eller spårningscookies.</p>
+      </section>
+
+      <section>
+        <h2 class="text-lg font-semibold theme-text mb-3">9. Ändringar av denna policy</h2>
+        <p>Vi kan uppdatera denna policy. Väsentliga ändringar kommuniceras via e-post till registrerade användare. Fortsatt användning av tjänsten efter ändringar innebär godkännande.</p>
+      </section>
+    </div>
+  </div>
+  <Footer />
+</Base>

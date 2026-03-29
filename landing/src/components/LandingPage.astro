@@ -260,9 +260,11 @@ const structuredData = {
         </div>
         <span class="theme-text">change<span class="text-blue-600">brief</span></span>
       </div>
-      <nav class="flex gap-6 text-sm theme-text-muted">
-        <a href={lang === 'sv' ? '/sv/security' : '/security'} class="transition-colors duration-200 hover:text-[var(--text-primary)] cursor-pointer">{lang === 'sv' ? 'Säkerhet' : 'Security & Trust'}</a>
-        <a href={lang === 'sv' ? '/sv/compliance' : '/compliance'} class="transition-colors duration-200 hover:text-[var(--text-primary)] cursor-pointer">Compliance</a>
+      <nav class="flex flex-wrap gap-x-6 gap-y-2 text-sm theme-text-muted">
+        <a href={lang === 'sv' ? '/sv/security' : '/security'} class="transition-colors duration-200 hover:text-[var(--text-primary)] cursor-pointer">{lang === 'sv' ? 'Säkerhet' : 'Security'}</a>
+        <a href="/privacy" class="transition-colors duration-200 hover:text-[var(--text-primary)] cursor-pointer">{lang === 'sv' ? 'Integritetspolicy' : 'Privacy'}</a>
+        <a href="/terms" class="transition-colors duration-200 hover:text-[var(--text-primary)] cursor-pointer">{lang === 'sv' ? 'Villkor' : 'Terms'}</a>
+        <a href="/dpa" class="transition-colors duration-200 hover:text-[var(--text-primary)] cursor-pointer">DPA</a>
         <a href="mailto:kristian@changebrief.io" class="transition-colors duration-200 hover:text-[var(--text-primary)] cursor-pointer">{lt('footer.contact', lang)}</a>
       </nav>
       <p class="text-sm theme-text-muted">&copy; 2026 changebrief</p>

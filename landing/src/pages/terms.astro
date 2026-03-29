@@ -1,0 +1,77 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Base title="Terms of Service — changebrief" description="Terms and conditions for using changebrief." lang="en">
+  <Header lang="en" />
+  <div class="mx-auto max-w-3xl px-6 pt-32 pb-24 animate-fade-in-up">
+    <h1 class="text-4xl font-bold tracking-tight theme-text mb-2">Terms of Service</h1>
+    <p class="theme-text-muted text-sm mb-12">Last updated: March 29, 2026</p>
+
+    <div class="prose-custom space-y-8 text-sm theme-text-secondary leading-relaxed">
+      <section>
+        <h2 class="text-lg font-semibold theme-text mb-3">1. Service description</h2>
+        <p>changebrief is a web monitoring service that takes periodic screenshots of web pages, detects visual changes, and uses AI to describe what changed. The service is provided "as is" on a best-effort basis.</p>
+      </section>
+
+      <section>
+        <h2 class="text-lg font-semibold theme-text mb-3">2. Accounts</h2>
+        <p>You must create an account using Google or GitHub authentication. You are responsible for maintaining the security of your account. You must be at least 18 years old or have the legal capacity to enter into a binding agreement.</p>
+      </section>
+
+      <section>
+        <h2 class="text-lg font-semibold theme-text mb-3">3. Acceptable use</h2>
+        <p>You agree to use changebrief only to monitor web pages that you have a legitimate reason to monitor. You may not use the service to:</p>
+        <ul class="list-disc pl-5 space-y-1.5">
+          <li>Monitor pages in violation of their terms of service or applicable law.</li>
+          <li>Attempt to circumvent access controls, rate limits, or security measures.</li>
+          <li>Resell the service or provide it as a white-label product without written agreement.</li>
+          <li>Use the service to facilitate illegal activity.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2 class="text-lg font-semibold theme-text mb-3">4. Subscriptions & billing</h2>
+        <p>Paid plans are billed monthly or annually via Polar/Stripe. You may cancel at any time — your plan remains active until the end of the billing period. Refunds are handled on a case-by-case basis. We reserve the right to change pricing with 30 days' notice.</p>
+      </section>
+
+      <section>
+        <h2 class="text-lg font-semibold theme-text mb-3">5. Service availability</h2>
+        <p>We aim for 99.9% uptime but do not guarantee uninterrupted service. Scheduled maintenance will be communicated in advance when possible. We are not liable for missed monitoring checks due to downtime, third-party service outages, or target website changes.</p>
+      </section>
+
+      <section>
+        <h2 class="text-lg font-semibold theme-text mb-3">6. AI accuracy</h2>
+        <p>AI-generated change summaries, importance scores, and compliance classifications are provided as decision support — not as legal or compliance advice. You are responsible for verifying the accuracy of AI outputs and making your own compliance decisions.</p>
+      </section>
+
+      <section>
+        <h2 class="text-lg font-semibold theme-text mb-3">7. Data ownership</h2>
+        <p>You retain full ownership of your data (URLs, settings, review notes). We claim no ownership of your monitoring data. When you delete your account, all your data is permanently removed within 30 days.</p>
+      </section>
+
+      <section>
+        <h2 class="text-lg font-semibold theme-text mb-3">8. Limitation of liability</h2>
+        <p>To the maximum extent permitted by law, changebrief and its operator shall not be liable for any indirect, incidental, or consequential damages arising from your use of the service, including but not limited to missed regulatory changes, compliance failures, or data loss.</p>
+      </section>
+
+      <section>
+        <h2 class="text-lg font-semibold theme-text mb-3">9. Termination</h2>
+        <p>We may suspend or terminate accounts that violate these terms. You may terminate your account at any time by contacting us. Upon termination, your data will be deleted according to our data retention policy.</p>
+      </section>
+
+      <section>
+        <h2 class="text-lg font-semibold theme-text mb-3">10. Governing law</h2>
+        <p>These terms are governed by the laws of Sweden. Any disputes shall be resolved by the courts of Sweden.</p>
+      </section>
+
+      <section>
+        <h2 class="text-lg font-semibold theme-text mb-3">11. Contact</h2>
+        <p>Questions about these terms? Contact <a href="mailto:kristian@changebrief.io" class="text-blue-500 hover:text-blue-400">kristian@changebrief.io</a>.</p>
+      </section>
+    </div>
+  </div>
+  <Footer />
+</Base>

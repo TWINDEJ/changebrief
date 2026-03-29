@@ -55,7 +55,12 @@ export default async function LoginPage({
           </form>
         </div>
 
-        <p className="text-center text-xs text-slate-500">{t('login.terms', locale)}</p>
+        <p className="text-center text-xs text-slate-500">
+          {locale === 'sv' ? 'Genom att logga in godkänner du våra ' : 'By signing in you agree to our '}
+          <a href="https://changebrief.io/terms" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-400 underline">
+            {locale === 'sv' ? 'användarvillkor' : 'terms of service'}
+          </a>.
+        </p>
       </div>
     </div>
   );
