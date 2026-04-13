@@ -6,6 +6,7 @@ const client = new OpenAI();
 
 // Kostnadsberäkning per modell (USD per 1M tokens, 2026-03 priser)
 const MODEL_COSTS: Record<string, { input: number; output: number }> = {
+  'gpt-5.4-mini': { input: 0.30, output: 1.20 },
   'gpt-4o': { input: 2.50, output: 10.00 },
   'gpt-4o-mini': { input: 0.15, output: 0.60 },
 };
@@ -22,7 +23,7 @@ let sessionUsage: UsageStats[] = [];
 
 function trackUsage(model: string, usage: { prompt_tokens?: number; completion_tokens?: number } | undefined) {
   if (!usage) return;
-  const costs = MODEL_COSTS[model] || MODEL_COSTS['gpt-4o'];
+  const costs = MODEL_COSTS[model] || MODEL_COSTS['gpt-5.4-mini'];
   const prompt = usage.prompt_tokens ?? 0;
   const completion = usage.completion_tokens ?? 0;
   const cost = (prompt * costs.input + completion * costs.output) / 1_000_000;
@@ -48,9 +49,9 @@ export interface ChangeAnalysis {
 }
 
 /**
- * Billig pre-filter: ska vi köra full GPT-4o Vision-analys?
+ * Billig pre-filter: ska vi köra full Vision-analys?
  * Pris-shortcut och CTA-ändringar → alltid ja.
- * Annars → GPT-4o-mini text-only.
+ * Annars → gpt-5.4-mini text-only.
  */
 export async function shouldAnalyze(diff: StructuredDiffResult): Promise<boolean> {
   // Pris-shortcut — prisändringar är alltid viktiga
@@ -65,31 +66,33 @@ export async function shouldAnalyze(diff: StructuredDiffResult): Promise<boolean
     return true;
   }
 
-  // Rubrikändringar — ofta viktiga
-  if (diff.addedHeadings.length > 0 || diff.removedHeadings.length > 0) {
-    console.log('  → Heading shortcut: rubrikändring hittad, kör full analys');
+  // Rubrikändringar — bara om MÅNGA (strukturell omorganisering, inte nyhetsrotation)
+  // Enstaka rubrikbyten på nyhetsidor (SLV, Trafikverket etc) är inte compliance-relevanta
+  const headingChurn = diff.addedHeadings.length + diff.removedHeadings.length;
+  if (headingChurn >= 3) {
+    console.log(`  → Heading shortcut: ${headingChurn} rubriker ändrade, kör full analys`);
     return true;
   }
 
-  // Annars: fråga GPT-4o-mini (billigt, ~$0.0003)
+  // Annars: fråga gpt-5.4-mini (billigt, ~$0.0003)
   if (!diff.summary) return false;
 
   try {
     const response = await client.chat.completions.create({
-      model: 'gpt-4o-mini',
+      model: 'gpt-5.4-mini',
       max_tokens: 10,
       messages: [{
         role: 'user',
         content: `A web page monitoring tool detected these changes:\n\n${diff.summary}\n\nIs this worth a detailed analysis? Changes to pricing, features, terms, or product offerings are worth it. Minor text tweaks, timestamp updates, or cosmetic changes are not.\n\nReply only YES or NO.`
       }]
     });
-    trackUsage('gpt-4o-mini', response.usage);
+    trackUsage('gpt-5.4-mini', response.usage);
     const answer = (response.choices[0]?.message?.content || '').trim().toUpperCase();
-    console.log(`  → GPT-4o-mini filter: ${answer}`);
+    console.log(`  → gpt-5.4-mini filter: ${answer}`);
     return answer.startsWith('YES');
   } catch (err) {
     // Vid fel, kör full analys ändå (hellre en extra analys än att missa)
-    console.warn('  ⚠ GPT-4o-mini filter misslyckades, kör full analys');
+    console.warn('  ⚠ gpt-5.4-mini filter misslyckades, kör full analys');
     return true;
   }
 }
@@ -142,7 +145,7 @@ Var STRIKT med "action_required" — använd det bara för faktiska regeländrin
 Höj importance med +2 om complianceAction är "action_required" (max 10).` : '';
 
   const response = await client.chat.completions.create({
-    model: 'gpt-4o',
+    model: 'gpt-5.4-mini',
     max_tokens: 1024,
     messages: [{
       role: 'user',
@@ -164,10 +167,24 @@ Svara ENDAST med JSON i detta format:
 }
 
 Importance-skalan:
-1-3 = Kosmetisk ändring (färg, typsnitt, liten bilduppdatering)
-4-6 = Innehållsändring (ny text, uppdaterad info)
-7-9 = Viktig ändring (pris, features, villkor, CTA)
-10 = Kritisk ändring (sidan borttagen, helt ny layout)
+1-3 = Kosmetisk ändring, nyhetsrotation (färg, typsnitt, nyhetsartikel byts ut, rubrik roterar på startsida)
+4-6 = Innehållsändring med substans (uppdaterad produktbeskrivning, ny FAQ-post, förtydliganden)
+7-9 = Viktig ändring (pris, features, villkor, CTA, ny bindande regel, ny deadline)
+10 = Kritisk ändring (sidan borttagen, helt ny layout, avvecklad tjänst)
+
+KRITISKT — nyhetsrotation är inte compliance-relevant:
+Om sidan är en startsida, nyhetslista, pressrum eller "senaste nytt"-avsnitt,
+och ändringen är att en nyhetsartikel/rubrik bytts ut, lagts till eller tagits bort
+→ SÄTT importance: 1-2 och hasSignificantChange: false.
+Detta gäller ÄVEN om sidan tillhör en myndighet. En ny pressartikel på
+Livsmedelsverkets startsida är inte en regeländring.
+
+Compliance-relevans kräver substantiell ändring i: föreskrift, riktlinje, vägledning,
+beslut, standard, remiss, lagtext, eller teknisk specifikation. Nyheter, pressmeddelanden
+och redaktionellt innehåll är INTE compliance-relevant.
+
+Conservative bias: vid osäkerhet, välj LÄGRE importance. Bättre att missa en ändring
+än att skicka en falsk notifiering som tränar användaren att ignorera oss.
 ${complianceInstructions}
 Om bilderna ser likadana ut, sätt hasSignificantChange: false och importance: 1.${langInstruction}`
         },
@@ -183,18 +200,22 @@ Om bilderna ser likadana ut, sätt hasSignificantChange: false och importance: 1
     }]
   });
 
-  trackUsage('gpt-4o', response.usage);
+  trackUsage('gpt-5.4-mini', response.usage);
   const text = response.choices[0]?.message?.content || '';
 
   try {
     const clean = text.replace(/```json|```/g, '').trim();
     return JSON.parse(clean);
   } catch {
+    // JSON-parse fel: skippa notifiering hellre än att skicka falskt larm.
+    // Tidigare defaultade vi till importance:5 + hasSignificantChange:true vilket
+    // genererade bruset "1-ordsändring → 5/10 i inbox".
+    console.error(`  ⚠ Vision JSON-parse fel för ${url}, skippar notifiering. Raw: ${text.slice(0, 200)}`);
     return {
-      summary: text,
-      importance: 5,
+      summary: '',
+      importance: 0,
       changedElements: [],
-      hasSignificantChange: true
+      hasSignificantChange: false
     };
   }
 }
