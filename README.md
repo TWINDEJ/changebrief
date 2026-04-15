@@ -37,8 +37,8 @@ tests/            — Vitest test suite
 
 ```bash
 # 1. Clone and install
-git clone https://github.com/TWINDEJ/pagewatch.git
-cd pagewatch
+git clone https://github.com/TWINDEJ/changebrief.git
+cd changebrief
 npm install
 npx playwright install chromium
 
