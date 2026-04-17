@@ -80,7 +80,7 @@ export async function shouldAnalyze(diff: StructuredDiffResult): Promise<boolean
   try {
     const response = await client.chat.completions.create({
       model: 'gpt-5.4-mini',
-      max_tokens: 10,
+      max_completion_tokens: 10,
       messages: [{
         role: 'user',
         content: `A web page monitoring tool detected these changes:\n\n${diff.summary}\n\nIs this worth a detailed analysis? Changes to pricing, features, terms, or product offerings are worth it. Minor text tweaks, timestamp updates, or cosmetic changes are not.\n\nReply only YES or NO.`
@@ -146,7 +146,7 @@ Höj importance med +2 om complianceAction är "action_required" (max 10).` : ''
 
   const response = await client.chat.completions.create({
     model: 'gpt-5.4-mini',
-    max_tokens: 1024,
+    max_completion_tokens: 1024,
     messages: [{
       role: 'user',
       content: [

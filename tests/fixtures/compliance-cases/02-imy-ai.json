@@ -1,0 +1,17 @@
+{
+  "name": "IMY-AI-forordning-stallningstagande",
+  "url": "https://www.imy.se/vagledningar/ai-forordningen/",
+  "category": "Data & Privacy",
+  "locale": "sv",
+  "description": "IMY (Integritetsskyddsmyndigheten) publicerar ställningstagande kring hur AI-förordningen (EU AI Act) interagerar med GDPR. Ställningstagande = guidance. Ingen bindande regel, men bör granskas av dataskyddsombud.",
+  "beforeHtml": "<!DOCTYPE html><html lang='sv'><head><meta charset='utf-8'><title>AI-förordningen — IMY</title><style>body{font-family:'Open Sans',Arial,sans-serif;max-width:820px;margin:40px auto;padding:20px;color:#1a1a1a;background:#fff}h1{color:#004d99}h2{color:#004d99;margin-top:30px;border-bottom:1px solid #ddd;padding-bottom:5px}.banner{background:#004d99;color:#fff;padding:15px;margin:-20px -20px 30px}</style></head><body><div class='banner'><strong>IMY — Integritetsskyddsmyndigheten</strong></div><h1>AI-förordningen och dataskydd</h1><p>EU:s AI-förordning (AI Act) träder i kraft stegvis under 2025-2027. IMY följer utvecklingen och kommer löpande att publicera vägledande material för svenska aktörer.</p><h2>Tidslinje</h2><ul><li>2025-02: Förbud mot vissa AI-system (risk-nivå 'oacceptabel')</li><li>2025-08: Regler för general-purpose AI (GPAI) träder i kraft</li><li>2026-08: Övriga krav på högrisksystem aktiveras</li></ul><h2>Mer information kommer</h2><p>IMY arbetar med att ta fram vägledning för hur AI-förordningen samspelar med GDPR. Publiceras löpande.</p></body></html>",
+  "afterHtml": "<!DOCTYPE html><html lang='sv'><head><meta charset='utf-8'><title>AI-förordningen — IMY</title><style>body{font-family:'Open Sans',Arial,sans-serif;max-width:820px;margin:40px auto;padding:20px;color:#1a1a1a;background:#fff}h1{color:#004d99}h2{color:#004d99;margin-top:30px;border-bottom:1px solid #ddd;padding-bottom:5px}.banner{background:#004d99;color:#fff;padding:15px;margin:-20px -20px 30px}.new{background:#e8f4ff;padding:16px;border-left:4px solid #004d99;margin:20px 0}</style></head><body><div class='banner'><strong>IMY — Integritetsskyddsmyndigheten</strong></div><h1>AI-förordningen och dataskydd</h1><p>EU:s AI-förordning (AI Act) träder i kraft stegvis under 2025-2027. IMY följer utvecklingen och kommer löpande att publicera vägledande material för svenska aktörer.</p><div class='new'><strong>Nytt ställningstagande (2026-04-08):</strong> IMY har publicerat ett ställningstagande om hur AI-förordningens krav på dataförvaltning (artikel 10) förhåller sig till GDPR:s dataminimeringsprincip. Ställningstagandet klargör IMY:s tolkning av samspelet mellan regelverken och rekommenderar att personuppgiftsansvariga går igenom sina träningsdatasets med utgångspunkt från både AI-förordningens och GDPR:s krav.</div><h2>Tidslinje</h2><ul><li>2025-02: Förbud mot vissa AI-system (risk-nivå 'oacceptabel')</li><li>2025-08: Regler för general-purpose AI (GPAI) träder i kraft</li><li>2026-08: Övriga krav på högrisksystem aktiveras</li></ul><h2>Ställningstaganden</h2><ul><li><strong>Ställningstagande om AI-förordningens dataförvaltningskrav och GDPR</strong> (2026-04-08) — NY</li></ul><h2>Mer information kommer</h2><p>IMY arbetar med att ta fram vägledning för hur AI-förordningen samspelar med GDPR. Publiceras löpande.</p></body></html>",
+  "expected": {
+    "jurisdiction": "SE",
+    "documentType": "guidance",
+    "complianceAction": "review_recommended",
+    "importanceMin": 6,
+    "importanceMax": 9,
+    "hasSignificantChange": true
+  }
+}

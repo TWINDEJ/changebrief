@@ -1,0 +1,17 @@
+{
+  "name": "Trafikverket-nyhetsrotation-regression",
+  "url": "https://www.trafikverket.se/",
+  "category": "Transport & Infrastructure",
+  "locale": "sv",
+  "description": "REGRESSIONSCASE för commit 058b0b3 ('Fix severity over-scoring for news rotation'). Myndighetssida där ENDAST pressnyheter roterar — ingen regeländring. Ska klassas som info_only, importance 1-2, hasSignificantChange=false. MÅSTE passera — annars är severity-fixen bruten.",
+  "beforeHtml": "<!DOCTYPE html><html lang='sv'><head><meta charset='utf-8'><title>Trafikverket — Start</title><style>body{font-family:Arial,sans-serif;max-width:960px;margin:0 auto;padding:20px;color:#222}header{background:#004d80;color:#fff;padding:20px;margin:-20px -20px 20px}h1{color:#004d80}h2{color:#004d80;border-bottom:1px solid #ccc;padding-bottom:6px}.news{border-left:3px solid #004d80;padding:12px 16px;margin:12px 0;background:#f7fafd}.news time{color:#666;font-size:13px;display:block;margin-bottom:4px}</style></head><body><header><strong>Trafikverket</strong></header><h1>Välkommen till Trafikverket</h1><p>Vi planerar, bygger och underhåller statliga vägar och järnvägar. Här hittar du trafikinformation, e-tjänster och nyheter.</p><h2>Senaste nyheter</h2><div class='news'><time>2026-04-15</time><strong>Underhållsarbete på E4 södergående natten mellan 16-17 april</strong><p>Trafikverket genomför asfaltsarbeten på E4 mellan Huddinge och Södertälje.</p></div><div class='news'><time>2026-04-12</time><strong>Nya pendeltågstider i Stockholmsområdet</strong><p>Från och med 14 april gäller ny tidtabell för pendeltågen i Stockholm.</p></div><div class='news'><time>2026-04-10</time><strong>Vinterväghållning avslutad för säsongen</strong><p>Trafikverket avslutar vinterväghållningen i södra Sverige från och med 10 april.</p></div></body></html>",
+  "afterHtml": "<!DOCTYPE html><html lang='sv'><head><meta charset='utf-8'><title>Trafikverket — Start</title><style>body{font-family:Arial,sans-serif;max-width:960px;margin:0 auto;padding:20px;color:#222}header{background:#004d80;color:#fff;padding:20px;margin:-20px -20px 20px}h1{color:#004d80}h2{color:#004d80;border-bottom:1px solid #ccc;padding-bottom:6px}.news{border-left:3px solid #004d80;padding:12px 16px;margin:12px 0;background:#f7fafd}.news time{color:#666;font-size:13px;display:block;margin-bottom:4px}</style></head><body><header><strong>Trafikverket</strong></header><h1>Välkommen till Trafikverket</h1><p>Vi planerar, bygger och underhåller statliga vägar och järnvägar. Här hittar du trafikinformation, e-tjänster och nyheter.</p><h2>Senaste nyheter</h2><div class='news'><time>2026-04-17</time><strong>Broreparation på Tjörnbron klar</strong><p>Den planerade broreparationen på Tjörnbron är nu avslutad. Trafiken släpps på som vanligt från kvällen.</p></div><div class='news'><time>2026-04-16</time><strong>Cykelveckan 2026 inleds i maj</strong><p>Trafikverket bjuder in kommuner och organisationer att delta i Cykelveckan som arrangeras 5-11 maj.</p></div><div class='news'><time>2026-04-15</time><strong>Underhållsarbete på E4 södergående natten mellan 16-17 april</strong><p>Trafikverket genomför asfaltsarbeten på E4 mellan Huddinge och Södertälje.</p></div></body></html>",
+  "expected": {
+    "jurisdiction": null,
+    "documentType": null,
+    "complianceAction": "info_only",
+    "importanceMin": 1,
+    "importanceMax": 3,
+    "hasSignificantChange": false
+  }
+}

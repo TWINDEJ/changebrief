@@ -1,0 +1,18 @@
+{
+  "name": "ESMA-MiFID-remiss-consultation",
+  "url": "https://www.esma.europa.eu/press-news/consultations",
+  "category": "Finance & Banking",
+  "locale": "en",
+  "description": "ESMA öppnar remiss (consultation) om MiFID II best execution. Remiss = consultation (inte regulation än). Inga bindande krav — review_recommended.",
+  "beforeHtml": "<!DOCTYPE html><html lang='en'><head><meta charset='utf-8'><title>Open Consultations — ESMA</title><style>body{font-family:Arial,sans-serif;max-width:900px;margin:40px auto;padding:20px;color:#222}header{background:#003399;color:#fff;padding:18px;margin:-20px -20px 20px}h1{color:#003399}h2{color:#003399;margin-top:30px}.item{border:1px solid #dde;padding:14px;margin:12px 0;background:#fafaff}</style></head><body><header><strong>ESMA · European Securities and Markets Authority</strong></header><h1>Open Consultations</h1><p>ESMA regularly consults with market participants on proposed changes to the EU regulatory framework for securities markets. Responses received are published (unless marked confidential) and inform the final standards.</p><h2>Currently open</h2><div class='item'><strong>Consultation on ESG disclosures under SFDR</strong><br>Closes: 2026-05-31<br>Reference: ESMA34-2026-014</div><div class='item'><strong>Consultation on clearing thresholds under EMIR 3</strong><br>Closes: 2026-06-15<br>Reference: ESMA70-2026-022</div></body></html>",
+  "afterHtml": "<!DOCTYPE html><html lang='en'><head><meta charset='utf-8'><title>Open Consultations — ESMA</title><style>body{font-family:Arial,sans-serif;max-width:900px;margin:40px auto;padding:20px;color:#222}header{background:#003399;color:#fff;padding:18px;margin:-20px -20px 20px}h1{color:#003399}h2{color:#003399;margin-top:30px}.item{border:1px solid #dde;padding:14px;margin:12px 0;background:#fafaff}.new{background:#fffde6;border:2px solid #cc9900}</style></head><body><header><strong>ESMA · European Securities and Markets Authority</strong></header><h1>Open Consultations</h1><p>ESMA regularly consults with market participants on proposed changes to the EU regulatory framework for securities markets. Responses received are published (unless marked confidential) and inform the final standards.</p><h2>Currently open</h2><div class='item new'><strong>NEW — Consultation on MiFID II Best Execution framework revision</strong><br>Closes: 2026-07-20<br>Reference: ESMA35-2026-091<br><br>ESMA is consulting on proposed revisions to the Best Execution reporting requirements under MiFID II. Key proposals include: expanded RTS 27/28 disclosures, new order-routing transparency for retail clients, and harmonised execution quality metrics across EU venues. Responses from investment firms, trading venues and industry associations are invited by 20 July 2026.</div><div class='item'><strong>Consultation on ESG disclosures under SFDR</strong><br>Closes: 2026-05-31<br>Reference: ESMA34-2026-014</div><div class='item'><strong>Consultation on clearing thresholds under EMIR 3</strong><br>Closes: 2026-06-15<br>Reference: ESMA70-2026-022</div></body></html>",
+  "expected": {
+    "jurisdiction": "EU",
+    "documentType": "consultation",
+    "complianceAction": "review_recommended",
+    "importanceMin": 3,
+    "importanceMax": 8,
+    "hasSignificantChange": true
+  },
+  "note": "KÄND BEGRÄNSNING: GPT-5.4-mini betygar öppna EU-remisser stabilt 3-4 (icke-deterministiskt), aldrig 5+. Klassificering i övrigt korrekt (EU + consultation + review_recommended). Nedsidan: med default min_importance=5 filtreras MiFID-remisser bort från notifieringar. Åtgärd om compliance-kunder klagar: iterera prompten i shared/vision.ts rad 169-174 för att höja golvet för 'consultation'-documentType till 5."
+}

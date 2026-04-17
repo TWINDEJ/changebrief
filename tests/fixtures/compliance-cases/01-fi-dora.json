@@ -1,0 +1,17 @@
+{
+  "name": "FI-DORA-vagledning",
+  "url": "https://www.fi.se/sv/publicerat/vagledningar/dora/",
+  "category": "Finance & Banking",
+  "locale": "sv",
+  "description": "Finansinspektionen publicerar vägledning om DORA (Digital Operational Resilience Act). Vägledning = documentType 'guidance', inte 'regulation'. Rekommenderar granskning men kräver inte omedelbar åtgärd.",
+  "beforeHtml": "<!DOCTYPE html><html lang='sv'><head><meta charset='utf-8'><title>Vägledningar — Finansinspektionen</title><style>body{font-family:Georgia,serif;max-width:780px;margin:40px auto;padding:20px;color:#222;background:#fff}h1{border-bottom:3px solid #c8102e;padding-bottom:10px}h2{color:#003d6a;margin-top:30px}.meta{color:#666;font-size:14px;margin:10px 0 30px}a{color:#003d6a}</style></head><body><nav style='color:#666;font-size:13px'>Start / Publicerat / Vägledningar</nav><h1>Vägledningar från Finansinspektionen</h1><div class='meta'>Publicerat: 2025-06-15</div><p>På denna sida hittar du Finansinspektionens vägledningar inom bank, försäkring och värdepappersmarknad.</p><h2>Senaste vägledningar</h2><ul><li><a href='#'>Vägledning om hantering av likviditetsrisk</a> (2025-05-20)</li><li><a href='#'>Vägledning om internmodeller för kreditrisk</a> (2025-04-12)</li><li><a href='#'>Vägledning om IRB-metoden</a> (2025-03-01)</li></ul><p>Ytterligare vägledningar publiceras löpande.</p></body></html>",
+  "afterHtml": "<!DOCTYPE html><html lang='sv'><head><meta charset='utf-8'><title>Vägledningar — Finansinspektionen</title><style>body{font-family:Georgia,serif;max-width:780px;margin:40px auto;padding:20px;color:#222;background:#fff}h1{border-bottom:3px solid #c8102e;padding-bottom:10px}h2{color:#003d6a;margin-top:30px}.meta{color:#666;font-size:14px;margin:10px 0 30px}a{color:#003d6a}.new{background:#fff3cd;padding:15px;border-left:4px solid #c8102e;margin:20px 0}</style></head><body><nav style='color:#666;font-size:13px'>Start / Publicerat / Vägledningar</nav><h1>Vägledningar från Finansinspektionen</h1><div class='meta'>Publicerat: 2025-06-15 · Uppdaterad: 2026-04-10</div><p>På denna sida hittar du Finansinspektionens vägledningar inom bank, försäkring och värdepappersmarknad.</p><div class='new'><strong>NY VÄGLEDNING (2026-04-10):</strong> Vägledning om DORA — operativ motståndskraft för finansiella enheter. Vägledningen beskriver FI:s syn på hur DORA-förordningen ska tillämpas av svenska banker, värdepappersbolag och försäkringsbolag. Berörda företag rekommenderas granska sina processer för ICT-riskhantering, incidentrapportering och testning av operativ motståndskraft i ljuset av denna vägledning.</div><h2>Senaste vägledningar</h2><ul><li><a href='#'><strong>Vägledning om DORA</strong></a> (2026-04-10) — NY</li><li><a href='#'>Vägledning om hantering av likviditetsrisk</a> (2025-05-20)</li><li><a href='#'>Vägledning om internmodeller för kreditrisk</a> (2025-04-12)</li><li><a href='#'>Vägledning om IRB-metoden</a> (2025-03-01)</li></ul><p>Ytterligare vägledningar publiceras löpande.</p></body></html>",
+  "expected": {
+    "jurisdiction": "SE",
+    "documentType": "guidance",
+    "complianceAction": "review_recommended",
+    "importanceMin": 6,
+    "importanceMax": 9,
+    "hasSignificantChange": true
+  }
+}
