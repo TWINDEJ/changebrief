@@ -1,0 +1,35 @@
+---
+import { getCollection, render } from 'astro:content';
+import BlogPost from '../../layouts/BlogPost.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ id, data }) => id.startsWith('en/') && !data.draft);
+  const svPosts = await getCollection('blog', ({ id, data }) => id.startsWith('sv/') && !data.draft);
+
+  return posts.map(post => {
+    const slug = post.id.replace(/^en\//, '').replace(/\.md$/, '');
+    // Hitta svensk motsvarighet via samma publiceringsdatum (grov matchning) — justera vid behov per artikel
+    const svMatch = svPosts.find(p => p.data.pubDate.toISOString() === post.data.pubDate.toISOString());
+    const otherLangSlug = svMatch ? svMatch.id.replace(/^sv\//, '').replace(/\.md$/, '') : undefined;
+    return { params: { slug }, props: { post, otherLangSlug } };
+  });
+}
+
+const { post, otherLangSlug } = Astro.props;
+const { Content } = await render(post);
+const slug = post.id.replace(/^en\//, '').replace(/\.md$/, '');
+---
+
+<BlogPost
+  title={post.data.title}
+  description={post.data.description}
+  pubDate={post.data.pubDate}
+  author={post.data.author}
+  tags={post.data.tags}
+  heroImage={post.data.heroImage}
+  lang="en"
+  slug={slug}
+  otherLangSlug={otherLangSlug}
+>
+  <Content />
+</BlogPost>
