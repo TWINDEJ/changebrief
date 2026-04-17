@@ -7,7 +7,7 @@
     "check": "ts-node local-test.ts",
     "cli": "ts-node cli.ts",
     "test": "vitest run --exclude tests/compliance-classification.test.ts",
-    "test:compliance": "vitest run tests/compliance-classification.test.ts",
+    "test:compliance": "npm run fixtures:render && vitest run tests/compliance-classification.test.ts",
     "fixtures:render": "ts-node scripts/render-compliance-fixtures.ts"
   },
   "keywords": [],
