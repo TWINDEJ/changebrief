@@ -200,6 +200,27 @@ export default function DemoPage() {
           </div>
         </section>
 
+        {/* Mid-scroll conversion nudge */}
+        <section className="rounded-xl border border-blue-100 bg-blue-50/60 px-5 py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div className="flex items-start gap-3">
+            <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-100 text-blue-700">
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-blue-900">Monitor your own sources in 60 seconds</p>
+              <p className="text-xs text-blue-700/70 mt-0.5">Free — 3 sources, 7-day history, AI classification. No credit card.</p>
+            </div>
+          </div>
+          <Link
+            href="/login"
+            className="shrink-0 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:from-blue-500 hover:to-indigo-500 transition shadow-sm"
+          >
+            Start free
+          </Link>
+        </section>
+
         {/* Sources */}
         <section>
           <h2 className="text-lg font-semibold text-slate-900/90 mb-1">Monitored sources</h2>
