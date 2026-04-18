@@ -66,6 +66,26 @@ const structuredData = {
             <svg class="h-4 w-4 transition-transform duration-200 group-hover:translate-y-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
           </a>
         </div>
+        <p class="mt-3 animate-fade-in-up delay-300 text-sm theme-text-muted">{lt('hero.nocard', lang)}</p>
+
+        <!-- Proof strip: verifiable numbers drawn from product data (app/src/data/suggestions.json + engine cadence) -->
+        <div class="mt-14 animate-fade-in-up delay-500 flex flex-col items-center gap-4">
+          <p class="text-xs uppercase tracking-widest theme-text-muted">{lt('hero.proof.intro', lang)}</p>
+          <div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm font-medium theme-text-secondary">
+            <span class="flex items-center gap-1.5">
+              <span class="text-blue-600 font-bold">{lt('reg.proof.authorities', lang)}</span>
+            </span>
+            <span class="h-1 w-1 rounded-full bg-slate-300 dark:bg-slate-700" aria-hidden="true"></span>
+            <span>{lt('reg.proof.countries', lang)}</span>
+            <span class="h-1 w-1 rounded-full bg-slate-300 dark:bg-slate-700" aria-hidden="true"></span>
+            <span>{lt('reg.proof.sectors', lang)}</span>
+            <span class="h-1 w-1 rounded-full bg-slate-300 dark:bg-slate-700" aria-hidden="true"></span>
+            <span>{lt('reg.proof.integrations', lang)}</span>
+          </div>
+          <a href={lang === 'sv' ? '/sv/compliance' : '/compliance'} class="group inline-flex items-center gap-1 text-sm font-medium text-blue-600 hover:text-blue-500 transition-colors">
+            {lt('hero.proof.compliance', lang)}
+          </a>
+        </div>
       </div>
     </section>
 
