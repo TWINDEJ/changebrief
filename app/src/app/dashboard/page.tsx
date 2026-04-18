@@ -111,8 +111,9 @@ export default async function DashboardPage({
                 ? '1. Vilka sidor/myndigheter bevakar du?\n\n2. Fick du någon ändring klassificerad? Stämde den?\n\n3. Vad saknar du?\n\n4. Skulle du betala för detta? Hur mycket?\n\n5. Vem mer borde testa detta?\n'
                 : '1. Which pages/agencies are you monitoring?\n\n2. Did you get any change classified? Was it accurate?\n\n3. What is missing?\n\n4. Would you pay for this? How much?\n\n5. Who else should try this?\n')}`}
               className="group flex items-center gap-1.5 rounded-full bg-amber-50 border border-amber-200 px-3 py-1 text-xs font-medium text-amber-700 hover:bg-amber-100 hover:text-amber-800 transition-all animate-pulse hover:animate-none"
+              aria-label={locale === 'sv' ? 'Skicka feedback via e-post' : 'Send feedback via email'}
             >
-              <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
+              <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
               {locale === 'sv' ? 'Ge feedback' : 'Give feedback'}
             </a>
             <span className="text-sm text-slate-400 hidden md:inline">{session.user.email}</span>
@@ -217,8 +218,12 @@ export default async function DashboardPage({
             <div className="flex items-center justify-between mb-1">
               <h2 className="text-lg font-semibold text-slate-900/90">{t('feed.title', locale)}</h2>
               <details className="relative group">
-                <summary className="cursor-pointer list-none [&::-webkit-details-marker]:hidden p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-all duration-200">
-                  <svg className="h-5 w-5 transition-transform duration-300 group-open:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <summary
+                  className="cursor-pointer list-none [&::-webkit-details-marker]:hidden p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-all duration-200"
+                  aria-label={locale === 'sv' ? 'Öppna notisinställningar' : 'Open notification settings'}
+                  title={locale === 'sv' ? 'Notisinställningar' : 'Notification settings'}
+                >
+                  <svg className="h-5 w-5 transition-transform duration-300 group-open:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
@@ -286,7 +291,7 @@ export default async function DashboardPage({
         </section>
 
         {/* 5. Discover section */}
-        <section>
+        <section id="discover" className="scroll-mt-20">
           <h2 className="text-lg font-semibold text-slate-900/90 mb-1">{t('discover.title', locale)}</h2>
           <p className="text-sm text-slate-500 mb-4">{t('discover.desc', locale)}</p>
           <PopularWatchlists

@@ -171,9 +171,18 @@ export function ComplianceFeed({ history: initialHistory, plan = 'free', slaActi
           </p>
           <p className="mt-1 text-xs text-slate-500">
             {locale === 'sv'
-              ? 'Lägg till myndigheter under Upptäck för att börja bevaka.'
-              : 'Add agencies from Discover below to start monitoring.'}
+              ? 'Lägg till myndigheter så klassificerar AI varje ändring automatiskt.'
+              : 'Add agencies and AI will classify every change automatically.'}
           </p>
+          <a
+            href="#discover"
+            className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-2 text-xs font-semibold text-white shadow-sm hover:from-blue-500 hover:to-indigo-500 transition-all"
+          >
+            {locale === 'sv' ? 'Lägg till myndigheter' : 'Add agencies'}
+            <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+            </svg>
+          </a>
         </div>
       </div>
     );
@@ -233,17 +242,25 @@ export function ComplianceFeed({ history: initialHistory, plan = 'free', slaActi
         {(plan === 'pro' || plan === 'team') ? (
           <a
             href={`/api/export/compliance${jurisdictionFilter ? `?jurisdiction=${jurisdictionFilter}` : ''}${actionFilter !== 'all' ? `${jurisdictionFilter ? '&' : '?'}complianceAction=${actionFilter}` : ''}`}
-            className="cursor-pointer rounded-lg bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-600 hover:text-slate-900 transition"
+            className="cursor-pointer inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-sm hover:border-slate-300 hover:bg-slate-50 transition"
+            aria-label={locale === 'sv' ? 'Exportera filtrerad audit trail som CSV' : 'Export filtered audit trail as CSV'}
           >
+            <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5m0 0l5-5m-5 5V4" />
+            </svg>
             {locale === 'sv' ? 'Exportera audit trail' : 'Export audit trail'}
+            <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-mono text-slate-500">CSV</span>
           </a>
         ) : (
           <a
             href="https://buy.polar.sh/polar_cl_JDnQNmWBFMsJp56ntC0GPsweHhIizDVhwWGIk4CAFVF"
             target="_blank"
             rel="noopener noreferrer"
-            className="cursor-pointer rounded-lg bg-blue-50 border border-blue-100 px-3 py-1.5 text-xs font-medium text-blue-700 hover:bg-blue-100 transition"
+            className="cursor-pointer inline-flex items-center gap-1.5 rounded-lg bg-blue-50 border border-blue-200 px-3 py-1.5 text-xs font-semibold text-blue-700 hover:bg-blue-100 transition"
           >
+            <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5m0 0l5-5m-5 5V4" />
+            </svg>
             {locale === 'sv' ? 'Uppgradera för CSV-export' : 'Upgrade for CSV export'}
           </a>
         )}
