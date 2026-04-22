@@ -41,6 +41,25 @@ const translations = {
   // ─── URL list ───
   'urls.empty': { en: 'No monitored pages yet', sv: 'Inga bevakade sidor ännu' },
   'urls.empty.desc': { en: 'Add your first URL above or pick from popular watchlists below.', sv: 'Lägg till din första URL ovan eller välj bland populära bevakningar nedan.' },
+  'urls.empty.cta': { en: 'Need help getting started? Book a 30-min setup call →', sv: 'Vill du ha hjälp att komma igång? Boka ett 30-min startmöte →' },
+
+  // ─── Intro / booking ───
+  'intro.title': { en: 'Book an intro call', sv: 'Boka intromöte' },
+  'intro.subtitle': { en: '30 minutes with Kristian. We set up your first monitors together and make sure the AI flags what matters to you — not noise.', sv: '30 minuter med Kristian. Vi sätter upp dina första bevakningar tillsammans och ser till att AI:n larmar på det som är viktigt för just dig — inte på brus.' },
+  'intro.form.name': { en: 'Your name', sv: 'Ditt namn' },
+  'intro.form.email': { en: 'Email', sv: 'E-post' },
+  'intro.form.company': { en: 'Company (optional)', sv: 'Företag (valfritt)' },
+  'intro.form.urls': { en: 'Pages you want to monitor (optional)', sv: 'Sidor du vill bevaka (valfritt)' },
+  'intro.form.urls.placeholder': { en: 'One URL per line. E.g. competitor pricing pages, government agencies you need to watch.', sv: 'En URL per rad. T.ex. konkurrenters prissidor, myndigheter ni måste bevaka.' },
+  'intro.form.times': { en: 'Preferred times (optional)', sv: 'Önskade tider (valfritt)' },
+  'intro.form.times.placeholder': { en: 'E.g. weekday mornings, Monday afternoon.', sv: 'T.ex. vardagsförmiddagar, måndag em.' },
+  'intro.form.message': { en: 'Anything else we should know? (optional)', sv: 'Något mer vi bör veta? (valfritt)' },
+  'intro.form.submit': { en: 'Send request', sv: 'Skicka förfrågan' },
+  'intro.form.sending': { en: 'Sending…', sv: 'Skickar…' },
+  'intro.success.title': { en: 'Thanks — request received', sv: 'Tack — förfrågan mottagen' },
+  'intro.success.body': { en: 'Kristian will get back to you within 24 hours to book a time.', sv: 'Kristian hör av sig inom 24 timmar för att boka en tid.' },
+  'intro.error.generic': { en: 'Something went wrong. Please try again or email kristian@changebrief.io.', sv: 'Något gick fel. Försök igen eller mejla kristian@changebrief.io.' },
+  'intro.error.rate': { en: 'Too many requests. Please try again in a while.', sv: 'För många förfrågningar. Försök igen om en stund.' },
   'urls.removed': { en: 'Removed', sv: 'Borttagen' },
   'urls.checked': { en: 'Checked', sv: 'Kontrollerad' },
   'urls.waiting': { en: 'Waiting for first check...', sv: 'Väntar på första kontrollen...' },
@@ -176,8 +195,9 @@ const translations = {
   'form.intent.custom.desc': { en: 'Describe in plain text what you care about — AI uses it as a lens.', sv: 'Beskriv i fri text vad du bryr dig om — AI använder det som lins.' },
   'form.keywords': { en: 'Keywords (one per line)', sv: 'Nyckelord (ett per rad)' },
   'form.keywords.placeholder': { en: 'personal data\nGDPR\narticle 5', sv: 'personuppgifter\nGDPR\nartikel 5' },
-  'form.customPrompt': { en: 'Your focus (max 500 chars)', sv: 'Ditt fokus (max 500 tecken)' },
-  'form.customPrompt.placeholder': { en: 'Only alert me about changes that affect pricing for the Pro plan.', sv: 'Larma endast vid ändringar som påverkar pris för Pro-planen.' },
+  'form.watchIntent.label': { en: 'What are you watching for on this page?', sv: 'Vad letar du efter på den här sidan?' },
+  'form.watchIntent.placeholder': { en: "e.g. price changes on the Pro plan, new deadlines, changes to compliance requirements. Ignore news rotation and cosmetic tweaks.", sv: 'T.ex. prisändringar på Pro-planen, nya deadlines, ändrade regulatoriska krav. Ignorera nyhetsrotation och kosmetiska ändringar.' },
+  'form.watchIntent.help': { en: 'Optional. Helps the AI decide what matters to you — so a trivial change gets a 2/10 instead of an 8/10.', sv: 'Valfritt. Hjälper AI:n avgöra vad som är viktigt för just dig — så att en oviktig ändring får 2/10 istället för 8/10.' },
 
   // ─── SPA-rendering ───
   'form.spa.title': { en: 'SPA rendering (for JS-heavy pages)', sv: 'SPA-rendering (för JS-tunga sidor)' },

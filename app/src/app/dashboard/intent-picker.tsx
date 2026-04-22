@@ -28,6 +28,23 @@ export function IntentPicker({
 
   return (
     <div className="space-y-3">
+      {/* Alltid synligt fritextfält — watch intent gäller för alla lägen. */}
+      <div>
+        <label className="block text-xs font-medium text-slate-600 mb-1">{t('form.watchIntent.label')}</label>
+        <textarea
+          placeholder={t('form.watchIntent.placeholder')}
+          value={customPromptHint}
+          onChange={(e) => onCustomPromptChange(e.target.value.slice(0, 500))}
+          rows={3}
+          maxLength={500}
+          className="w-full rounded-lg glass px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none"
+        />
+        <div className="mt-1 flex items-start justify-between gap-3">
+          <p className="text-xs text-slate-500">{t('form.watchIntent.help')}</p>
+          <span className="shrink-0 text-[11px] text-slate-400">{customPromptHint.length}/500</span>
+        </div>
+      </div>
+
       <div>
         <label className="block text-xs font-medium text-slate-600 mb-2">{t('form.intent')}</label>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
@@ -62,21 +79,6 @@ export function IntentPicker({
             rows={3}
             className="w-full rounded-lg glass px-3 py-2 text-sm font-mono text-slate-900 placeholder:text-slate-400 focus:outline-none"
           />
-        </div>
-      )}
-
-      {intent === 'custom' && (
-        <div>
-          <label className="block text-xs font-medium text-slate-600 mb-1">{t('form.customPrompt')}</label>
-          <textarea
-            placeholder={t('form.customPrompt.placeholder')}
-            value={customPromptHint}
-            onChange={(e) => onCustomPromptChange(e.target.value.slice(0, 500))}
-            rows={3}
-            maxLength={500}
-            className="w-full rounded-lg glass px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none"
-          />
-          <p className="mt-1 text-right text-[11px] text-slate-400">{customPromptHint.length}/500</p>
         </div>
       )}
     </div>

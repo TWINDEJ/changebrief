@@ -117,7 +117,7 @@ export function EditUrlModal({ url, onClose, onSaved }: Props) {
         watchIntent,
         keywordFilters: watchIntent === 'keywords' && keywordsList.length > 0
           ? JSON.stringify(keywordsList) : null,
-        customPromptHint: watchIntent === 'custom' && customPromptHint.trim()
+        customPromptHint: customPromptHint.trim()
           ? customPromptHint.trim().slice(0, 500) : null,
         waitForSelector: waitForSelector.trim() || null,
         waitMs: waitMs > 0 ? Math.min(waitMs, 15000) : null,

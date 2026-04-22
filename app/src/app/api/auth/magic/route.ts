@@ -2,8 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { createMagicToken } from '@/lib/db';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
+// Lazy init så build inte faller när RESEND_API_KEY saknas i build-env.
 export async function POST(req: NextRequest) {
   try {
     const { email } = await req.json();
@@ -15,6 +14,13 @@ export async function POST(req: NextRequest) {
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
       return NextResponse.json({ error: 'Invalid email' }, { status: 400 });
     }
+
+    const apiKey = process.env.RESEND_API_KEY;
+    if (!apiKey) {
+      console.error('RESEND_API_KEY missing — magic link not sent');
+      return NextResponse.json({ error: 'Email service not configured' }, { status: 500 });
+    }
+    const resend = new Resend(apiKey);
 
     const token = await createMagicToken(trimmed);
 

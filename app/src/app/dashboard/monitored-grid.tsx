@@ -142,6 +142,14 @@ export function MonitoredGrid({ urls, highlightUrl }: { urls: WatchedUrl[]; high
         </div>
         <p className="text-sm font-semibold text-slate-700">{t('urls.empty')}</p>
         <p className="mt-1.5 text-xs text-slate-500 max-w-xs mx-auto leading-relaxed">{t('urls.empty.desc')}</p>
+        <a
+          href="/intro"
+          target="_blank"
+          rel="noopener"
+          className="mt-4 inline-block text-xs font-medium text-blue-600 hover:text-blue-700"
+        >
+          {t('urls.empty.cta')}
+        </a>
       </div>
     );
   }

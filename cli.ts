@@ -11,8 +11,9 @@ function usage() {
 changebrief CLI
 
 Kommandon:
-  add <url> <namn> [--selector=".pricing"] [--mobile] [--threshold=0.5]
-    Lägg till en URL att bevaka
+  add <url> <namn> [--selector=".pricing"] [--mobile] [--threshold=0.5] [--intent-desc="..."]
+    Lägg till en URL att bevaka. --intent-desc beskriver i fritext vad du letar efter
+    (skickas med i AI-prompten så analysen blir mer relevant).
 
   remove <url>
     Ta bort en URL från bevakningen
@@ -78,14 +79,17 @@ switch (command) {
     }
     const opts = parseOptions(args);
     try {
+      const intentDesc = typeof opts['intent-desc'] === 'string' ? opts['intent-desc'] : undefined;
       const target = addTarget(url, name, {
         selector: typeof opts.selector === 'string' ? opts.selector : undefined,
         mobile: opts.mobile === true,
         threshold: typeof opts.threshold === 'string' ? parseFloat(opts.threshold) : undefined,
+        customPromptHint: intentDesc ? intentDesc.slice(0, 500) : undefined,
       });
       console.log(`✓ Lade till: ${target.name} (${target.url})`);
       if (target.selector) console.log(`  Selektor: ${target.selector}`);
       if (target.mobile) console.log(`  Mobilvy: ja`);
+      if (target.customPromptHint) console.log(`  Intent: ${target.customPromptHint}`);
       console.log(`  Tröskel: ${target.threshold}%`);
     } catch (e: unknown) {
       console.error(`Fel: ${e instanceof Error ? e.message : e}`);

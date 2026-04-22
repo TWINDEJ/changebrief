@@ -12,6 +12,7 @@ export interface WatchTarget {
   headers?: Record<string, string>;  // extra HTTP-headers (t.ex. Authorization)
   cookies?: Array<{name: string; value: string; domain: string}>;
   waitForSelector?: string; // vänta på att detta element finns innan screenshot
+  customPromptHint?: string; // fritext om vad användaren letar efter (skickas till AI)
   notifySlack: boolean;
   notifyEmail?: string;    // email-adress att notifiera
 }

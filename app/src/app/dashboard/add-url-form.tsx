@@ -148,7 +148,7 @@ export function AddUrlForm({ canAdd, plan = 'free' }: { canAdd: boolean; plan?: 
           watchIntent,
           keywordFilters: watchIntent === 'keywords' && keywordsList.length > 0
             ? JSON.stringify(keywordsList) : undefined,
-          customPromptHint: watchIntent === 'custom' && customPromptHint.trim()
+          customPromptHint: customPromptHint.trim()
             ? customPromptHint.trim().slice(0, 500) : undefined,
         }),
       });
