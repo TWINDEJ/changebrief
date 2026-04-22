@@ -411,6 +411,21 @@ button:active:not(:disabled), a:active {
   }
 }
 
+/* ─── Accent-button contrast guarantee ───
+   I dark mode blir --app-accent ljus (papper-vit), så hårdkodade
+   text-white-knappar blir osynliga. Här remappar vi färgen så att
+   varje element med accent-bakgrund alltid får --app-accent-on,
+   oavsett Tailwind-klass. Gäller både text och ikoner som ärver
+   currentColor. */
+
+[data-theme="dark"] [style*="--app-accent)"] {
+  color: var(--app-accent-on);
+}
+[data-theme="dark"] [style*="--app-accent)"] .text-white,
+[data-theme="dark"] [style*="--app-accent)"].text-white {
+  color: var(--app-accent-on) !important;
+}
+
 /* ─── Dark mode overrides for Tailwind utility classes ───
    Vi remappar en handfull Tailwind-färgtokens till CSS-variablerna
    istället för att skriva om 80 komponenter. Tokens som inte är

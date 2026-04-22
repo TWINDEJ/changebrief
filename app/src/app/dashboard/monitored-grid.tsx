@@ -362,20 +362,44 @@ export function MonitoredGrid({ urls, highlightUrl }: { urls: WatchedUrl[]; high
                 <div className="mt-3 pt-3 border-t border-slate-100 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs animate-expand">
                   <div>
                     <span className="text-slate-500 block">{locale === 'sv' ? 'Tröskel' : 'Threshold'}</span>
-                    <span className="text-slate-700">{u.threshold}%</span>
+                    <span className="text-slate-700 tabular-nums">{u.threshold}%</span>
+                    <span className="block mt-0.5 text-[11px] leading-snug text-slate-500">
+                      {locale === 'sv'
+                        ? 'Så lite av sidan måste ändras för att vi ska titta närmare'
+                        : 'How little of the page must change before we take a closer look'}
+                    </span>
                   </div>
                   <div>
                     <span className="text-slate-500 block">{locale === 'sv' ? 'Min. vikt' : 'Min. importance'}</span>
-                    <span className="text-slate-700">{(u as any).min_importance ?? 5}/10</span>
+                    <span className="text-slate-700 tabular-nums">{(u as any).min_importance ?? 5}/10</span>
+                    <span className="block mt-0.5 text-[11px] leading-snug text-slate-500">
+                      {locale === 'sv'
+                        ? 'AI måste bedöma ändringen så här viktig för att du ska få notis'
+                        : 'AI must rate the change at least this important to notify you'}
+                    </span>
                   </div>
                   <div>
-                    <span className="text-slate-500 block">{locale === 'sv' ? 'Viewport' : 'Viewport'}</span>
-                    <span className="text-slate-700">{u.mobile ? 'Mobile' : 'Desktop'}</span>
+                    <span className="text-slate-500 block">{locale === 'sv' ? 'Läge' : 'Viewport'}</span>
+                    <span className="text-slate-700">{u.mobile ? (locale === 'sv' ? 'Mobil' : 'Mobile') : (locale === 'sv' ? 'Desktop' : 'Desktop')}</span>
+                    <span className="block mt-0.5 text-[11px] leading-snug text-slate-500">
+                      {locale === 'sv'
+                        ? u.mobile
+                          ? 'Vi fotar i mobilstorlek (375×812)'
+                          : 'Vi fotar i desktop-storlek (1280×900)'
+                        : u.mobile
+                          ? 'We screenshot at mobile size (375×812)'
+                          : 'We screenshot at desktop size (1280×900)'}
+                    </span>
                   </div>
                   {u.last_importance != null && u.last_importance > 0 && (
                     <div>
                       <span className="text-slate-500 block">{locale === 'sv' ? 'Senaste vikt' : 'Last importance'}</span>
-                      <span className={`font-medium ${u.last_importance >= 7 ? 'text-red-600' : u.last_importance >= 4 ? 'text-orange-600' : 'text-green-600'}`}>{u.last_importance}/10</span>
+                      <span className={`font-medium tabular-nums ${u.last_importance >= 7 ? 'text-red-600' : u.last_importance >= 4 ? 'text-orange-600' : 'text-green-600'}`}>{u.last_importance}/10</span>
+                      <span className="block mt-0.5 text-[11px] leading-snug text-slate-500">
+                        {locale === 'sv'
+                          ? 'Vikten AI satte på den senaste ändringen'
+                          : 'Importance AI assigned to the last change'}
+                      </span>
                     </div>
                   )}
                   <div className="col-span-2 sm:col-span-4">
