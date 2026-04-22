@@ -26,14 +26,14 @@ export default async function StatusPage() {
       <header className="border-b border-slate-200 bg-white">
         <div className="mx-auto max-w-2xl px-4 py-6">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg" style={{ background: '#2563eb' }}>
               <svg className="h-4 w-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <circle cx="12" cy="12" r="3" />
                 <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z" />
               </svg>
             </div>
             <h1 className="text-lg font-bold tracking-tight">
-              change<span className="text-blue-600">brief</span>
+              change<span className="font-display-italic" style={{ color: 'var(--app-text)' }}>brief</span>
               <span className="text-slate-400 font-normal ml-2">Status</span>
             </h1>
           </div>

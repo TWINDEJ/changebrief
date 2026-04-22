@@ -8,6 +8,9 @@ export interface ScreenshotOptions {
   headers?: Record<string, string>;
   cookies?: Array<{name: string; value: string; domain: string}>;
   waitForSelector?: string;
+  waitMs?: number;     // extra ms att vänta efter page load (för SPA-init)
+  scrollToBottom?: boolean; // scrolla genom hela sidan för att trigga lazy-load
+  ignoreSelectors?: string[]; // dölj dessa element innan screenshot (klockor, cookie-banners, etc)
 }
 
 export interface ScreenshotResult {
@@ -48,6 +51,44 @@ export async function takeScreenshot(
     });
   } else {
     await page.waitForTimeout(2000);
+  }
+
+  // Extra wait för SPA:er som initialiserar efter networkidle (t.ex. hydration + data-fetch).
+  if (options.waitMs && options.waitMs > 0) {
+    await page.waitForTimeout(Math.min(options.waitMs, 15000));
+  }
+
+  // Scrolla genom hela sidan för att trigga lazy-load av bilder/innehåll.
+  // Viewport-höjd steg i taget så IntersectionObserver-baserade loaders hinner trigga.
+  if (options.scrollToBottom) {
+    await page.evaluate(async () => {
+      await new Promise<void>((resolve) => {
+        let total = 0;
+        const step = window.innerHeight;
+        const timer = setInterval(() => {
+          window.scrollBy(0, step);
+          total += step;
+          if (total >= document.body.scrollHeight) {
+            clearInterval(timer);
+            window.scrollTo(0, 0);
+            resolve();
+          }
+        }, 200);
+      });
+    });
+    await page.waitForTimeout(500); // liten paus så lazy content hinner rendera
+  }
+
+  // Dölj ignore-regions så de inte spökar i pixeldiffen.
+  // visibility:hidden behåller layout — sidan hoppar inte när t.ex. en cookie-banner maskeras.
+  if (options.ignoreSelectors?.length) {
+    await page.evaluate((selectors: string[]) => {
+      for (const sel of selectors) {
+        document.querySelectorAll(sel).forEach((el) => {
+          (el as HTMLElement).style.visibility = 'hidden';
+        });
+      }
+    }, options.ignoreSelectors);
   }
 
   // Ta screenshot

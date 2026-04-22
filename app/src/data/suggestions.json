@@ -664,5 +664,248 @@
     "description": "Finnish safety and chemicals agency. News and regulations.",
     "description_sv": "Finlands säkerhets- och kemikaliemyndighet. Nyheter och föreskrifter.",
     "jurisdiction": "FI"
+  },
+  {
+    "url": "https://incert.se/teknikomraden/",
+    "name": "Incert – Certification areas",
+    "name_sv": "Incert – Certifieringsområden",
+    "category": "Training & Certifications",
+    "description": "Person and company certifications for security, F-gas, fiber, renewable energy installers.",
+    "description_sv": "Person- och företagscertifieringar inom säkerhet, F-gas, fiber och förnybar energi.",
+    "jurisdiction": "SE"
+  },
+  {
+    "url": "https://incert.se/teknikomraden/koldmedier/",
+    "name": "Incert – F-gas / Refrigeration",
+    "name_sv": "Incert – Köldmedier och kylteknik",
+    "category": "Training & Certifications",
+    "description": "F-gas certification requirements for refrigeration and heat pump technicians.",
+    "description_sv": "Certifieringskrav för köldmedietekniker och värmepumpsinstallatörer.",
+    "jurisdiction": "SE"
+  },
+  {
+    "url": "https://www.av.se/arbetsmiljoarbete-och-inspektioner/publikationer/foreskrifter/",
+    "name": "Arbetsmiljöverket – AFS regulations",
+    "name_sv": "Arbetsmiljöverket – AFS-föreskrifter",
+    "category": "Training & Certifications",
+    "description": "All workplace safety regulations. New structure from Jan 2025. Affects all employers.",
+    "description_sv": "Alla arbetsmiljöföreskrifter. Ny regelstruktur från jan 2025. Berör alla arbetsgivare.",
+    "jurisdiction": "SE"
+  },
+  {
+    "url": "https://www.av.se/produktion-industri-och-logistik/fordon/",
+    "name": "Forklift training – Arbetsmiljöverket",
+    "name_sv": "Truckförarutbildning – Arbetsmiljöverket",
+    "category": "Training & Certifications",
+    "description": "Requirements for forklift operator training (TLP10) and employer permits.",
+    "description_sv": "Krav på truckförarutbildning (TLP10) och skriftligt tillstånd från arbetsgivaren.",
+    "jurisdiction": "SE"
+  },
+  {
+    "url": "https://www.hetaarbeten.se/sv/faq/behorighet/",
+    "name": "Hot work certification – Brandskyddsföreningen",
+    "name_sv": "Heta Arbeten – Behörighetsutbildning",
+    "category": "Training & Certifications",
+    "description": "Insurance-required hot work certification for welding, cutting, soldering. Valid 5 years. Nordic-wide.",
+    "description_sv": "Försäkringskrav på certifikat för svetsning, kapning, lödning. Gäller 5 år. Gäller i hela Norden.",
+    "jurisdiction": "SE"
+  },
+  {
+    "url": "https://www.elsakerhetsverket.se/yrkespersoner/ansok-om-auktorisation/auktorisationstyper/",
+    "name": "Elsäkerhetsverket – Electrical authorization",
+    "name_sv": "Elsäkerhetsverket – Elinstallatörsauktorisation",
+    "category": "Training & Certifications",
+    "description": "Authorization types A, AL, B for electrical installers. Education and experience requirements.",
+    "description_sv": "Auktorisationstyper A, AL, B för elinstallatörer. Utbildnings- och erfarenhetskrav.",
+    "jurisdiction": "SE"
+  },
+  {
+    "url": "https://www.msb.se/sv/amnesomraden/skydd-mot-olyckor-och-farliga-amnen/farligt-gods/adr-utbildning/",
+    "name": "MSB – ADR dangerous goods training",
+    "name_sv": "MSB – ADR farligt gods-utbildning",
+    "category": "Training & Certifications",
+    "description": "ADR driver training and certification for dangerous goods transport. Valid 5 years. Revised biennially.",
+    "description_sv": "ADR-förarutbildning och certifiering för farligt gods-transport. Gäller 5 år. Revideras vartannat år.",
+    "jurisdiction": "SE"
+  },
+  {
+    "url": "https://liftutbildning.se/",
+    "name": "Lift training – LUR / LLP2",
+    "name_sv": "Liftutbildning – LUR / LLP2",
+    "category": "Training & Certifications",
+    "description": "Mobile elevating work platform training curriculum and authorized providers. Valid 5 years.",
+    "description_sv": "Liftutbildning med läroplan LLP2. Auktoriserade utbildningsföretag. Certifikat gäller 5 år.",
+    "jurisdiction": "SE"
+  },
+  {
+    "url": "https://www.transportstyrelsen.se/sv/jarnvag/till-dig-i-branschen/lokforare/",
+    "name": "Railway driver certification – Transportstyrelsen",
+    "name_sv": "Lokförarbehörighet – Transportstyrelsen",
+    "category": "Training & Certifications",
+    "description": "Driver certificates, training requirements, health exams. Fourth Railway Package ongoing.",
+    "description_sv": "Förarcertifikat, utbildningskrav, hälsokrav. Fjärde järnvägspaketet pågående.",
+    "jurisdiction": "SE"
+  },
+  {
+    "url": "https://www.transportstyrelsen.se/sv/jarnvag/till-dig-i-branschen/trafikmedicin/halsokrav-for-personal-med-sakerhetskritiska-uppgifter/",
+    "name": "Railway safety-critical personnel health",
+    "name_sv": "Järnväg – Hälsokrav säkerhetskritisk personal",
+    "category": "Training & Certifications",
+    "description": "Health exams every 5 years (under 41) or 3 years (41-62) for safety-critical railway staff.",
+    "description_sv": "Hälsoundersökning var 5:e år (under 41) eller var 3:e år (41-62) för säkerhetskritisk personal.",
+    "jurisdiction": "SE"
+  },
+  {
+    "url": "https://www.brandskyddsforeningen.se/normer--riktlinjer/pagaende-och-planerade-arbeten/",
+    "name": "Fire norms – Upcoming changes",
+    "name_sv": "Brandskyddsföreningen – Pågående normarbeten",
+    "category": "Training & Certifications",
+    "description": "Upcoming and ongoing changes to SBF fire safety norms. High monitoring value.",
+    "description_sv": "Pågående och planerade ändringar av SBF-normer för brandskydd. Högt bevakningsvärde.",
+    "jurisdiction": "SE"
+  },
+  {
+    "url": "https://byggforetagen.se/safe-construction-training/",
+    "name": "Safe Construction Training – Byggföretagen",
+    "name_sv": "Safe Construction Training – Byggföretagen",
+    "category": "Training & Certifications",
+    "description": "Mandatory safety training for construction. BAS-P/U coordinator certification.",
+    "description_sv": "Obligatorisk säkerhetsutbildning inom bygg. BAS-P/U samordnarcertifiering.",
+    "jurisdiction": "SE"
+  },
+  {
+    "url": "https://www.stralsakerhetsmyndigheten.se/regler/foreskrifter/",
+    "name": "SSM – Radiation safety regulations",
+    "name_sv": "Strålsäkerhetsmyndigheten – Föreskrifter",
+    "category": "Training & Certifications",
+    "description": "Radiation protection requirements, expert function certification, medical radiation rules.",
+    "description_sv": "Strålskyddskrav, certifiering av strålskyddsexpert, regler för medicinsk strålning.",
+    "jurisdiction": "SE"
+  },
+  {
+    "url": "https://www.av.se/produktion-industri-och-logistik/anvandning-av-arbetsutrustning/",
+    "name": "Pressure vessel / boiler operator – AV",
+    "name_sv": "Pannoperatör – Arbetsmiljöverket",
+    "category": "Training & Certifications",
+    "description": "Major change: accredited certification removed from Jan 2026, replaced by employer-verified knowledge.",
+    "description_sv": "Stor förändring: ackrediterad certifiering borttagen från jan 2026, ersatt av arbetsgivarverifierade kunskaper.",
+    "jurisdiction": "SE"
+  },
+  {
+    "url": "https://www.av.se/halsa-och-sakerhet/forsta-hjalpen-och-krisstod/",
+    "name": "First aid requirements – Arbetsmiljöverket",
+    "name_sv": "Första hjälpen – Arbetsmiljöverket",
+    "category": "Training & Certifications",
+    "description": "All employers must ensure sufficient trained first aid staff. AFS 2023:2.",
+    "description_sv": "Alla arbetsgivare ska säkerställa tillräckligt antal utbildade i första hjälpen. AFS 2023:2.",
+    "jurisdiction": "SE"
+  },
+  {
+    "url": "https://www.av.se/produktion-industri-och-logistik/anvandning-av-arbetsutrustning/lyftanordningar-och-lyftredskap/",
+    "name": "Lifting equipment – Arbetsmiljöverket",
+    "name_sv": "Lyftanordningar och lyftredskap – Arbetsmiljöverket",
+    "category": "Training & Certifications",
+    "description": "Regulations for cranes, hoists, slings and wire ropes. AFS 2023:11. Affects safe lifting training requirements.",
+    "description_sv": "Föreskrifter för kranar, lyftar, slingor och vajrar. AFS 2023:11. Påverkar krav på utbildning i säkra lyft.",
+    "jurisdiction": "SE"
+  },
+  {
+    "url": "https://www.av.se/produktion-industri-och-logistik/stallningar/",
+    "name": "Scaffolding regulations – Arbetsmiljöverket",
+    "name_sv": "Ställningar – Arbetsmiljöverket",
+    "category": "Training & Certifications",
+    "description": "Scaffolding assembly qualifications and safety requirements. AFS 2023:11 chapter 8.",
+    "description_sv": "Krav på ställningsbyggare och säkerhet vid ställningsarbete. AFS 2023:11 kapitel 8.",
+    "jurisdiction": "SE"
+  },
+  {
+    "url": "https://www.av.se/halsa-och-sakerhet/skydd-mot-skada-genom-fall/",
+    "name": "Fall protection – Arbetsmiljöverket",
+    "name_sv": "Fallskydd – Arbetsmiljöverket",
+    "category": "Training & Certifications",
+    "description": "Employer obligations for fall protection. Covers work at height, safety harnesses, edge protection.",
+    "description_sv": "Arbetsgivarskyldigheter vid fallskydd. Arbete på höjd, säkerhetssele, kantskydd.",
+    "jurisdiction": "SE"
+  },
+  {
+    "url": "https://www.elsakerhetsverket.se/om-oss/lag-och-ratt/foreskrifter/",
+    "name": "Elsäkerhetsverket – ELSÄK-FS regulations",
+    "name_sv": "Elsäkerhetsverket – Föreskrifter",
+    "category": "Training & Certifications",
+    "description": "All 66 ELSÄK-FS electrical safety regulations. Searchable database. Affects ESA training requirements.",
+    "description_sv": "Alla 66 ELSÄK-FS elsäkerhetsföreskrifter. Sökbar databas. Påverkar ESA-utbildningskrav.",
+    "jurisdiction": "SE"
+  },
+  {
+    "url": "https://www.hetaarbeten.se/sv/om-heta-arbeten/sakerhetsregler/",
+    "name": "Hot work safety rules – SBF 506:1",
+    "name_sv": "Heta Arbeten – 13 säkerhetsregler",
+    "category": "Training & Certifications",
+    "description": "All 13 safety rules for hot work (SBF 506:1). Risk assessment, fire watch, certification requirements.",
+    "description_sv": "Alla 13 säkerhetsregler för heta arbeten (SBF 506:1). Riskbedömning, brandvakt, certifieringskrav.",
+    "jurisdiction": "SE"
+  },
+  {
+    "url": "https://www.hetaarbeten.se/sv/utbildningen/",
+    "name": "Hot work training requirements",
+    "name_sv": "Heta Arbeten – Utbildningskrav",
+    "category": "Training & Certifications",
+    "description": "Training overview: certification course and advanced permit responsibility. 300+ authorized instructors.",
+    "description_sv": "Utbildningsöversikt: behörighetsutbildning och påbyggnad tillståndsansvar. 300+ auktoriserade instruktörer.",
+    "jurisdiction": "SE"
+  },
+  {
+    "url": "https://liftutbildning.se/utbildningen/liftlaroplanen-llp/",
+    "name": "LLP2 lift curriculum – Liftutbildningsrådet",
+    "name_sv": "LLP2-läroplanen – Liftutbildningsrådet",
+    "category": "Training & Certifications",
+    "description": "LLP2 curriculum aligned with SS-ISO 18878:2025. The standard all lift training providers must follow.",
+    "description_sv": "LLP2-läroplanen enligt SS-ISO 18878:2025. Standarden alla liftutbildare måste följa.",
+    "jurisdiction": "SE"
+  },
+  {
+    "url": "https://sakervatten.se/",
+    "name": "Säker Vatten – Plumbing authorization",
+    "name_sv": "Säker Vatten – VVS-auktorisation",
+    "category": "Training & Certifications",
+    "description": "Find authorized plumbing companies. Certification requirements for water installation work.",
+    "description_sv": "Hitta auktoriserade VVS-företag. Certifieringskrav för vatteninstallationsarbete.",
+    "jurisdiction": "SE"
+  },
+  {
+    "url": "https://sakervatten.se/branschregler/",
+    "name": "Säker Vatten – Industry regulations",
+    "name_sv": "Säker Vatten – Branschregler",
+    "category": "Training & Certifications",
+    "description": "Plumbing industry regulations for water and sanitation installations. Affects VVS technician certification.",
+    "description_sv": "Branschregler för vatten- och sanitetsinstallationer. Påverkar VVS-teknikercertifiering.",
+    "jurisdiction": "SE"
+  },
+  {
+    "url": "https://www.tya.se/kurser/kursutbud/",
+    "name": "TYA – Transport training catalog",
+    "name_sv": "TYA – Kursutbud transport",
+    "category": "Training & Certifications",
+    "description": "94 courses for the transport sector: truck, ADR, YKB, crane, ergonomics. Covers air, port, haulage.",
+    "description_sv": "94 kurser för transportsektorn: truck, ADR, YKB, kran, ergonomi. Täcker flyg, hamn, åkeri.",
+    "jurisdiction": "SE"
+  },
+  {
+    "url": "https://www.brandskyddsforeningen.se/utbildning/",
+    "name": "Brandskyddsföreningen – Training catalog",
+    "name_sv": "Brandskyddsföreningen – Utbildningar",
+    "category": "Training & Certifications",
+    "description": "SBA coordinator training, fire inspector, hot work, ATEX, thermography. 25+ courses.",
+    "description_sv": "SBA-samordnarutbildning, brandinspektör, heta arbeten, ATEX, termografi. 25+ kurser.",
+    "jurisdiction": "SE"
+  },
+  {
+    "url": "https://www.brandskyddsforeningen.se/normer--riktlinjer/",
+    "name": "Brandskyddsföreningen – Norms & guidelines",
+    "name_sv": "Brandskyddsföreningen – Normer och riktlinjer",
+    "category": "Training & Certifications",
+    "description": "Fire safety norms (SBF) including automatic fire alarms, sprinkler systems, gas extinguishing.",
+    "description_sv": "Brandskyddsnormer (SBF) för automatiska brandlarm, sprinklersystem, gassläckning.",
+    "jurisdiction": "SE"
   }
 ]

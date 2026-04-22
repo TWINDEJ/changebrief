@@ -45,19 +45,19 @@ const structuredData = {
     <!-- Hero -->
     <section class="relative overflow-hidden pt-36 pb-24 lg:pt-44 lg:pb-36 theme-bg">
       <div class="relative mx-auto max-w-6xl px-6 text-center">
-        <div class="mb-8 inline-flex animate-fade-in-up items-center gap-2.5 rounded-full bg-blue-50 border border-blue-100 px-4 py-2 text-sm text-blue-700">
-          <span class="relative flex h-2 w-2"><span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-500 opacity-60"></span><span class="relative inline-flex h-2 w-2 rounded-full bg-blue-500"></span></span>
+        <div class="mb-8 inline-flex animate-fade-in-up items-center gap-2.5 rounded-full border px-4 py-2 text-sm font-medium" style="background: var(--accent-subtle); border-color: var(--border-primary); color: var(--accent);">
+          <span class="relative flex h-2 w-2"><span class="relative inline-flex h-2 w-2 rounded-full" style="background: var(--accent);"></span></span>
           {lt('hero.badge', lang)}
         </div>
-        <h1 class="mx-auto max-w-4xl animate-fade-in-up delay-100 text-5xl font-extrabold leading-[1.1] tracking-tight theme-text sm:text-6xl lg:text-7xl">
+        <h1 class="mx-auto max-w-4xl animate-fade-in-up delay-100 text-5xl font-bold leading-[1.1] tracking-tight theme-text sm:text-6xl lg:text-7xl">
           {lt('hero.h1a', lang)}
-          <span class="block text-gradient">{lt('hero.h1b', lang)}</span>
+          <span class="block" style="color: var(--accent);">{lt('hero.h1b', lang)}</span>
         </h1>
         <p class="mx-auto mt-6 max-w-2xl animate-fade-in-up delay-200 text-lg leading-relaxed theme-text-secondary lg:text-xl">
-          <span class="theme-text font-semibold">change</span><span class="text-blue-600 font-semibold">brief</span> {lang === 'sv' ? 'bevakar webbsidor och berättar med AI exakt vad som hände. Inga suddiga screenshots. Inga röda pixlar. Bara en tydlig mening.' : 'monitors web pages and uses AI to tell you exactly what happened. No blurry screenshots. No red pixels. Just a clear sentence.'}
+          <span class="theme-text font-semibold">change</span><span class="text-blue-600 font-semibold">brief</span> {lang === 'sv' ? 'bevakar webbsidor och förklarar med AI exakt vad som hände. Inga suddiga skärmdumpar. Inga röda pixlar. Bara en tydlig mening.' : 'monitors web pages and uses AI to tell you exactly what happened. No blurry screenshots. No red pixels. Just a clear sentence.'}
         </p>
         <div class="mt-10 flex animate-fade-in-up delay-300 flex-col items-center justify-center gap-4 sm:flex-row">
-          <a href="https://app.changebrief.io" class="btn-glow group inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-3.5 text-base font-semibold text-white transition-all duration-300">
+          <a href="https://app.changebrief.io" class="group inline-flex items-center gap-2 rounded-full px-8 py-3.5 text-base font-semibold text-white shadow-sm transition-all duration-300 hover:shadow" style="background: var(--accent);">
             {lt('hero.cta1', lang)}
             <svg class="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
           </a>
@@ -172,7 +172,7 @@ const structuredData = {
           </div>
           <!-- Pro -->
           <div class="animate-fade-in-up relative rounded-2xl ring-2 ring-blue-500 p-px flex flex-col">
-            <div class="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-1 text-xs font-semibold text-white">{lt('price.popular', lang)}</div>
+            <div class="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full px-4 py-1 text-xs font-semibold text-white" style="background: var(--accent);">{lt('price.popular', lang)}</div>
             <div class="rounded-2xl theme-bg p-7 flex flex-col flex-1">
               <h3 class="text-lg font-semibold theme-text">Pro</h3>
               <div class="mt-4 flex items-baseline gap-1"><span class="text-4xl font-bold theme-text">$19</span><span class="theme-text-muted">{lt('price.mo', lang)}</span></div>
@@ -184,7 +184,7 @@ const structuredData = {
                 <li class="flex items-center gap-3"><svg class="h-4 w-4 shrink-0 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>{lang === 'sv' ? 'GRC webhook' : 'GRC webhook integration'}</li>
                 <li class="flex items-center gap-3"><svg class="h-4 w-4 shrink-0 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>{lang === 'sv' ? 'SLA-uppföljning' : 'SLA deadline tracking'}</li>
               </ul>
-              <a href="https://buy.polar.sh/polar_cl_JDnQNmWBFMsJp56ntC0GPsweHhIizDVhwWGIk4CAFVF" class="btn-glow mt-8 block rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 py-3 text-center text-sm font-semibold text-white transition-all duration-200 cursor-pointer">{lt('price.pro.cta', lang)}</a>
+              <a href="https://buy.polar.sh/polar_cl_JDnQNmWBFMsJp56ntC0GPsweHhIizDVhwWGIk4CAFVF" class="mt-8 block rounded-xl py-3 text-center text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:shadow cursor-pointer" style="background: var(--accent);">{lt('price.pro.cta', lang)}</a>
             </div>
           </div>
           <!-- Team -->
@@ -202,7 +202,7 @@ const structuredData = {
             <a href="https://buy.polar.sh/polar_cl_HmjMU2dLQz7qe5fAcTjK2SsssRYDPboqXQJXd4QgARz" class="mt-8 block rounded-xl border theme-border theme-bg py-3 text-center text-sm font-semibold theme-text-secondary transition-all duration-200 hover:border-slate-300 hover:bg-[var(--bg-secondary)] cursor-pointer">{lt('price.team.cta', lang)}</a>
           </div>
           <!-- Enterprise -->
-          <div class="animate-fade-in-up relative rounded-2xl bg-gradient-to-b from-emerald-500/[0.06] to-blue-500/[0.03] p-px flex flex-col">
+          <div class="animate-fade-in-up relative rounded-2xl border flex flex-col" style="border-color: var(--border-secondary);">
             <div class="rounded-2xl theme-bg p-7 flex flex-col flex-1">
               <h3 class="text-lg font-semibold theme-text">Enterprise</h3>
               <div class="mt-4 flex items-baseline gap-1"><span class="text-2xl font-bold theme-text">{lang === 'sv' ? 'Anpassat' : 'Custom'}</span></div>
@@ -213,7 +213,7 @@ const structuredData = {
                 <li class="flex items-center gap-3"><svg class="h-4 w-4 shrink-0 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>{lang === 'sv' ? 'DPA & SLA-garanti' : 'DPA & SLA guarantee'}</li>
                 <li class="flex items-center gap-3"><svg class="h-4 w-4 shrink-0 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>{lang === 'sv' ? 'Fakturering' : 'Invoice billing'}</li>
               </ul>
-              <a href="mailto:kristian@changebrief.io?subject=Enterprise%20inquiry" class="btn-glow mt-8 block rounded-xl bg-gradient-to-r from-emerald-600 to-blue-600 py-3 text-center text-sm font-semibold text-white transition-all duration-200 cursor-pointer">{lang === 'sv' ? 'Kontakta oss' : 'Contact us'}</a>
+              <a href="mailto:kristian@changebrief.io?subject=Enterprise%20inquiry" class="mt-8 block rounded-xl bg-gray-900 py-3 text-center text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:bg-gray-800 hover:shadow cursor-pointer">{lang === 'sv' ? 'Kontakta oss' : 'Contact us'}</a>
             </div>
           </div>
         </div>
@@ -243,10 +243,10 @@ const structuredData = {
   <section class="relative py-24 lg:py-32 border-t theme-border">
     <div class="relative mx-auto max-w-6xl px-6 text-center">
       <h2 class="animate-fade-in-up text-3xl font-bold tracking-tight theme-text sm:text-4xl lg:text-5xl">
-        {lt('footer.h2a', lang)}<br class="hidden sm:block" /> {lt('footer.h2b', lang)} <span class="text-gradient">{lt('footer.h2c', lang)}</span>
+        {lt('footer.h2a', lang)}<br class="hidden sm:block" /> {lt('footer.h2b', lang)} <span style="color: var(--accent);">{lt('footer.h2c', lang)}</span>
       </h2>
       <p class="mx-auto mt-4 max-w-xl animate-fade-in-up text-lg theme-text-secondary">{lt('footer.sub', lang)}</p>
-      <a href="https://app.changebrief.io" class="btn-glow mt-8 inline-flex animate-fade-in-up items-center gap-2 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-3.5 text-base font-semibold text-white transition-all duration-300 cursor-pointer">
+      <a href="https://app.changebrief.io" class="mt-8 inline-flex animate-fade-in-up items-center gap-2 rounded-full px-8 py-3.5 text-base font-semibold text-white shadow-sm transition-all duration-300 hover:shadow cursor-pointer" style="background: var(--accent);">
         {lt('footer.cta', lang)}
         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
       </a>
@@ -255,7 +255,7 @@ const structuredData = {
   <footer class="border-t theme-border py-12">
     <div class="mx-auto flex max-w-6xl flex-col items-center gap-6 px-6 sm:flex-row sm:justify-between">
       <div class="flex items-center gap-2.5 text-lg font-bold">
-        <div class="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600">
+        <div class="flex h-7 w-7 items-center justify-center rounded-lg" style="background: var(--accent);">
           <svg class="h-3.5 w-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3" /><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z" /></svg>
         </div>
         <span class="theme-text">change<span class="text-blue-600">brief</span></span>

@@ -26,6 +26,7 @@ interface UserDigest {
   changes: ChangeRow[];
   complianceChanges: ChangeRow[];
   totalUrls: number;
+  topReasons: Map<string, string>; // url → "varför just denna"-text
 }
 
 async function getUsersWithDigest(): Promise<UserDigest[]> {
@@ -48,7 +49,56 @@ async function getUsersWithDigest(): Promise<UserDigest[]> {
     });
 
     const allChanges = changes.rows as unknown as ChangeRow[];
-    const complianceChanges = allChanges.filter(c => c.compliance_action != null);
+
+    // Hämta feedback-historik per URL för att personlisera rankningen (#12).
+    // relevant-markeringar viktar upp URL:en, noise viktar ner.
+    const feedbackHistory = await db.execute({
+      sql: `SELECT ch.url, nf.verdict, COUNT(*) AS cnt
+            FROM notification_feedback nf
+            JOIN change_history ch ON ch.id = nf.change_history_id
+            WHERE nf.user_id = ? AND nf.created_at >= datetime('now', '-60 days')
+            GROUP BY ch.url, nf.verdict`,
+      args: [user.id],
+    }).catch(() => ({ rows: [] as unknown[] }));
+
+    const feedbackByUrl = new Map<string, { relevant: number; noise: number }>();
+    for (const row of feedbackHistory.rows as Array<{ url: string; verdict: string; cnt: number | string }>) {
+      const entry = feedbackByUrl.get(row.url) ?? { relevant: 0, noise: 0 };
+      if (row.verdict === 'relevant') entry.relevant += Number(row.cnt);
+      if (row.verdict === 'noise') entry.noise += Number(row.cnt);
+      feedbackByUrl.set(row.url, entry);
+    }
+
+    // Vikta: importance + 0.5 per relevant-markering − 0.7 per brus. Cap [0, 12].
+    const weightedChanges = [...allChanges].map((c) => {
+      const fb = feedbackByUrl.get(c.url);
+      const boost = fb ? fb.relevant * 0.5 - fb.noise * 0.7 : 0;
+      return { change: c, score: Math.min(12, Math.max(0, (c.importance ?? 0) + boost)), boost };
+    });
+    weightedChanges.sort((a, b) => b.score - a.score);
+
+    const rankedChanges = weightedChanges.map((w) => w.change);
+
+    // Bygg "varför just denna"-text för de tre översta.
+    const topReasons = new Map<string, string>();
+    const sv = (user.locale as string) === 'sv';
+    for (const w of weightedChanges.slice(0, 3)) {
+      if (w.boost >= 1) {
+        topReasons.set(w.change.url, sv
+          ? 'Liknande signaler har du markerat som relevanta tidigare.'
+          : 'You\'ve marked similar signals as relevant before.');
+      } else if (w.change.compliance_action === 'action_required') {
+        topReasons.set(w.change.url, sv
+          ? 'Klassificerad som åtgärdskrävande regulatorisk ändring.'
+          : 'Classified as action-required regulatory change.');
+      } else if ((w.change.importance ?? 0) >= 8) {
+        topReasons.set(w.change.url, sv
+          ? `Hög viktighet (${w.change.importance}/10).`
+          : `High importance (${w.change.importance}/10).`);
+      }
+    }
+
+    const complianceChanges = rankedChanges.filter(c => c.compliance_action != null);
 
     const totalUrls = await db.execute({
       sql: `SELECT COUNT(*) as count FROM watched_urls WHERE user_id = ? AND active = 1`,
@@ -58,9 +108,10 @@ async function getUsersWithDigest(): Promise<UserDigest[]> {
     digests.push({
       email: user.email as string,
       locale: (user.locale as string) || 'en',
-      changes: allChanges,
+      changes: rankedChanges,
       complianceChanges,
       totalUrls: Number(totalUrls.rows[0].count),
+      topReasons,
     });
   }
 
@@ -116,16 +167,20 @@ function buildComplianceSection(complianceChanges: ChangeRow[], sv: boolean): st
 }
 
 function buildDigestHtml(digest: UserDigest): string {
-  const { changes, complianceChanges, totalUrls, locale } = digest;
+  const { changes, complianceChanges, totalUrls, locale, topReasons } = digest;
   const sv = locale === 'sv';
   const changedPages = new Set(changes.map(c => c.name)).size;
   const topChange = changes[0];
   const dateFmt = sv ? 'sv-SE' : 'en-US';
 
-  const changeRows = changes.slice(0, 10).map(c => {
+  const changeRows = changes.slice(0, 10).map((c, idx) => {
     const imp = c.importance ?? 0;
     const color = imp >= 7 ? '#ef4444' : imp >= 4 ? '#f97316' : '#22c55e';
     const date = new Date(c.checked_at + 'Z').toLocaleDateString(dateFmt, { weekday: 'short', month: 'short', day: 'numeric' });
+    const reason = idx < 3 ? topReasons.get(c.url) : undefined;
+    const reasonHtml = reason
+      ? `<p style="margin: 6px 0 0; color: #60a5fa; font-size: 11px; font-style: italic;">✨ ${sv ? 'Därför: ' : 'Why: '}${reason}</p>`
+      : '';
 
     return `
       <tr>
@@ -135,6 +190,7 @@ function buildDigestHtml(digest: UserDigest): string {
             <strong style="color: #f1f5f9;">${c.name}</strong>
           </div>
           <p style="margin: 4px 0 0; color: #94a3b8; font-size: 14px;">${c.summary}</p>
+          ${reasonHtml}
           <span style="color: #475569; font-size: 12px;">${date}</span>
         </td>
       </tr>`;

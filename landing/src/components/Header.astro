@@ -7,10 +7,10 @@ const otherUrl = lang === 'en' ? '/sv' : '/';
 ---
 
 <header class="fixed top-4 left-4 right-4 z-50">
-  <div class="mx-auto max-w-6xl rounded-2xl glass-strong px-6 py-3">
+  <div class="mx-auto max-w-6xl rounded-2xl px-6 py-3" style="background: var(--bg-primary); border: 1px solid var(--border-primary); box-shadow: var(--shadow-card);">
     <div class="flex items-center justify-between">
       <a href="/" class="flex items-center gap-2.5 text-lg font-bold tracking-tight">
-        <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600">
+        <div class="flex h-8 w-8 items-center justify-center rounded-lg" style="background: var(--accent);">
           <svg class="h-4 w-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <circle cx="12" cy="12" r="3" />
             <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z" />
@@ -21,6 +21,9 @@ const otherUrl = lang === 'en' ? '/sv' : '/';
       <div class="flex items-center gap-3">
         <a href={lang === 'sv' ? '/sv/compliance' : '/compliance'} class="hidden sm:inline-flex cursor-pointer text-sm font-medium theme-text-secondary hover:theme-text transition-all duration-200">
           Compliance
+        </a>
+        <a href={lang === 'sv' ? '/sv/blogg' : '/blog'} class="hidden sm:inline-flex cursor-pointer text-sm font-medium theme-text-secondary hover:theme-text transition-all duration-200">
+          {lt('nav.blog', lang)}
         </a>
         <a href={lang === 'sv' ? '/sv/security' : '/security'} class="hidden sm:inline-flex cursor-pointer text-sm font-medium theme-text-secondary hover:theme-text transition-all duration-200">
           {lang === 'sv' ? 'Säkerhet' : 'Security'}
@@ -45,7 +48,7 @@ const otherUrl = lang === 'en' ? '/sv' : '/';
         </a>
         <a
           href="#pricing"
-          class="btn-glow rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-2 text-sm font-semibold text-white transition-all duration-200"
+          class="rounded-full px-5 py-2 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:shadow" style="background: var(--accent);"
         >
           {lt('header.cta', lang)}
         </a>

@@ -4,24 +4,22 @@
 
 :root {
   --bg-primary: #ffffff;
-  --bg-secondary: #f8fafc;
+  --bg-secondary: #f9fafb;
   --bg-card: #ffffff;
   --bg-card-hover: #ffffff;
-  --bg-muted: #f1f5f9;
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-muted: #94a3b8;
-  --border-primary: #e2e8f0;
-  --border-secondary: #cbd5e1;
-  --shadow-card: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.03);
-  --shadow-card-hover: 0 4px 12px rgba(0,0,0,0.06);
-  --glass-bg: rgba(255, 255, 255, 0.8);
-  --glass-strong-bg: rgba(255, 255, 255, 0.9);
-  --glass-border: rgba(0, 0, 0, 0.06);
-  --gradient-text: linear-gradient(135deg, #3b82f6, #6366f1, #8b5cf6);
-  --btn-glow-shadow: rgba(99, 102, 241, 0.2);
-  --numbers-bg: #0f172a;
-  --numbers-text: #f1f5f9;
+  --bg-muted: #f3f4f6;
+  --text-primary: #111827;
+  --text-secondary: #4b5563;
+  --text-muted: #9ca3af;
+  --border-primary: #e5e7eb;
+  --border-secondary: #d1d5db;
+  --shadow-card: 0 1px 2px 0 rgba(0,0,0,0.05);
+  --shadow-card-hover: 0 4px 12px rgba(0,0,0,0.08);
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --accent-subtle: #eff6ff;
+  --numbers-bg: #111827;
+  --numbers-text: #f9fafb;
   --hero-compliance-from: rgba(254, 226, 226, 0.6);
   --hero-compliance-to: #ffffff;
   --iso-bg: rgba(219, 234, 254, 0.3);
@@ -30,25 +28,23 @@
 }
 
 [data-theme="dark"] {
-  --bg-primary: #0f172a;
-  --bg-secondary: #1e293b;
-  --bg-card: #1e293b;
-  --bg-card-hover: #253347;
-  --bg-muted: #334155;
-  --text-primary: #f1f5f9;
-  --text-secondary: #cbd5e1;
-  --text-muted: #64748b;
-  --border-primary: #334155;
-  --border-secondary: #475569;
+  --bg-primary: #111827;
+  --bg-secondary: #1f2937;
+  --bg-card: #1f2937;
+  --bg-card-hover: #283548;
+  --bg-muted: #374151;
+  --text-primary: #f9fafb;
+  --text-secondary: #d1d5db;
+  --text-muted: #6b7280;
+  --border-primary: #374151;
+  --border-secondary: #4b5563;
   --shadow-card: 0 1px 3px rgba(0,0,0,0.2), 0 1px 2px rgba(0,0,0,0.15);
   --shadow-card-hover: 0 4px 16px rgba(0,0,0,0.3);
-  --glass-bg: rgba(30, 41, 59, 0.8);
-  --glass-strong-bg: rgba(30, 41, 59, 0.9);
-  --glass-border: rgba(255, 255, 255, 0.06);
-  --gradient-text: linear-gradient(135deg, #60a5fa, #818cf8, #a78bfa);
-  --btn-glow-shadow: rgba(99, 102, 241, 0.35);
-  --numbers-bg: #f8fafc;
-  --numbers-text: #0f172a;
+  --accent: #3b82f6;
+  --accent-hover: #60a5fa;
+  --accent-subtle: rgba(59,130,246,0.12);
+  --numbers-bg: #f9fafb;
+  --numbers-text: #111827;
   --hero-compliance-from: rgba(127, 29, 29, 0.15);
   --hero-compliance-to: var(--bg-primary);
   --iso-bg: rgba(30, 58, 138, 0.15);
@@ -68,21 +64,12 @@
   to { opacity: 1; }
 }
 
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
-}
-
 .animate-fade-in-up {
   animation: fade-in-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .animate-fade-in {
   animation: fade-in 0.5s ease both;
-}
-
-.animate-float {
-  animation: float 6s ease-in-out infinite;
 }
 
 /* Staggered delays */
@@ -96,8 +83,7 @@
 /* Respect reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .animate-fade-in-up,
-  .animate-fade-in,
-  .animate-float {
+  .animate-fade-in {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;
@@ -105,21 +91,6 @@
 }
 
 /* ─── Card effects (theme-aware) ─── */
-
-.glass {
-  background: var(--glass-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--glass-border);
-}
-
-.glass-strong {
-  background: var(--glass-strong-bg);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--shadow-card);
-}
 
 .glass-card {
   background: var(--bg-card);
@@ -144,24 +115,3 @@
 .theme-text-muted { color: var(--text-muted); }
 .theme-border { border-color: var(--border-primary); }
 .theme-numbers { background: var(--numbers-bg); color: var(--numbers-text); }
-
-/* ─── Gradient text ─── */
-
-.text-gradient {
-  background: var(--gradient-text);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* ─── Button hover effect ─── */
-
-.btn-glow {
-  position: relative;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.btn-glow:hover {
-  box-shadow: 0 4px 16px var(--btn-glow-shadow);
-  transform: translateY(-1px);
-}

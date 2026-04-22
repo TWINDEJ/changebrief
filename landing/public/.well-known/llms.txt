@@ -1,0 +1,34 @@
+# changebrief
+
+> changebrief monitors web pages and uses AI (GPT-4o Vision) to tell you exactly what changed — not just that something changed. No blurry screenshots. No red pixels. Just a clear sentence.
+
+## How it works
+1. Takes periodic screenshots of web pages using Playwright
+2. Detects visual changes with pixel comparison
+3. Sends before/after to GPT-4o Vision for analysis
+4. Delivers a human-readable summary: "Acme Corp removed the 'Free for 14 days' button and raised Pro pricing from $29 to $34/month."
+
+## Key pages
+- [Homepage](https://changebrief.io)
+- [Compliance & regulatory monitoring](https://changebrief.io/compliance)
+- [Security & Trust](https://changebrief.io/security)
+- [Privacy Policy](https://changebrief.io/privacy)
+- [Terms of Service](https://changebrief.io/terms)
+- [Data Processing Agreement](https://changebrief.io/dpa)
+
+## Swedish pages
+- [Startsida](https://changebrief.io/sv)
+- [Compliance](https://changebrief.io/sv/compliance)
+- [Säkerhet](https://changebrief.io/sv/security)
+- [Integritetspolicy](https://changebrief.io/sv/privacy)
+- [Villkor](https://changebrief.io/sv/terms)
+
+## Use cases
+- Product managers monitoring competitor pricing pages
+- Sales teams tracking supplier terms changes
+- Compliance teams watching regulatory updates
+- DevOps teams monitoring status pages
+
+## Contact
+- Email: kristian@changebrief.io
+- Website: https://changebrief.io

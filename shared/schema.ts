@@ -58,6 +58,30 @@ const BASE_TABLES = `
     last_used_at TEXT,
     revoked_at TEXT
   );
+
+  CREATE TABLE IF NOT EXISTS magic_tokens (
+    token TEXT PRIMARY KEY,
+    email TEXT NOT NULL,
+    expires TEXT NOT NULL,
+    used INTEGER DEFAULT 0
+  );
+
+  CREATE TABLE IF NOT EXISTS url_config_history (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    url_id INTEGER NOT NULL REFERENCES watched_urls(id) ON DELETE CASCADE,
+    changed_at TEXT DEFAULT (datetime('now')),
+    changed_by TEXT,
+    diff TEXT NOT NULL
+  );
+
+  CREATE TABLE IF NOT EXISTS notification_feedback (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id TEXT NOT NULL REFERENCES users(id),
+    change_history_id INTEGER NOT NULL REFERENCES change_history(id) ON DELETE CASCADE,
+    verdict TEXT NOT NULL, -- 'relevant' | 'noise'
+    reason TEXT,
+    created_at TEXT DEFAULT (datetime('now'))
+  );
 `;
 
 // Varje migration läggs till HÄR. Ordningen spelar roll.
@@ -95,6 +119,14 @@ const MIGRATIONS = [
   'ALTER TABLE users ADD COLUMN teams_webhook_url TEXT',
   'ALTER TABLE users ADD COLUMN discord_webhook_url TEXT',
   'ALTER TABLE users ADD COLUMN pagerduty_routing_key TEXT',
+  'ALTER TABLE watched_urls ADD COLUMN ignore_selectors TEXT', // JSON-array av CSS-selectors att dölja före screenshot
+  'ALTER TABLE watched_urls ADD COLUMN check_interval_minutes INTEGER DEFAULT 360',
+  "ALTER TABLE watched_urls ADD COLUMN watch_intent TEXT DEFAULT 'page'",
+  'ALTER TABLE watched_urls ADD COLUMN keyword_filters TEXT', // JSON-array, används för watch_intent='keywords'
+  'ALTER TABLE watched_urls ADD COLUMN custom_prompt_hint TEXT',
+  'ALTER TABLE watched_urls ADD COLUMN wait_for_selector TEXT',
+  'ALTER TABLE watched_urls ADD COLUMN wait_ms INTEGER',
+  'ALTER TABLE watched_urls ADD COLUMN scroll_to_bottom INTEGER DEFAULT 0',
 ];
 
 export async function initSchema(db: Client) {

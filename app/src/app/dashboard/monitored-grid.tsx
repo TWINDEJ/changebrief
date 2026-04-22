@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Toast, useToast } from './toast';
 import { CopyUrl } from './copy-url';
 import { LiveTime } from './live-time';
+import { EditUrlModal } from './edit-url-modal';
 import { useLocale } from '../locale-provider';
 
 interface WatchedUrl {
@@ -21,6 +22,14 @@ interface WatchedUrl {
   consecutive_errors: number | null;
   cookies: string | null;
   headers: string | null;
+  min_importance?: number | null;
+  webhook_url?: string | null;
+  category?: string | null;
+  ignore_selectors?: string | null;
+  check_interval_minutes?: number | null;
+  watch_intent?: string | null;
+  keyword_filters?: string | null;
+  custom_prompt_hint?: string | null;
   last_summary: string | null;
   last_importance: number | null;
   last_change_at: string | null;
@@ -39,13 +48,28 @@ function useTimeAgo() {
   };
 }
 
-export function MonitoredGrid({ urls }: { urls: WatchedUrl[] }) {
+const DEFAULT_INTERVAL_MIN = 360;
+
+function nextCheckText(lastCheckedAt: string | null, intervalMinutes: number | null | undefined, soonLabel: string): string {
+  if (!lastCheckedAt) return soonLabel;
+  const interval = Number(intervalMinutes) || DEFAULT_INTERVAL_MIN;
+  const nextTs = new Date(lastCheckedAt + 'Z').getTime() + interval * 60 * 1000;
+  const diffSec = Math.floor((nextTs - Date.now()) / 1000);
+  if (diffSec <= 60) return soonLabel;
+  if (diffSec < 3600) return `${Math.ceil(diffSec / 60)} min`;
+  const hours = Math.floor(diffSec / 3600);
+  const minutes = Math.floor((diffSec % 3600) / 60);
+  return minutes > 0 ? `${hours}h ${minutes}m` : `${hours}h`;
+}
+
+export function MonitoredGrid({ urls, highlightUrl }: { urls: WatchedUrl[]; highlightUrl?: string | null }) {
   const { t, locale } = useLocale();
   const router = useRouter();
   const [removing, setRemoving] = useState<number | null>(null);
   const [muting, setMuting] = useState<number | null>(null);
   const [sort, setSort] = useState<SortKey>('name');
   const [expandedId, setExpandedId] = useState<number | null>(null);
+  const [editingId, setEditingId] = useState<number | null>(null);
   const { toast, show, clear } = useToast();
   const timeAgo = useTimeAgo();
 
@@ -106,7 +130,7 @@ export function MonitoredGrid({ urls }: { urls: WatchedUrl[] }) {
   if (urls.length === 0) {
     return (
       <div className="rounded-2xl border border-dashed border-slate-200 p-12 text-center animate-fade-in">
-        <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50">
+        <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50">
           <svg className="h-7 w-7 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               strokeLinecap="round"
@@ -125,8 +149,37 @@ export function MonitoredGrid({ urls }: { urls: WatchedUrl[] }) {
   const sortBtnCls = (key: SortKey) =>
     `cursor-pointer rounded-lg px-3 py-1.5 text-xs font-medium transition-all duration-200 ${sort === key ? 'bg-slate-100 text-slate-900' : 'text-slate-500 hover:text-slate-700'}`;
 
+  // Health-summary för hela bevakningslistan.
+  const activeCount = urls.filter((u) => u.active && u.muted !== 1).length;
+  const mutedCount = urls.filter((u) => u.muted === 1).length;
+  const errorCount = urls.filter((u) => (u.consecutive_errors ?? 0) > 0).length;
+  const checked24hCount = urls.filter((u) => {
+    if (!u.last_checked_at) return false;
+    const age = Date.now() - new Date(u.last_checked_at + 'Z').getTime();
+    return age <= 24 * 60 * 60 * 1000;
+  }).length;
+
   return (
     <>
+      {/* Health summary */}
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mb-3 text-xs text-slate-600">
+        <span><span className="font-semibold text-slate-800">{activeCount}</span> {t('urls.summary.active')}</span>
+        <span>·</span>
+        <span><span className="font-semibold text-slate-800">{checked24hCount}</span> {t('urls.summary.checked24h')}</span>
+        {errorCount > 0 && (
+          <>
+            <span>·</span>
+            <span className="text-red-600"><span className="font-semibold">{errorCount}</span> {t('urls.summary.errors')}</span>
+          </>
+        )}
+        {mutedCount > 0 && (
+          <>
+            <span>·</span>
+            <span><span className="font-semibold">{mutedCount}</span> {t('urls.summary.muted')}</span>
+          </>
+        )}
+      </div>
+
       {/* Sort controls */}
       <div className="flex gap-2 mb-3">
         <button onClick={() => setSort('name')} className={sortBtnCls('name')}>
@@ -158,10 +211,12 @@ export function MonitoredGrid({ urls }: { urls: WatchedUrl[] }) {
 
           const isExpanded = expandedId === u.id;
 
+          const isHighlighted = highlightUrl === u.url;
+
           return (
             <div
               key={u.id}
-              className={`rounded-xl glass-card p-4 flex flex-col gap-2 cursor-pointer transition-all duration-300 ${isMuted ? 'opacity-50' : ''} ${isExpanded ? 'ring-1 ring-blue-300 sm:col-span-2' : 'hover:bg-slate-50'}`}
+              className={`rounded-xl glass-card p-4 flex flex-col gap-2 cursor-pointer transition-all duration-300 ${isMuted ? 'opacity-50' : ''} ${isExpanded ? 'ring-1 ring-blue-300 sm:col-span-2' : 'hover:bg-slate-50'} ${isHighlighted ? 'ring-2 ring-emerald-400/60 highlight-pulse' : ''}`}
               onClick={() => setExpandedId(isExpanded ? null : u.id)}
             >
               {/* Top row: status + name + actions */}
@@ -182,6 +237,16 @@ export function MonitoredGrid({ urls }: { urls: WatchedUrl[] }) {
                   <svg className={`h-3.5 w-3.5 text-slate-600 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
+                  {/* Edit */}
+                  <button
+                    onClick={(e) => { e.stopPropagation(); setEditingId(u.id); }}
+                    title={t('edit.title')}
+                    className="cursor-pointer p-1 text-slate-600 transition hover:text-blue-600"
+                  >
+                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                  </button>
                   {/* Mute toggle */}
                   <button
                     onClick={(e) => { e.stopPropagation(); handleMute(u.id, u.name, !isMuted); }}
@@ -228,15 +293,26 @@ export function MonitoredGrid({ urls }: { urls: WatchedUrl[] }) {
               {/* Status line */}
               <div className="flex items-center gap-2 flex-wrap">
                 {isWaiting && !isMuted && (
-                  <span className="text-xs text-amber-600">{t('urls.waiting')}</span>
+                  <span className="inline-flex items-center gap-1.5 text-xs text-amber-600">
+                    <svg className="h-3 w-3 animate-spin" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                    </svg>
+                    {t('urls.waiting')}
+                  </span>
                 )}
                 {u.last_checked_at && !hasError && !isMuted && (
                   <span className="text-xs text-slate-600">
                     {t('urls.checked')} <LiveTime dateStr={u.last_checked_at} />
                   </span>
                 )}
+                {!isMuted && !hasError && (
+                  <span className="text-xs text-slate-500">
+                    · {t('urls.nextCheck')} {nextCheckText(u.last_checked_at, u.check_interval_minutes, t('urls.nextCheck.soon'))}
+                  </span>
+                )}
                 {hasError && !isMuted && (
-                  <span className="text-xs text-red-600">
+                  <span className="text-xs text-red-600" title={u.last_error ?? undefined}>
                     {t('urls.failed')} {u.consecutive_errors}x
                   </span>
                 )}
@@ -259,6 +335,12 @@ export function MonitoredGrid({ urls }: { urls: WatchedUrl[] }) {
                 )}
                 {(u.cookies || u.headers) && (
                   <span className="rounded bg-amber-50 px-2 py-0.5 text-xs text-amber-600">auth</span>
+                )}
+                {u.watch_intent === 'keywords' && (
+                  <span className="rounded bg-blue-50 px-2 py-0.5 text-xs text-blue-600" title={t('form.intent.keywords')}>keywords</span>
+                )}
+                {u.watch_intent === 'custom' && (
+                  <span className="rounded bg-violet-50 px-2 py-0.5 text-xs text-violet-600" title={t('form.intent.custom')}>custom focus</span>
                 )}
               </div>
 
@@ -305,6 +387,17 @@ export function MonitoredGrid({ urls }: { urls: WatchedUrl[] }) {
           );
         })}
       </div>
+      {editingId !== null && (() => {
+        const url = urls.find((u) => u.id === editingId);
+        if (!url) return null;
+        return (
+          <EditUrlModal
+            url={url}
+            onClose={() => setEditingId(null)}
+            onSaved={(msg, kind) => show(msg, kind)}
+          />
+        );
+      })()}
       {toast && <Toast message={toast.message} type={toast.type} onClose={clear} />}
     </>
   );

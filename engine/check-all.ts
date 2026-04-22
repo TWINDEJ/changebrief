@@ -149,12 +149,14 @@ async function checkUrl(row: any) {
   const { user_id, url, name, threshold, selector, mobile } = row;
   console.log(`\nChecking: ${name} (${url})`);
 
-  // Parse cookies and headers from DB (stored as JSON strings)
+  // Parse cookies, headers och ignore-selectors från DB (lagrade som JSON-strängar)
   let cookies: Array<{name: string; value: string; domain: string}> | undefined;
   let headers: Record<string, string> | undefined;
+  let ignoreSelectors: string[] | undefined;
   try {
     if (row.cookies) cookies = JSON.parse(row.cookies);
     if (row.headers) headers = JSON.parse(row.headers);
+    if (row.ignore_selectors) ignoreSelectors = JSON.parse(row.ignore_selectors);
   } catch { /* invalid JSON, skip */ }
 
   const screenshotOpts = {
@@ -162,6 +164,10 @@ async function checkUrl(row: any) {
     mobile: !!mobile,
     cookies,
     headers,
+    ignoreSelectors,
+    waitForSelector: (row.wait_for_selector as string) || undefined,
+    waitMs: (row.wait_ms as number | null) ?? undefined,
+    scrollToBottom: row.scroll_to_bottom === 1,
   };
 
   const slug = url.replace(/[^a-z0-9]/gi, '_');
@@ -208,6 +214,23 @@ async function checkUrl(row: any) {
       worthAnalyzing = await shouldAnalyze(structuredDiff);
     }
 
+    // watch_intent='keywords': kräver att minst ett keyword matchar i strukturerad text.
+    // Spar AI-kostnad och undviker larm för ändringar som ligger utanför kundens fokus.
+    const intent = (row.watch_intent as string) || 'page';
+    if (intent === 'keywords' && row.keyword_filters) {
+      try {
+        const keywords: string[] = JSON.parse(row.keyword_filters);
+        if (keywords.length > 0) {
+          const haystack = (structuredDiff?.summary ?? '').toLowerCase();
+          const matched = keywords.some((kw) => haystack.includes(kw.toLowerCase()));
+          if (!matched) {
+            console.log(`  → keywords-intent: inget av [${keywords.join(', ')}] matchade — skippar analys`);
+            worthAnalyzing = false;
+          }
+        }
+      } catch { /* invalid JSON, behandla som ingen filter */ }
+    }
+
     if (worthAnalyzing) {
       console.log('  → Analyzing with GPT-4o Vision...');
       const analysis = await analyzeChange(
@@ -216,7 +239,8 @@ async function checkUrl(row: any) {
         url,
         structuredDiff?.summary,
         row.category as string | undefined,
-        (row.locale as string) || 'en'
+        (row.locale as string) || 'en',
+        (row.custom_prompt_hint as string) || undefined,
       );
       console.log(`  → ${analysis.summary} (${analysis.importance}/10)${analysis.complianceAction ? ` [${analysis.complianceAction}]` : ''}`);
 
@@ -273,7 +297,19 @@ async function main() {
   await initSchema(db);
 
   const result = await db.execute({
-    sql: 'SELECT wu.*, u.email, u.plan, u.notify_email, u.slack_webhook_url, u.notify_action_required, u.notify_review_recommended, u.notify_info_only, u.locale, u.webhook_url as user_webhook_url, u.teams_webhook_url, u.discord_webhook_url, u.pagerduty_routing_key FROM watched_urls wu JOIN users u ON wu.user_id = u.id WHERE wu.active = 1 AND (wu.muted IS NULL OR wu.muted = 0)',
+    // Hoppa över URL:er som inte är "mogna" för ny check enligt deras check_interval_minutes.
+    // Tar en liten marginal (-60s) så cron som kör nära schemat inte missar URLs som just blev mogna.
+    sql: `SELECT wu.*, u.email, u.plan, u.notify_email, u.slack_webhook_url,
+                 u.notify_action_required, u.notify_review_recommended, u.notify_info_only,
+                 u.locale, u.webhook_url as user_webhook_url,
+                 u.teams_webhook_url, u.discord_webhook_url, u.pagerduty_routing_key
+          FROM watched_urls wu JOIN users u ON wu.user_id = u.id
+          WHERE wu.active = 1
+            AND (wu.muted IS NULL OR wu.muted = 0)
+            AND (
+              wu.last_checked_at IS NULL
+              OR datetime(wu.last_checked_at, '+' || COALESCE(wu.check_interval_minutes, 360) || ' minutes') <= datetime('now', '+60 seconds')
+            )`,
     args: []
   });
 
@@ -351,7 +387,7 @@ async function sendCrashAlert(error: Error) {
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
       body: JSON.stringify({
         from: 'changebrief <notifications@changebrief.io>',
-        to: ['kristian@changebrief.io'],
+        to: ['thewigander@gmail.com'],
         subject: `[changebrief] Engine crash: ${error.message.slice(0, 80)}`,
         html: `
           <div style="font-family: -apple-system, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -359,12 +395,12 @@ async function sendCrashAlert(error: Error) {
             <p><strong>Error:</strong> ${error.message}</p>
             <pre style="background: #f1f5f9; padding: 16px; border-radius: 8px; overflow-x: auto; font-size: 12px;">${error.stack?.slice(0, 2000) || 'No stack trace'}</pre>
             <p style="color: #64748b; font-size: 12px;">Timestamp: ${new Date().toISOString()}</p>
-            <p style="color: #64748b; font-size: 12px;">Check <a href="https://github.com/TWINDEJ/pagewatch/actions">GitHub Actions</a> for full logs.</p>
+            <p style="color: #64748b; font-size: 12px;">Check GitHub Actions for full logs.</p>
           </div>
         `,
       }),
     });
-    console.log('Crash alert sent to kristian@changebrief.io');
+    console.log('Crash alert sent to thewigander@gmail.com');
   } catch (emailErr) {
     console.error('Failed to send crash alert:', emailErr);
   }

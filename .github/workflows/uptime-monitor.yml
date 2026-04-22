@@ -53,9 +53,9 @@ jobs:
             -H "Content-Type: application/json" \
             -d "{
               \"from\": \"changebrief <notifications@changebrief.io>\",
-              \"to\": [\"kristian@changebrief.io\"],
+              \"to\": [\"thewigander@gmail.com\"],
               \"subject\": \"[changebrief] DOWNTIME ALERT\",
-              \"html\": \"<h2 style='color:#dc2626'>Downtime detected</h2><p><strong>App:</strong> ${APP_STATUS}</p><p><strong>Landing:</strong> ${LANDING_STATUS}</p><p>Timestamp: $(date -u +%Y-%m-%dT%H:%M:%SZ)</p><p><a href='https://github.com/TWINDEJ/pagewatch/actions'>View logs</a></p>\"
+              \"html\": \"<h2 style='color:#dc2626'>Downtime detected</h2><p><strong>App:</strong> ${APP_STATUS}</p><p><strong>Landing:</strong> ${LANDING_STATUS}</p><p>Timestamp: $(date -u +%Y-%m-%dT%H:%M:%SZ)</p><p>Check GitHub Actions for full logs.</p>\"
             }"
 
           echo "Alert sent!"

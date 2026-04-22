@@ -8,13 +8,13 @@ const sv = lang === 'sv';
 <div class="mx-auto max-w-4xl px-6 pt-32 pb-24">
   <!-- Hero -->
   <div class="text-center mb-20 animate-fade-in-up">
-    <div class="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500/20 to-blue-500/20 border border-emerald-500/20">
+    <div class="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-50 border border-emerald-200">
       <svg class="h-8 w-8 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
       </svg>
     </div>
     <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">
-      {sv ? 'Säkerhet & ' : 'Security & '}<span class="text-gradient">{sv ? 'Förtroende' : 'Trust'}</span>
+      {sv ? 'Säkerhet & ' : 'Security & '}<span style="color: var(--accent);">{sv ? 'Förtroende' : 'Trust'}</span>
     </h1>
     <p class="mx-auto mt-4 max-w-2xl text-lg theme-text-secondary">
       {sv
@@ -141,7 +141,7 @@ const sv = lang === 'sv';
     <div class="flex flex-wrap justify-center gap-3">
       <a
         href="/dpa"
-        class="btn-glow inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-600 to-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-lg transition-all duration-200 cursor-pointer"
+        class="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:shadow cursor-pointer" style="background: var(--accent);"
       >
         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -150,7 +150,7 @@ const sv = lang === 'sv';
       </a>
       <a
         href="mailto:kristian@changebrief.io?subject=Security%20%26%20DPA%20inquiry"
-        class="inline-flex items-center gap-2 rounded-full glass px-6 py-3 text-sm font-semibold theme-text-secondary hover:theme-text transition-all duration-200 cursor-pointer"
+        class="inline-flex items-center gap-2 rounded-full border px-6 py-3 text-sm font-semibold theme-text-secondary hover:theme-text transition-all duration-200 cursor-pointer" style="border-color: var(--border-primary); background: var(--bg-card);"
       >
         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -162,25 +162,25 @@ const sv = lang === 'sv';
 
   <!-- Compliance Badges -->
   <div class="mt-12 flex flex-wrap justify-center gap-6 animate-fade-in-up">
-    <div class="glass rounded-xl px-5 py-3 flex items-center gap-2.5">
+    <div class="rounded-xl border px-5 py-3 flex items-center gap-2.5" style="border-color: var(--border-primary); background: var(--bg-card);">
       <svg class="h-5 w-5 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
         <circle cx="12" cy="12" r="10" /><path d="M8 12h8M12 8v8" stroke-linecap="round" />
       </svg>
       <span class="text-sm font-medium theme-text-secondary">EU {sv ? 'datalagring' : 'data residency'}</span>
     </div>
-    <div class="glass rounded-xl px-5 py-3 flex items-center gap-2.5">
+    <div class="rounded-xl border px-5 py-3 flex items-center gap-2.5" style="border-color: var(--border-primary); background: var(--bg-card);">
       <svg class="h-5 w-5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
         <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" stroke-linecap="round" stroke-linejoin="round" />
       </svg>
       <span class="text-sm font-medium theme-text-secondary">GDPR {sv ? 'kompatibel' : 'compliant'}</span>
     </div>
-    <div class="glass rounded-xl px-5 py-3 flex items-center gap-2.5">
+    <div class="rounded-xl border px-5 py-3 flex items-center gap-2.5" style="border-color: var(--border-primary); background: var(--bg-card);">
       <svg class="h-5 w-5 text-purple-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
         <path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke-linecap="round" stroke-linejoin="round" />
       </svg>
       <span class="text-sm font-medium theme-text-secondary">TLS 1.3 + AES-256</span>
     </div>
-    <div class="glass rounded-xl px-5 py-3 flex items-center gap-2.5">
+    <div class="rounded-xl border px-5 py-3 flex items-center gap-2.5" style="border-color: var(--border-primary); background: var(--bg-card);">
       <svg class="h-5 w-5 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
         <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" stroke-linecap="round" stroke-linejoin="round" />
       </svg>

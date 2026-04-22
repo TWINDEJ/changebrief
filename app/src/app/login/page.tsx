@@ -1,6 +1,7 @@
 import { signIn } from '@/lib/auth';
 import { cookies } from 'next/headers';
 import { t, type Locale } from '@/lib/i18n';
+import EmailForm from './email-form';
 
 export default async function LoginPage({
   searchParams,
@@ -17,19 +18,27 @@ export default async function LoginPage({
     <div className="flex min-h-screen items-center justify-center" style={{ background: 'var(--app-bg)' }}>
       <div className="relative w-full max-w-sm space-y-6 rounded-2xl shadow-lg p-8 animate-fade-in-scale" style={{ background: 'var(--app-bg-card)', border: '1px solid var(--app-border)' }}>
         <div className="text-center">
-          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600">
-            <svg className="h-6 w-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl" style={{ background: 'var(--app-accent)' }}>
+            <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--app-accent-on)' }}>
               <circle cx="12" cy="12" r="3" />
               <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z" />
             </svg>
           </div>
           <h1 className="text-2xl font-bold text-slate-900">
-            change<span className="text-blue-600">brief</span>
+            change<span className="font-display-italic" style={{ color: 'var(--app-text)' }}>brief</span>
           </h1>
           <p className="mt-2 text-sm text-slate-500">{t('login.title', locale)}</p>
           {ref === 'compliance' && (
             <p className="mt-1 text-xs text-blue-600">{locale === 'sv' ? 'Compliance-konto' : 'Compliance account'}</p>
           )}
+        </div>
+
+        <EmailForm locale={locale} />
+
+        <div className="flex items-center gap-3">
+          <div className="h-px flex-1 bg-slate-200" />
+          <span className="text-xs text-slate-400">{locale === 'sv' ? 'eller' : 'or'}</span>
+          <div className="h-px flex-1 bg-slate-200" />
         </div>
 
         <div className="space-y-3">

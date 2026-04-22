@@ -3,73 +3,190 @@
 @theme inline {
   --color-background: var(--app-bg);
   --color-foreground: var(--app-text);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-inter);
   --font-mono: var(--font-geist-mono);
+  --font-serif: var(--font-serif);
 }
 
-/* ─── Theme variables ─── */
+/*
+ * ─── Designsystem ─────────────────────────────────────────────
+ * Paletterna är byggda på stone (varmt neutral) istället för slate
+ * (kallt blågrått). Light mode ska kännas som varmt papper, dark
+ * mode som ett mörklagt redaktionellt skrivbord — inte som en
+ * generisk "AI-slate". En enda accent (editorial ink) bär
+ * interaktion; färgade statusar tas in sparsamt.
+ * ───────────────────────────────────────────────────────────── */
 
 :root {
-  --app-bg: #f8fafc;
-  --app-bg-card: #ffffff;
-  --app-bg-secondary: #f1f5f9;
-  --app-bg-muted: #e2e8f0;
-  --app-text: #0f172a;
-  --app-text-secondary: #475569;
-  --app-text-muted: #94a3b8;
-  --app-border: #e2e8f0;
-  --app-border-secondary: #cbd5e1;
-  --app-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.03);
-  --app-shadow-hover: 0 4px 12px rgba(0,0,0,0.06);
-  --app-glass: rgba(255, 255, 255, 0.8);
-  --app-glass-border: rgba(0, 0, 0, 0.06);
-  --app-header-bg: #ffffff;
-  --app-overlay: rgba(0, 0, 0, 0.2);
+  /* Ytor */
+  --app-bg: #faf8f3;              /* warm paper */
+  --app-bg-card: #ffffff;         /* clean sheet */
+  --app-bg-secondary: #f3f0e8;    /* recessed paper */
+  --app-bg-muted: #ebe7dc;        /* parchment */
+
+  /* Typografi */
+  --app-text: #171615;            /* ink */
+  --app-text-secondary: #4b4845;  /* ink-soft */
+  --app-text-muted: #8a857e;      /* stone-500-warm */
+
+  /* Konturer */
+  --app-border: #e6e1d4;          /* hair-line warm */
+  --app-border-secondary: #d3cdbd; /* stronger divider */
+
+  /* Skuggor — minimala, som tunn avlastning av pappret */
+  --app-shadow: 0 1px 0 rgba(23, 22, 21, 0.04), 0 2px 4px rgba(23, 22, 21, 0.03);
+  --app-shadow-hover: 0 1px 0 rgba(23, 22, 21, 0.06), 0 8px 24px -8px rgba(23, 22, 21, 0.1);
+
+  /* Kromet */
+  --app-header-bg: rgba(250, 248, 243, 0.85);
+  --app-overlay: rgba(23, 22, 21, 0.32);
+
+  /* Accent — editorial ink är huvudknappens yta, blå bevaras för länkar */
+  --app-accent: #171615;
+  --app-accent-hover: #2a2826;
+  --app-accent-on: #faf8f3;       /* text på accent */
+  --app-accent-subtle: #f3f0e8;
+
+  --app-link: #1d4ed8;            /* dämpad, seriös blå för länkar */
+  --app-link-hover: #1e40af;
+  --app-focus-ring: rgba(23, 22, 21, 0.35);
+
+  /* Radier — en enda skala, tyst kurvatur */
+  --app-radius-sm: 6px;
+  --app-radius: 10px;
+  --app-radius-lg: 14px;
 }
 
 [data-theme="dark"] {
-  --app-bg: #0f172a;
-  --app-bg-card: #1e293b;
-  --app-bg-secondary: #1e293b;
-  --app-bg-muted: #334155;
-  --app-text: #f1f5f9;
-  --app-text-secondary: #cbd5e1;
-  --app-text-muted: #64748b;
-  --app-border: #334155;
-  --app-border-secondary: #475569;
-  --app-shadow: 0 1px 3px rgba(0,0,0,0.2), 0 1px 2px rgba(0,0,0,0.15);
-  --app-shadow-hover: 0 4px 16px rgba(0,0,0,0.3);
-  --app-glass: rgba(30, 41, 59, 0.8);
-  --app-glass-border: rgba(255, 255, 255, 0.06);
-  --app-header-bg: #1e293b;
-  --app-overlay: rgba(0, 0, 0, 0.6);
+  /* Ytor — warm stone, inte kall slate */
+  --app-bg: #0c0a09;              /* stone-950 */
+  --app-bg-card: #1c1917;         /* stone-900 */
+  --app-bg-secondary: #171513;    /* mellan bg och card */
+  --app-bg-muted: #292524;        /* stone-800 */
+
+  /* Typografi */
+  --app-text: #f5f4f1;            /* warm paper on dark */
+  --app-text-secondary: #c7c3bb;  /* dämpad läsvänlig */
+  --app-text-muted: #7a756c;      /* stone-500-warm */
+
+  /* Konturer */
+  --app-border: #292524;          /* stone-800 */
+  --app-border-secondary: #3f3a36;
+
+  /* Skuggor — i dark mode är det en inre topplinje som gör jobbet,
+     inte drop shadows som bara gör ytan grötig. */
+  --app-shadow: inset 0 1px 0 rgba(245, 244, 241, 0.03);
+  --app-shadow-hover: inset 0 1px 0 rgba(245, 244, 241, 0.06);
+
+  /* Kromet */
+  --app-header-bg: rgba(12, 10, 9, 0.78);
+  --app-overlay: rgba(0, 0, 0, 0.64);
+
+  /* Accent — ljus editorial-ink mot mörkt papper */
+  --app-accent: #f5f4f1;
+  --app-accent-hover: #ffffff;
+  --app-accent-on: #0c0a09;
+  --app-accent-subtle: rgba(245, 244, 241, 0.06);
+
+  --app-link: #93c5fd;
+  --app-link-hover: #bfdbfe;
+  --app-focus-ring: rgba(245, 244, 241, 0.3);
+}
+
+html, body {
+  background: var(--app-bg);
+  color: var(--app-text);
 }
 
 body {
-  background: var(--app-bg);
-  color: var(--app-text);
-  transition: background-color 0.2s, color 0.2s;
+  font-family: var(--font-inter), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-feature-settings: "cv11" 1, "ss01" 1, "cv02" 1; /* single-story a, slashed 0, open 4 */
+  font-variant-ligatures: common-ligatures contextual;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* ─── Card effects (theme-aware) ─── */
+/* ─── Editorial display — används på wordmark, stora rubriker och
+   hero-siffror. Sparsamt, för kontrasten mot Inter. */
+
+.font-display {
+  font-family: var(--font-serif), ui-serif, Georgia, "Times New Roman", serif;
+  font-weight: 400;
+  letter-spacing: -0.015em;
+}
+
+.font-display-italic {
+  font-family: var(--font-serif), ui-serif, Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.015em;
+}
+
+/* Tabulära siffror för data — kolumner står stilla när siffror uppdateras. */
+.font-num, .tabular-nums {
+  font-variant-numeric: tabular-nums slashed-zero;
+  font-feature-settings: "tnum" 1, "zero" 1;
+}
+
+/* Tight tracking för headings — editorial condensed känsla utan ny font. */
+h1, h2, h3, .tracking-display {
+  letter-spacing: -0.02em;
+}
+
+/* ─── Card effects (theme-aware) ───
+   Klassnamnen heter fortfarande "glass" av historiska skäl, men det är
+   inte längre milkig glassmorphism. Det är en paper-sheet i ljust läge
+   och en stone-kort med tunn topplinje i mörkt läge. */
 
 .glass {
-  background: var(--app-glass);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--app-glass-border);
+  background: var(--app-bg-card);
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-radius);
 }
 
 .glass-card {
   background: var(--app-bg-card);
   border: 1px solid var(--app-border);
+  border-radius: var(--app-radius);
   box-shadow: var(--app-shadow);
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: border-color 0.2s ease, box-shadow 0.25s ease, transform 0.25s ease;
 }
 
 .glass-card:hover {
   border-color: var(--app-border-secondary);
   box-shadow: var(--app-shadow-hover);
+}
+
+/* En subtil "inre topplinje" i dark mode simulerar tonad papperskant —
+   det är det som skiljer curated dark från generisk slate. */
+[data-theme="dark"] .glass,
+[data-theme="dark"] .glass-card {
+  box-shadow: var(--app-shadow);
+}
+[data-theme="dark"] .glass-card:hover {
+  box-shadow: var(--app-shadow-hover), 0 16px 40px -24px rgba(0, 0, 0, 0.6);
+}
+
+/* Hair-line divider — editorial separator som respekterar båda teman. */
+.divider {
+  border-top: 1px solid var(--app-border);
+}
+[data-theme="dark"] .divider {
+  border-top-color: var(--app-border);
+}
+
+/* ─── Highlight pulse for newly added cards ─── */
+
+@keyframes highlight-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.4); }
+  40% { box-shadow: 0 0 0 8px rgba(52, 211, 153, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0); }
+}
+
+.highlight-pulse {
+  animation: highlight-pulse 1.2s ease-out 2;
 }
 
 /* ─── Smooth transitions everywhere ─── */
@@ -81,7 +198,8 @@ button, a, input, details {
 /* ─── Custom scrollbar ─── */
 
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 10px;
+  height: 10px;
 }
 
 ::-webkit-scrollbar-track {
@@ -89,20 +207,45 @@ button, a, input, details {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(100, 116, 139, 0.2);
-  border-radius: 3px;
+  background: var(--app-border);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  border-radius: 6px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(100, 116, 139, 0.35);
+  background: var(--app-border-secondary);
+  background-clip: padding-box;
 }
 
-/* ─── Focus styles ─── */
+/* Firefox */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--app-border) transparent;
+}
+
+/* ─── Header chrome — subtil glas-effekt som respekterar papper-vibbet */
+
+header.sticky {
+  backdrop-filter: saturate(180%) blur(14px);
+  -webkit-backdrop-filter: saturate(180%) blur(14px);
+}
+
+/* ─── Focus styles ───
+   Neutral ring som respekterar accent-färgen i båda teman. Dubbel ring
+   (offset-bakgrund + linje) ger editorial crispness utan att slå över
+   i neon-lila som standard browser focus-style. */
 
 :focus-visible {
-  outline: 2px solid rgba(59, 130, 246, 0.5);
+  outline: 2px solid var(--app-focus-ring);
   outline-offset: 2px;
-  border-radius: 4px;
+  border-radius: var(--app-radius-sm);
+}
+
+/* Input focus — lugn ton, ingen blå neon */
+input:focus, select:focus, textarea:focus {
+  box-shadow: 0 0 0 3px var(--app-accent-subtle);
+  border-color: var(--app-border-secondary);
 }
 
 /* ─── Animations ─── */
@@ -168,12 +311,7 @@ button, a, input, details {
 
 /* Button press feedback */
 button:active:not(:disabled), a:active {
-  transform: scale(0.97);
-}
-
-/* Input focus glow */
-input:focus, select:focus {
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+  transform: scale(0.98);
 }
 
 /* ─── Status pulse ring (active indicator) ─── */
@@ -252,44 +390,6 @@ input:focus, select:focus {
   overflow: hidden;
 }
 
-/* ─── Gradient card borders on hover ─── */
-
-.glass-card {
-  position: relative;
-}
-
-.glass-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(135deg, transparent, transparent);
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.4s ease;
-}
-
-.glass-card:hover::before {
-  background: linear-gradient(135deg, #3b82f6, #8b5cf6, #06b6d4);
-  opacity: 1;
-}
-
-/* ─── Smooth theme transitions ─── */
-
-*, *::before, *::after {
-  transition-property: background-color, border-color, color, box-shadow;
-  transition-duration: 0s;
-}
-
-[data-theme-transitioning] *, [data-theme-transitioning] *::before, [data-theme-transitioning] *::after {
-  transition-duration: 0.3s !important;
-  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1) !important;
-}
-
 /* ─── Copy button animation ─── */
 
 @keyframes copy-flash {
@@ -311,10 +411,13 @@ input:focus, select:focus {
   }
 }
 
-/* ─── Dark mode overrides for Tailwind utility classes ─── */
+/* ─── Dark mode overrides for Tailwind utility classes ───
+   Vi remappar en handfull Tailwind-färgtokens till CSS-variablerna
+   istället för att skriva om 80 komponenter. Tokens som inte är
+   remappade här behåller sina Tailwind-värden. */
 
-/* Backgrounds */
-[data-theme="dark"] .bg-white { background-color: #253147 !important; }
+/* Backgrounds — warm stone mapping */
+[data-theme="dark"] .bg-white { background-color: var(--app-bg-card) !important; }
 [data-theme="dark"] .bg-slate-50 { background-color: var(--app-bg-secondary) !important; }
 [data-theme="dark"] .bg-slate-100 { background-color: var(--app-bg-muted) !important; }
 
@@ -395,8 +498,8 @@ input:focus, select:focus {
 /* Input fields */
 [data-theme="dark"] input.text-slate-900,
 [data-theme="dark"] select.text-slate-600,
-[data-theme="dark"] .glass input,
-[data-theme="dark"] .glass select {
+[data-theme="dark"] input,
+[data-theme="dark"] select {
   color: var(--app-text) !important;
 }
 
@@ -408,15 +511,15 @@ input:focus, select:focus {
 }
 
 /* Toggle switches off-state */
-[data-theme="dark"] .bg-slate-300 { background-color: #475569 !important; }
+[data-theme="dark"] .bg-slate-300 { background-color: #4b5563 !important; }
 
 /* Ring focus indicator */
 [data-theme="dark"] .ring-blue-300 { --tw-ring-color: rgba(59, 130, 246, 0.4) !important; }
 
 /* Opacity variants */
-[data-theme="dark"] .bg-slate-50\/50 { background-color: rgba(30, 41, 59, 0.5) !important; }
-[data-theme="dark"] .hover\:bg-slate-50\/50:hover { background-color: rgba(30, 41, 59, 0.5) !important; }
-[data-theme="dark"] .text-slate-300 { color: #94a3b8 !important; }
+[data-theme="dark"] .bg-slate-50\/50 { background-color: rgba(31, 41, 55, 0.5) !important; }
+[data-theme="dark"] .hover\:bg-slate-50\/50:hover { background-color: rgba(31, 41, 55, 0.5) !important; }
+[data-theme="dark"] .text-slate-300 { color: #9ca3af !important; }
 [data-theme="dark"] .text-slate-400 { color: var(--app-text-muted) !important; }
 
 /* Extra border shades */
@@ -428,5 +531,5 @@ input:focus, select:focus {
 @media print {
   nav, button, .no-print { display: none !important; }
   body { background: white; }
-  .glass-card { box-shadow: none; border: 1px solid #e2e8f0; }
+  .glass-card { box-shadow: none; border: 1px solid #e5e7eb; }
 }

@@ -1,84 +1,76 @@
 # HANDOFF — changebrief
 
-## Session 2026-03-29 (kväll — production hardening)
+## Session 2026-04-17 — Compliance-klassificering verifierad + blogg
 
 ### Vad som gjordes
 
-**5 nya features**
-1. Global GRC webhook — engine:n skickar nu till `users.webhook_url` (var bara sparat men aldrig skickat)
-2. Teams/Discord/PagerDuty — settings UI + engine notifications (Pro+ only i UI, kod för alla)
-3. AI-sammanfattningar på svenska — `locale` skickas till GPT-4o, svenska användare får svenska summaries
-4. Interaktiv demo (`/demo`) — mockad dashboard med 6 nordiska myndighets-ändringar, ingen auth
-5. API-nycklar (`/api/keys`, `/api/v1/*`) — bearer auth, SHA-256 hashade nycklar, Pro+
+**Compliance-verifiering (corpus + golden-tester):**
+- 11 golden-tester i `tests/fixtures/compliance-cases/` som verifierar att GPT-5.4-mini klassar jurisdiction, documentType, complianceAction och importance korrekt
+- Täcker FI, IMY, Naturvårdsverket, ESMA, Livsmedelsverket, EBA, EDPB, Kemikalieinspektionen, SEC, Arbetsmiljöverket + regressionscase (Trafikverket news-rotation)
+- HTML-fixtures (inte Wayback) renderas till PNG via `scripts/render-compliance-fixtures.ts` → reproducerbart i CI
+- `npm run test:compliance` kedjar render + vitest
+- 11/11 passerar
 
-**Production hardening (5→8/10)**
-6. CI-pipeline — tester + build vid varje push (`.github/workflows/ci.yml`)
-7. Crash alerting — engine mejlar `kristian@changebrief.io` vid fatal errors
-8. Polar webhook-secret obligatoriskt — avvisar webhooks utan `POLAR_WEBHOOK_SECRET`
-9. Health endpoint (`/api/health`) — kollar DB + env vars, returnerar healthy/degraded
-10. Centraliserat schema (`shared/schema.ts`) — engine använder det, app har kopia + sync-test
-11. DB-backup dagligen — GitHub Actions kl 03:00, 30 dagars retention
+**Hittad produktionsbugg (fix inkluderad):**
+- `shared/vision.ts` använde `max_tokens` i stället för `max_completion_tokens` (ogiltigt för gpt-5.4-mini). Hela compliance-flödet var tyst brutet. Fixat på två ställen (shouldAnalyze + analyzeChange).
 
-**Ytterligare härdning (8→9/10)**
-12. Rate limiting — 60 req/min public API, 10/min URL-creation, 30/min webhooks (429 + Retry-After)
-13. Uptime monitor — pingar var 5:e minut, mejlar vid downtime
-14. Status-sida (`/status`) — publik sida med live komponentstatus
-15. UI-rensning — Teams/Discord/PagerDuty dolt för free-plan
+**Astro-blogg på changebrief.io:**
+- `landing/src/content.config.ts` + content collections med schema (title, description, pubDate, author, tags, heroImage, draft)
+- Parallella språkmappar `content/blog/en/` och `content/blog/sv/`
+- `BlogPost.astro` ärver Base.astro, sätter JSON-LD BlogPosting + hreflang-par
+- Dynamiska routes `/blog/[slug]` + `/sv/blogg/[slug]` + index-sidor
+- 3 artiklar × 2 språk = 6 markdown-filer:
+  1. "What is changebrief?" / "Vad är changebrief?"
+  2. "Notisum vs changebrief"
+  3. "Regulatory monitoring for ISO consultants" / "Lagbevakning för ISO-konsulter"
+- 19 sidor byggs, sitemap inkluderar alla blogg-URLs
 
-**Testning (0→29)**
-16. 5 testsviter: vision JSON, notification threshold, plan limits, structured diff, compliance filter
-17. Rate limit-tester
-18. Schema-sync-test (fångar drift mellan engine och app)
+**Dashboard:**
+- Todo 13 (verifiera compliance-klassificering) + 18 (blogg) avbockade i `privat-dashboard/src/data/projects.js`
 
-**Dokumentation**
-19. `.env.example` — alla 10 variabler, grupperade, kommenterade
-20. README.md — helt omskriven för SaaS-produkten
-21. HANDOFF.md — denna fil
+**Global CLAUDE.md:**
+- Ny regel tillagd: "Efter arbete i privata projekt — kolla alltid dashboard-todos om något kan bockas av"
 
-### Nya filer
-```
-.github/workflows/ci.yml
-.github/workflows/db-backup.yml
-.github/workflows/uptime-monitor.yml
-app/src/app/api/health/route.ts
-app/src/app/api/keys/route.ts
-app/src/app/api/v1/changes/route.ts
-app/src/app/api/v1/sources/route.ts
-app/src/app/demo/page.tsx
-app/src/app/status/page.tsx
-app/src/lib/api-auth.ts
-app/src/lib/rate-limit.ts
-shared/schema.ts
-tests/engine.test.ts
-tests/rate-limit.test.ts
-tests/schema-sync.test.ts
-```
+### Var vi är
+- master: 6 commits sedan senast (60022ce, 6c7d32b, 40b472e, 7a4b004, 09d35ff)
+- privat-dashboard main: 1 commit (77eab44)
+- Working tree: omfattande WIP från tidigare sessioner orört (app/src/app/dashboard/*, Header.astro, Footer.astro, i18n.ts m.fl.)
 
-### DB-migrationer (körs automatiskt)
-- `users.teams_webhook_url TEXT`
-- `users.discord_webhook_url TEXT`
-- `users.pagerduty_routing_key TEXT`
-- `api_keys`-tabell (id, user_id, name, key_hash, key_prefix, created_at, last_used_at, revoked_at)
+### Nästa steg
+**Inom changebrief:**
+- Committa eller rensa WIP (dashboard-app-filer med nya routes, Header/Footer tema-rewrite + blogg-länkar, i18n-tillägg)
+- Cloudflare Pages-projektet heter fortfarande "pagewatch" efter rebrand
+- Iterera vision-prompten: EU-consultations får stabilt 3-4 importance → filtreras bort vid default min=5
+- RSS-feed för bloggen (`@astrojs/rss`)
 
-### Ärligt utlåtande (uppdaterat)
+**Dashboard-todos kvar på changebrief:**
+- #12 Kontakta 2-3 compliance officers (Kristians eget)
+- #14 RAG-integration (metadata-JSON)
+- #15 Acknowledged/Reviewed-workflow
+- #16 Teamfunktion
+- #17 SEO-optimera /compliance
 
-| Dimension | Betyg |
-|---|---|
-| Idé & positionering | 8/10 |
-| Kodbas & arkitektur | 7/10 |
-| Produktionsmognad | 8-9/10 |
-| Marknadsberedskap | 3/10 |
-
-### Vad som kvarstår för 10/10
-- Verifiera AI-klassificering mot riktiga regulatoriska ändringar (kräver tid, inte kod)
-- Få en betalande kund (kräver försäljning, inte kod)
-- RAG-integration (plan sparad i memory, 3 alternativ utvärderade — avvaktar)
+### Risker / känd begränsning
+- GPT-5.4-mini betygsätter EU-remisser (consultations) stabilt 3-4 — filtreras bort vid default min_importance=5. Dokumenterat i fixture 04. Iterera prompt om kunder klagar.
+- AI klassar jurisdiction efter publicerande myndighet, inte efter formell regelkälla (Kemi→SE även för EU-förordning). Matchar dock hur kunder tänker.
 
 ---
 
-## Nästa session — förslag
+## Session 2026-04-02 — Mejl-inloggning (magic link) + DNS
 
-1. **Deploya till Vercel** — koden är pushad men Vercel kanske behöver manuell deploy
-2. **Verifiera CI/uptime/backup** — kolla att de 3 nya workflows fungerar
-3. **Prata med testaren** — fråga vad som var mest värdefullt, be om citat
-4. **LinkedIn-inlägg** — använd demo-sidan + testarens feedback
+### Vad som gjordes
+
+**Mejl-inloggning (magic link):**
+- Implementerade komplett magic link-auth baserat på dxassistant-mönstret
+- Credentials provider (`magic-link`) i Auth.js med JWT-strategi
+- `magic_tokens`-tabell i DB (token, email, expires, used)
+- API-route `POST /api/auth/magic` — genererar token, skickar mejl via Resend
+- Mellansida `/login/verify` med POST-knapp (skyddar mot Outlook SafeLinks)
+- `EmailForm`-klientkomponent med states (idle/sending/sent/error)
+- Login-sida uppdaterad: mejlfält ovanför OAuth med "or"-divider
+- `allowDangerousEmailAccountLinking: true` på Google/GitHub
+- Förbättrat mejlinnehåll (mindre phishy: subject med mejladress, footer, företagsinfo)
+
+**DNS-konfiguration (Namecheap):**
+- SPF uppdaterad: `v=spf1 include:amazonses.com include:spf.efwd.registrar-servers.com ~all`
+- DKIM: redan verifierad (`resend._domainkey`)

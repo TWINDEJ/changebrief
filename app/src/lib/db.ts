@@ -61,6 +61,16 @@ export async function initDb() {
     );
   `);
 
+  // Magic link tokens
+  await db.execute(`
+    CREATE TABLE IF NOT EXISTS magic_tokens (
+      token TEXT PRIMARY KEY,
+      email TEXT NOT NULL,
+      expires TEXT NOT NULL,
+      used INTEGER DEFAULT 0
+    )
+  `);
+
   // API keys table
   await db.execute(`
     CREATE TABLE IF NOT EXISTS api_keys (
@@ -109,9 +119,70 @@ export async function initDb() {
     'ALTER TABLE users ADD COLUMN teams_webhook_url TEXT',
     'ALTER TABLE users ADD COLUMN discord_webhook_url TEXT',
     'ALTER TABLE users ADD COLUMN pagerduty_routing_key TEXT',
+    'ALTER TABLE watched_urls ADD COLUMN ignore_selectors TEXT',
+    'ALTER TABLE watched_urls ADD COLUMN check_interval_minutes INTEGER DEFAULT 360',
+    "ALTER TABLE watched_urls ADD COLUMN watch_intent TEXT DEFAULT 'page'",
+    'ALTER TABLE watched_urls ADD COLUMN keyword_filters TEXT',
+    'ALTER TABLE watched_urls ADD COLUMN custom_prompt_hint TEXT',
+    'ALTER TABLE watched_urls ADD COLUMN wait_for_selector TEXT',
+    'ALTER TABLE watched_urls ADD COLUMN wait_ms INTEGER',
+    'ALTER TABLE watched_urls ADD COLUMN scroll_to_bottom INTEGER DEFAULT 0',
   ]) {
     try { await db.execute(col); } catch { /* column already exists */ }
   }
+
+  // Skapa url_config_history om den saknas (lades till av Våg 1 #2).
+  try {
+    await db.execute(`CREATE TABLE IF NOT EXISTS url_config_history (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      url_id INTEGER NOT NULL REFERENCES watched_urls(id) ON DELETE CASCADE,
+      changed_at TEXT DEFAULT (datetime('now')),
+      changed_by TEXT,
+      diff TEXT NOT NULL
+    )`);
+  } catch { /* redan skapad */ }
+
+  // Brus-feedback (Spår C #10).
+  try {
+    await db.execute(`CREATE TABLE IF NOT EXISTS notification_feedback (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id TEXT NOT NULL REFERENCES users(id),
+      change_history_id INTEGER NOT NULL REFERENCES change_history(id) ON DELETE CASCADE,
+      verdict TEXT NOT NULL,
+      reason TEXT,
+      created_at TEXT DEFAULT (datetime('now'))
+    )`);
+  } catch { /* redan skapad */ }
+}
+
+// ─── Magic Tokens ───
+
+export async function createMagicToken(email: string): Promise<string> {
+  const db = getDb();
+  await initDb();
+  const token = crypto.randomUUID();
+  const expires = new Date(Date.now() + 15 * 60 * 1000).toISOString(); // 15 min
+  await db.execute({
+    sql: 'INSERT INTO magic_tokens (token, email, expires) VALUES (?, ?, ?)',
+    args: [token, email.toLowerCase().trim(), expires],
+  });
+  return token;
+}
+
+export async function consumeMagicToken(token: string, email: string): Promise<boolean> {
+  const db = getDb();
+  await initDb();
+  const result = await db.execute({
+    sql: 'SELECT * FROM magic_tokens WHERE token = ? AND email = ? AND used = 0',
+    args: [token, email.toLowerCase().trim()],
+  });
+  if (result.rows.length === 0) return false;
+
+  const row = result.rows[0];
+  if (new Date(row.expires as string) < new Date()) return false;
+
+  await db.execute({ sql: 'UPDATE magic_tokens SET used = 1 WHERE token = ?', args: [token] });
+  return true;
 }
 
 // ─── Users ───
@@ -236,9 +307,31 @@ export async function getWatchedUrls(userId: string) {
   return result.rows;
 }
 
-export async function addWatchedUrl(userId: string, url: string, name: string, options?: { threshold?: number; selector?: string; mobile?: boolean; minImportance?: number; cookies?: string; headers?: string; webhookUrl?: string; category?: string }) {
+export async function addWatchedUrl(userId: string, url: string, name: string, options?: {
+  threshold?: number;
+  selector?: string;
+  mobile?: boolean;
+  minImportance?: number;
+  cookies?: string;
+  headers?: string;
+  webhookUrl?: string;
+  category?: string;
+  ignoreSelectors?: string;
+  checkIntervalMinutes?: number;
+  watchIntent?: string;
+  keywordFilters?: string;
+  customPromptHint?: string;
+  waitForSelector?: string;
+  waitMs?: number;
+  scrollToBottom?: boolean;
+}) {
   await getDb().execute({
-    sql: 'INSERT INTO watched_urls (user_id, url, name, threshold, selector, mobile, min_importance, cookies, headers, webhook_url, category) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+    sql: `INSERT INTO watched_urls
+          (user_id, url, name, threshold, selector, mobile, min_importance, cookies, headers,
+           webhook_url, category, ignore_selectors, check_interval_minutes,
+           watch_intent, keyword_filters, custom_prompt_hint,
+           wait_for_selector, wait_ms, scroll_to_bottom)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     args: [
       userId, url, name,
       options?.threshold ?? 0.3,
@@ -249,6 +342,14 @@ export async function addWatchedUrl(userId: string, url: string, name: string, o
       options?.headers ?? null,
       options?.webhookUrl ?? null,
       options?.category ?? null,
+      options?.ignoreSelectors ?? null,
+      options?.checkIntervalMinutes ?? 360,
+      options?.watchIntent ?? 'page',
+      options?.keywordFilters ?? null,
+      options?.customPromptHint ?? null,
+      options?.waitForSelector ?? null,
+      options?.waitMs ?? null,
+      options?.scrollToBottom ? 1 : 0,
     ]
   });
 }
@@ -267,6 +368,197 @@ export async function muteUrl(userId: string, urlId: number, muted: boolean) {
     sql: 'UPDATE watched_urls SET muted = ? WHERE id = ? AND user_id = ?',
     args: [muted ? 1 : 0, urlId, userId],
   });
+}
+
+// ─── Edit + audit-trail ───
+
+export interface UrlUpdates {
+  name?: string;
+  threshold?: number;
+  selector?: string | null;
+  mobile?: boolean;
+  minImportance?: number;
+  cookies?: string | null;
+  headers?: string | null;
+  webhookUrl?: string | null;
+  category?: string | null;
+  ignoreSelectors?: string | null;
+  checkIntervalMinutes?: number;
+  watchIntent?: string;
+  keywordFilters?: string | null;
+  customPromptHint?: string | null;
+  waitForSelector?: string | null;
+  waitMs?: number | null;
+  scrollToBottom?: boolean;
+}
+
+type ConfigRow = Record<string, unknown>;
+
+function buildDiff(before: ConfigRow, after: ConfigRow): Record<string, { from: unknown; to: unknown }> {
+  const diff: Record<string, { from: unknown; to: unknown }> = {};
+  for (const key of Object.keys(after)) {
+    if (before[key] !== after[key]) diff[key] = { from: before[key], to: after[key] };
+  }
+  return diff;
+}
+
+export async function updateWatchedUrl(
+  userId: string,
+  urlId: number,
+  updates: UrlUpdates,
+  changedBy?: string
+): Promise<{ changed: boolean }> {
+  const db = getDb();
+
+  const current = await db.execute({
+    sql: `SELECT name, threshold, selector, mobile, min_importance, cookies, headers, webhook_url,
+                 category, ignore_selectors, check_interval_minutes,
+                 watch_intent, keyword_filters, custom_prompt_hint,
+                 wait_for_selector, wait_ms, scroll_to_bottom
+          FROM watched_urls WHERE id = ? AND user_id = ?`,
+    args: [urlId, userId],
+  });
+  if (current.rows.length === 0) throw new Error('URL not found');
+  const row = current.rows[0] as ConfigRow;
+
+  const next = {
+    name: updates.name ?? row.name,
+    threshold: updates.threshold ?? row.threshold,
+    selector: updates.selector === undefined ? row.selector : updates.selector,
+    mobile: updates.mobile === undefined ? row.mobile : (updates.mobile ? 1 : 0),
+    min_importance: updates.minImportance ?? row.min_importance,
+    cookies: updates.cookies === undefined ? row.cookies : updates.cookies,
+    headers: updates.headers === undefined ? row.headers : updates.headers,
+    webhook_url: updates.webhookUrl === undefined ? row.webhook_url : updates.webhookUrl,
+    category: updates.category === undefined ? row.category : updates.category,
+    ignore_selectors: updates.ignoreSelectors === undefined ? row.ignore_selectors : updates.ignoreSelectors,
+    check_interval_minutes: updates.checkIntervalMinutes ?? row.check_interval_minutes,
+    watch_intent: updates.watchIntent ?? row.watch_intent,
+    keyword_filters: updates.keywordFilters === undefined ? row.keyword_filters : updates.keywordFilters,
+    custom_prompt_hint: updates.customPromptHint === undefined ? row.custom_prompt_hint : updates.customPromptHint,
+    wait_for_selector: updates.waitForSelector === undefined ? row.wait_for_selector : updates.waitForSelector,
+    wait_ms: updates.waitMs === undefined ? row.wait_ms : updates.waitMs,
+    scroll_to_bottom: updates.scrollToBottom === undefined ? row.scroll_to_bottom : (updates.scrollToBottom ? 1 : 0),
+  };
+
+  const diff = buildDiff(row, next);
+  if (Object.keys(diff).length === 0) return { changed: false };
+
+  await db.execute({
+    sql: `UPDATE watched_urls SET name = ?, threshold = ?, selector = ?, mobile = ?,
+          min_importance = ?, cookies = ?, headers = ?, webhook_url = ?, category = ?,
+          ignore_selectors = ?, check_interval_minutes = ?,
+          watch_intent = ?, keyword_filters = ?, custom_prompt_hint = ?,
+          wait_for_selector = ?, wait_ms = ?, scroll_to_bottom = ?
+          WHERE id = ? AND user_id = ?`,
+    args: [
+      next.name as string, next.threshold as number, next.selector as string | null,
+      next.mobile as number, next.min_importance as number,
+      next.cookies as string | null, next.headers as string | null,
+      next.webhook_url as string | null, next.category as string | null,
+      next.ignore_selectors as string | null, next.check_interval_minutes as number,
+      next.watch_intent as string, next.keyword_filters as string | null,
+      next.custom_prompt_hint as string | null,
+      next.wait_for_selector as string | null,
+      next.wait_ms as number | null,
+      next.scroll_to_bottom as number,
+      urlId, userId,
+    ],
+  });
+
+  await db.execute({
+    sql: 'INSERT INTO url_config_history (url_id, changed_by, diff) VALUES (?, ?, ?)',
+    args: [urlId, changedBy ?? null, JSON.stringify(diff)],
+  });
+
+  return { changed: true };
+}
+
+// ─── Notification feedback (#10) ───
+
+export async function recordNotificationFeedback(
+  userId: string,
+  changeHistoryId: number,
+  verdict: 'relevant' | 'noise',
+  reason?: string
+): Promise<{ recorded: boolean }> {
+  // Verifiera att change-raden tillhör användaren innan vi accepterar feedback.
+  const owns = await getDb().execute({
+    sql: 'SELECT 1 FROM change_history WHERE id = ? AND user_id = ?',
+    args: [changeHistoryId, userId],
+  });
+  if (owns.rows.length === 0) return { recorded: false };
+
+  await getDb().execute({
+    sql: `INSERT INTO notification_feedback (user_id, change_history_id, verdict, reason)
+          VALUES (?, ?, ?, ?)`,
+    args: [userId, changeHistoryId, verdict, reason ?? null],
+  });
+  return { recorded: true };
+}
+
+export async function getNoiseSuggestion(
+  userId: string,
+  changeHistoryId: number
+): Promise<null | {
+  urlId: number;
+  noiseCount: number;
+  suggestedMinImportance: number;
+  currentMinImportance: number;
+}> {
+  // Hitta vilken URL change-raden gäller.
+  const change = await getDb().execute({
+    sql: `SELECT ch.url, wu.id AS url_id, wu.min_importance
+          FROM change_history ch
+          JOIN watched_urls wu ON wu.user_id = ch.user_id AND wu.url = ch.url
+          WHERE ch.id = ? AND ch.user_id = ? LIMIT 1`,
+    args: [changeHistoryId, userId],
+  });
+  if (change.rows.length === 0) return null;
+  const urlId = Number(change.rows[0].url_id);
+  const currentMin = Number(change.rows[0].min_importance) || 5;
+
+  // Räkna brus-markeringar för samma URL senaste 14 dagarna.
+  const result = await getDb().execute({
+    sql: `SELECT COUNT(*) AS cnt, AVG(ch.importance) AS avg_imp
+          FROM notification_feedback nf
+          JOIN change_history ch ON ch.id = nf.change_history_id
+          JOIN watched_urls wu ON wu.user_id = ch.user_id AND wu.url = ch.url
+          WHERE nf.user_id = ?
+            AND wu.id = ?
+            AND nf.verdict = 'noise'
+            AND nf.created_at > datetime('now', '-14 days')`,
+    args: [userId, urlId],
+  });
+  const noiseCount = Number(result.rows[0].cnt);
+  const avgImp = Number(result.rows[0].avg_imp) || 0;
+  if (noiseCount < 3) return null;
+
+  // Enkel heuristik: höj min_importance till max(current+1, ceil(avg_imp)+1), cap 10.
+  const suggested = Math.min(10, Math.max(currentMin + 1, Math.ceil(avgImp) + 1));
+  if (suggested <= currentMin) return null; // ingen meningsfull höjning
+
+  return {
+    urlId,
+    noiseCount,
+    suggestedMinImportance: suggested,
+    currentMinImportance: currentMin,
+  };
+}
+
+export async function getUrlConfigHistory(userId: string, urlId: number) {
+  // Bekräfta ägarskap innan historiken returneras.
+  const owns = await getDb().execute({
+    sql: 'SELECT 1 FROM watched_urls WHERE id = ? AND user_id = ?',
+    args: [urlId, userId],
+  });
+  if (owns.rows.length === 0) return [];
+
+  const result = await getDb().execute({
+    sql: 'SELECT id, changed_at, changed_by, diff FROM url_config_history WHERE url_id = ? ORDER BY changed_at DESC LIMIT 50',
+    args: [urlId],
+  });
+  return result.rows;
 }
 
 // ─── All URLs (for cron job) ───

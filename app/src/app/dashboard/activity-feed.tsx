@@ -38,6 +38,13 @@ function ImportanceDot({ importance }: { importance: number | null }) {
   );
 }
 
+interface TuningSuggestion {
+  urlId: number;
+  noiseCount: number;
+  suggestedMinImportance: number;
+  currentMinImportance: number;
+}
+
 export function ActivityFeed({ history: initialHistory, plan = 'free' }: { history: ChangeEntry[]; plan?: string }) {
   const { t, locale } = useLocale();
   const [history, setHistory] = useState(initialHistory);
@@ -46,6 +53,36 @@ export function ActivityFeed({ history: initialHistory, plan = 'free' }: { histo
   const [expanded, setExpanded] = useState<Set<number>>(new Set());
   const [deleting, setDeleting] = useState<string | null>(null);
   const [reviewing, setReviewing] = useState<number | null>(null);
+  const [feedbackGiven, setFeedbackGiven] = useState<Record<number, 'relevant' | 'noise'>>({});
+  const [suggestion, setSuggestion] = useState<TuningSuggestion | null>(null);
+  const [applyingSuggestion, setApplyingSuggestion] = useState(false);
+
+  const sendFeedback = useCallback(async (changeId: number, verdict: 'relevant' | 'noise') => {
+    setFeedbackGiven((prev) => ({ ...prev, [changeId]: verdict }));
+    const res = await fetch('/api/notifications/feedback', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ changeHistoryId: changeId, verdict }),
+    });
+    if (!res.ok) return;
+    const data = (await res.json()) as { suggestion: TuningSuggestion | null };
+    if (data.suggestion) setSuggestion(data.suggestion);
+  }, []);
+
+  const applySuggestion = useCallback(async () => {
+    if (!suggestion) return;
+    setApplyingSuggestion(true);
+    const res = await fetch('/api/urls', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        id: suggestion.urlId,
+        minImportance: suggestion.suggestedMinImportance,
+      }),
+    });
+    setApplyingSuggestion(false);
+    if (res.ok) setSuggestion(null);
+  }, [suggestion]);
 
   const uniquePages = useMemo(() => {
     const map = new Map<string, string>();
@@ -153,7 +190,7 @@ export function ActivityFeed({ history: initialHistory, plan = 'free' }: { histo
   if (history.length === 0) {
     return (
       <div className="rounded-2xl border border-dashed border-slate-200 p-12 text-center animate-fade-in">
-        <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50">
+        <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50">
           <svg className="h-7 w-7 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
@@ -169,6 +206,35 @@ export function ActivityFeed({ history: initialHistory, plan = 'free' }: { histo
 
   return (
     <div className="space-y-3">
+      {suggestion && (
+        <div className="rounded-xl border border-blue-100 bg-blue-50 p-4 flex items-start gap-3">
+          <div className="shrink-0 mt-0.5">
+            <svg className="h-5 w-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium text-slate-900">{t('fb.suggest.title')}</p>
+            <p className="mt-1 text-xs text-slate-600 leading-relaxed">
+              {t('fb.suggest.body')
+                .replace('{count}', String(suggestion.noiseCount))
+                .replace('{from}', String(suggestion.currentMinImportance))
+                .replace('{to}', String(suggestion.suggestedMinImportance))}
+            </p>
+            <div className="mt-2 flex items-center gap-2">
+              <button onClick={applySuggestion} disabled={applyingSuggestion}
+                className="cursor-pointer rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-blue-700 transition disabled:opacity-50">
+                {applyingSuggestion ? '…' : t('fb.suggest.apply')}
+              </button>
+              <button onClick={() => setSuggestion(null)}
+                className="cursor-pointer text-xs text-slate-600 hover:text-slate-900">
+                {t('fb.suggest.dismiss')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-2">
         <button onClick={() => setFilter('significant')} className={filterBtnCls(filter === 'significant')}>
@@ -329,6 +395,28 @@ export function ActivityFeed({ history: initialHistory, plan = 'free' }: { histo
                       <span className="text-xs text-emerald-600">
                         {locale === 'sv' ? 'Granskad' : 'Reviewed'} {new Date(entry.reviewed_at + 'Z').toLocaleDateString(locale === 'sv' ? 'sv-SE' : 'en-US')}
                       </span>
+                    )}
+                    {entry.summary && (
+                      feedbackGiven[entry.id] ? (
+                        <span className="text-xs text-slate-400">
+                          {feedbackGiven[entry.id] === 'relevant' ? t('fb.thanks.relevant') : t('fb.thanks.noise')}
+                        </span>
+                      ) : (
+                        <>
+                          <button
+                            onClick={(e) => { e.stopPropagation(); sendFeedback(entry.id, 'relevant'); }}
+                            className="cursor-pointer text-xs text-blue-600 hover:text-blue-700 transition"
+                          >
+                            👍 {t('fb.relevant')}
+                          </button>
+                          <button
+                            onClick={(e) => { e.stopPropagation(); sendFeedback(entry.id, 'noise'); }}
+                            className="cursor-pointer text-xs text-slate-500 hover:text-slate-700 transition"
+                          >
+                            👎 {t('fb.noise')}
+                          </button>
+                        </>
+                      )
                     )}
                     <button
                       onClick={(e) => {

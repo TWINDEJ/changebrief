@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import { useDraggable } from '@dnd-kit/core';
 import { Toast, useToast } from './toast';
 import { useLocale } from '../locale-provider';
 import suggestionsData from '@/data/suggestions.json';
@@ -12,14 +13,25 @@ interface Suggestion {
   jurisdiction?: string;
 }
 
-const suggestions = suggestionsData as Suggestion[];
-const categories = [
+// Fokusera på nordiska + EU regulatoriska sidor (kärnmålgruppen)
+const REGULATORY_CATEGORIES = new Set([
   'Finance & Banking', 'Transport & Infrastructure', 'Health & Pharma',
   'Data & Privacy', 'Environment & Energy', 'Labor & Workplace',
-  'Laws & Government', 'Legal', 'Pricing', 'Newsrooms', 'Standards', 'Status',
+  'Laws & Government', 'Legal', 'Training & Certifications',
+]);
+const NORDIC_JURISDICTIONS = new Set(['SE', 'DK', 'NO', 'FI', 'EU']);
+
+const suggestions = (suggestionsData as Suggestion[]).filter(s =>
+  NORDIC_JURISDICTIONS.has(s.jurisdiction ?? '') && REGULATORY_CATEGORIES.has(s.category)
+);
+const categories = [
+  'Training & Certifications', 'Finance & Banking', 'Transport & Infrastructure',
+  'Health & Pharma', 'Data & Privacy', 'Environment & Energy',
+  'Labor & Workplace', 'Laws & Government', 'Legal',
 ];
 
 const categoryColors: Record<string, string> = {
+  'Training & Certifications': 'text-indigo-600 bg-indigo-50',
   'Finance & Banking': 'text-emerald-600 bg-emerald-50',
   'Transport & Infrastructure': 'text-yellow-600 bg-yellow-50',
   'Health & Pharma': 'text-red-600 bg-red-50',
@@ -36,6 +48,7 @@ const categoryColors: Record<string, string> = {
 
 // Vågskålar = reglering, mynt = finans, hjärta = hälsa, sköld = data, blad = miljö, bygge = arbete, riksdag = lagar
 const categoryIcons: Record<string, React.ReactNode> = {
+  'Training & Certifications': <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.627 48.627 0 0 1 12 20.904a48.627 48.627 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.57 50.57 0 0 0-2.658-.813A59.905 59.905 0 0 1 12 3.493a59.902 59.902 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5" /></svg>,
   'Finance & Banking': <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>,
   'Transport & Infrastructure': <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7h8m-8 4h8m-4-8v16m-6 0h12a2 2 0 002-2V5a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>,
   'Health & Pharma': <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>,
@@ -50,9 +63,29 @@ const categoryIcons: Record<string, React.ReactNode> = {
   Status: <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>,
 };
 
-const jurisdictions = ['SE', 'DK', 'NO', 'FI', 'EU', 'US', 'INTL'] as const;
+// Draggable wrapper för suggestion-kort
+function DraggableSuggestionCard({ suggestion, children }: { suggestion: Suggestion; children: React.ReactNode }) {
+  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
+    id: `suggestion-${suggestion.url}`,
+    data: suggestion,
+  });
+
+  return (
+    <div
+      ref={setNodeRef}
+      {...listeners}
+      {...attributes}
+      className={`touch-none ${isDragging ? 'opacity-30 scale-95' : ''}`}
+      style={{ transition: isDragging ? 'none' : 'opacity 0.2s, transform 0.2s' }}
+    >
+      {children}
+    </div>
+  );
+}
+
+const jurisdictions = ['SE', 'DK', 'NO', 'FI', 'EU'] as const;
 const jurisdictionLabels: Record<string, string> = {
-  SE: 'SE', DK: 'DK', NO: 'NO', FI: 'FI', EU: 'EU', US: 'US', INTL: 'Intl',
+  SE: 'SE', DK: 'DK', NO: 'NO', FI: 'FI', EU: 'EU',
 };
 
 export function PopularWatchlists({ existingUrls, canAdd }: { existingUrls: string[]; canAdd: boolean }) {
@@ -166,7 +199,7 @@ export function PopularWatchlists({ existingUrls, canAdd }: { existingUrls: stri
           <button
             onClick={handleBulkAdd}
             disabled={bulkAdding || !canAdd}
-            className="flex items-center gap-2 cursor-pointer rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-2 text-xs font-medium text-white shadow-lg shadow-blue-500/10 hover:shadow-blue-500/20 transition disabled:opacity-50"
+            className="flex items-center gap-2 cursor-pointer rounded-lg px-4 py-2 text-xs font-medium text-white shadow-sm hover:shadow transition disabled:opacity-50" style={{ background: 'var(--app-accent)' }}
           >
             {bulkAdding ? (
               <>
@@ -197,19 +230,21 @@ export function PopularWatchlists({ existingUrls, canAdd }: { existingUrls: stri
             const isJustAdded = justAdded === s.url;
 
             return (
-              <div key={s.url} className={`flex items-start justify-between gap-3 rounded-xl glass-card p-4 transition-all duration-500 ${isJustAdded ? 'scale-95 opacity-50 ring-2 ring-emerald-500/40' : ''}`}>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className={`flex h-6 w-6 items-center justify-center rounded-md ${colors}`}>{categoryIcons[s.category]}</span>
-                    <span className="text-sm font-medium text-slate-900 truncate">{displayName}</span>
+              <DraggableSuggestionCard key={s.url} suggestion={s}>
+                <div className={`flex items-start justify-between gap-3 rounded-xl glass-card p-4 transition-all duration-500 cursor-grab active:cursor-grabbing ${isJustAdded ? 'scale-95 opacity-50 ring-2 ring-emerald-500/40' : ''} ${isExisting ? 'opacity-60' : ''}`}>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className={`flex h-6 w-6 items-center justify-center rounded-md ${colors}`}>{categoryIcons[s.category]}</span>
+                      <span className="text-sm font-medium text-slate-900 truncate">{displayName}</span>
+                    </div>
+                    <p className="text-xs text-slate-500 leading-relaxed">{displayDesc}</p>
                   </div>
-                  <p className="text-xs text-slate-500 leading-relaxed">{displayDesc}</p>
+                  <button onClick={(e) => { e.stopPropagation(); handleAdd(s); }} disabled={isExisting || isAdding}
+                    className={`shrink-0 cursor-pointer rounded-lg px-3 py-1.5 text-xs font-medium transition-all duration-200 ${isExisting ? 'bg-slate-100 text-slate-600' : 'bg-blue-50 text-blue-600 hover:bg-blue-100'} disabled:cursor-default`}>
+                    {isExisting ? t('watchlists.added') : isAdding ? '...' : '+ Add'}
+                  </button>
                 </div>
-                <button onClick={() => handleAdd(s)} disabled={isExisting || isAdding}
-                  className={`shrink-0 cursor-pointer rounded-lg px-3 py-1.5 text-xs font-medium transition-all duration-200 ${isExisting ? 'bg-slate-100 text-slate-600' : 'bg-blue-50 text-blue-600 hover:bg-blue-100'} disabled:cursor-default`}>
-                  {isExisting ? t('watchlists.added') : isAdding ? '...' : '+ Add'}
-                </button>
-              </div>
+              </DraggableSuggestionCard>
             );
           })}
         </div>

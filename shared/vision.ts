@@ -110,7 +110,8 @@ export async function analyzeChange(
   url: string,
   structuredDiff?: string,
   urlCategory?: string,
-  locale?: string
+  locale?: string,
+  customPromptHint?: string
 ): Promise<ChangeAnalysis> {
   const beforeBase64 = fs.readFileSync(beforeImagePath).toString('base64');
   const afterBase64 = fs.readFileSync(afterImagePath).toString('base64');
@@ -143,6 +144,12 @@ Lägg till dessa fält i din JSON:
 
 Var STRIKT med "action_required" — använd det bara för faktiska regeländringar som påverkar efterlevnad.
 Höj importance med +2 om complianceAction är "action_required" (max 10).` : '';
+
+  // Kund-definierat fokus per URL. Går ovanpå generella instruktionerna — om kunden specificerat
+  // vad hen bryr sig om, vikta den signalen högre och nedklassa allt annat.
+  const customFocus = customPromptHint?.trim()
+    ? `\n\nKUND-DEFINIERAT FOKUS FÖR DENNA URL:\n"${customPromptHint.trim()}"\n\nPrioritera ändringar som matchar kundens fokus. Nedklassa (lägre importance) ändringar som ligger utanför fokus.`
+    : '';
 
   const response = await client.chat.completions.create({
     model: 'gpt-5.4-mini',
@@ -185,7 +192,7 @@ och redaktionellt innehåll är INTE compliance-relevant.
 
 Conservative bias: vid osäkerhet, välj LÄGRE importance. Bättre att missa en ändring
 än att skicka en falsk notifiering som tränar användaren att ignorera oss.
-${complianceInstructions}
+${complianceInstructions}${customFocus}
 Om bilderna ser likadana ut, sätt hasSignificantChange: false och importance: 1.${langInstruction}`
         },
         {
